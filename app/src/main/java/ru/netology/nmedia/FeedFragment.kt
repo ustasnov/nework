@@ -7,13 +7,16 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostLoadingStateAdapter
@@ -141,63 +144,26 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             }
         })
 
-        binding.list.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = PostLoadingStateAdapter { adapter.retry() },
-            footer = PostLoadingStateAdapter { adapter.retry() }
-        )
+        binding.list.adapter = adapter
 
-        authViewModel.data.observe(viewLifecycleOwner) {
-            adapter.refresh()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.data.collectLatest(adapter::submitData)
+            }
         }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.data.collectLatest(adapter::submitData)
-        }
-
-        lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow.collectLatest { state ->
-                binding.swiperefresh.isRefreshing =
-                    state.refresh is LoadState.Loading
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                adapter.loadStateFlow.collectLatest { state ->
+                    binding.swiperefresh.isRefreshing =
+                        state.refresh is LoadState.Loading ||
+                                state.prepend is LoadState.Loading ||
+                                state.append is LoadState.Loading
+                }
             }
         }
 
         binding.swiperefresh.setOnRefreshListener(adapter::refresh)
-
-        /*
-        viewModel.dataState.observe(viewLifecycleOwner) { state ->
-            binding.swiperefresh.isRefreshing = state.refreshing
-            when (state.error) {
-                ErrorType.LOADING ->
-                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.retry_loading) { viewModel.loadPosts() }
-                        .show()
-                ErrorType.SAVE ->
-                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.retry_loading) { viewModel.save() }
-                        .show()
-                ErrorType.LIKE ->
-                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.retry_loading) { viewModel.likeById(viewModel.currentPost.value!!) }
-                        .show()
-                ErrorType.REMOVE ->
-                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.retry_loading) { viewModel.removeById(viewModel.currentPostId.value!!) }
-                        .show()
-                null -> Unit
-            }
-        }
-         */
-
-        /*
-        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0) {
-                    binding.list.smoothScrollToPosition(0)
-                }
-            }
-        })
-
-         */
 
         binding.add.setOnClickListener {
             if (authViewModel.isAuthorized) {
