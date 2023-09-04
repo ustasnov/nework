@@ -31,11 +31,13 @@ class AppActivity : AppCompatActivity() {
     @Inject
     lateinit var appAuth: AppAuth
 
+    /*
     @Inject
     lateinit var googleApiAvailability: GoogleApiAvailability
 
     @Inject
     lateinit var firebaseMessaging: FirebaseMessaging
+     */
 
     private val viewModel: AuthViewModel by viewModels()
 
@@ -72,9 +74,11 @@ class AppActivity : AppCompatActivity() {
                 }
             )
         }
+        /*
         checkGoogleApiAvailability()
 
         requestNotificationsPermission()
+         */
 
         //val viewModel by viewModels<AuthViewModel>()
 
@@ -121,6 +125,7 @@ class AppActivity : AppCompatActivity() {
         }
     }
 
+    /*
     private fun requestNotificationsPermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return
@@ -153,5 +158,6 @@ class AppActivity : AppCompatActivity() {
             println(it)
         }
     }
+     */
 }
 

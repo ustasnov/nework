@@ -39,6 +39,8 @@ interface ApiService {
     @POST("media")
     suspend fun uploadMedia(@Part file: MultipartBody.Part): Response<Media>
 
+    /*
     @POST("users/authentication/")
     suspend fun sendPushToken(@Body token: PushToken): Response<Unit>
+     */
 }
