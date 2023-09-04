@@ -77,7 +77,8 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:2.44"
 
     kapt 'androidx.room:room-compiler:2.5.0'
-    implementation platform("com.google.firebase:firebase-bom:31.2.3")
+    implementation platform("com.google.firebase:firebase-bom:32.2.3")
+    implementation("com.google.firebase:firebase-analytics-ktx")
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation 'junit:junit:4.13.2'
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
