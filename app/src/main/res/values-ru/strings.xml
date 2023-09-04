@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nmedia">NeWork!</string>
+    <string name="description_post_author_avatar">Аватар Нетологии</string>
+    <string name="description_post_menu">Меню поста</string>
+    <string name="press_if_like">Нажми, если понравилось</string>
+    <string name="share_post">Поделись сообщением</string>
+    <string name="views">Просмотры</string>
+    <string name="edit">Редактировать</string>
+    <string name="remove">Удалить</string>
+    <string name="post_edit_text">Текст поста</string>
+    <string name="save">Сохранить</string>
+    <string name="error_empty_content">Текст поста не может быть пустым!</string>
+    <string name="cancel_post_text_changes">Отменить изменения</string>
+    <string name="view_move_description">Просмотр видео</string>
+    <string name="hello_blank_fragment">Пустой фрагмент</string>
+    <string name="authorName">Угаров Станислав</string>
+    <string name="channel_remote_name">Уведомления с сервера</string>
+    <string name="channel_remote_description">Уведомления с удалённого сервера</string>
+    <string name="notification_user_liked">%1$s поставил лайк посту %2$s</string>
+    <string name="google_play_unavailable">Google Api Недоступно</string>
+    <string name="notification_add_new_post"><big><b>%1$s опубликовал пост:</b></big></string>
+    <string name="new_notification">В приложении появились новые виды уведомлений</string>
+    <string name="notification_update_app">Обновите приложение, чтобы получать новые виды уведомления</string>
+    <string name="error_loading">Что-то пошло не так. Обновите или попробуйте снова.</string>
+    <string name="retry_loading">Повторить</string>
+    <string name="empty_posts">Постов нет. Если создадите новый пост, то он появится здесь</string>
+    <string name="server_error_warning">Возникла ошибка при запросе к серверу, попробуйте еще раз</string>
+    <string name="empty_content_warning">Пост не может быть пустым</string>
+    <string name="new_posts">Свежие записи</string>
+    <string name="clear">Очистить</string>
+    <string name="image_description">Изображение</string>
+    <string name="authorize">Войти</string>
+    <string name="register">Регистрация</string>
+    <string name="logout">Выйти</string>
+    <string name="authorize_error">Ошибка авторизации</string>
+    <string name="fields_must_be_filled">Поля должны быть заполнены</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="authorization_required">Требуется авторизация</string>
+    <string name="retry">Повторить</string>
+    <string name="regname">Имя</string>
+    <string name="required">" обязательно заполнить"</string>
+    <string name="avatar">Фото</string>
+    <string name="register_error">Ошибка регистрации</string>
+</resources>

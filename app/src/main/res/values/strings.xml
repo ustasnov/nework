@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name" translatable="false">NeWork</string>
+    <string name="nmedia">NeWork!</string>
+    <string name="description_post_author_avatar">Netology avatar</string>
+    <string name="description_post_menu">Post menu</string>
+    <string name="press_if_like">Press if like</string>
+    <string name="share_post">Share post</string>
+    <string name="views">Views</string>
+    <string name="author" translatable="false">Нетология. Университет интернет-профессий</string>
+    <string name="published" translatable="false">15 января в 13:55</string>
+    <string name="post_text" translatable="false">Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растем сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остается с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия   - помочь встать на путь роста и начать цепочку   перемен -> http://www.netolo.gy/fyb</string>
+    <string name="likes" translatable="false">9.9K</string>
+    <string name="shared" translatable="false">5</string>
+    <string name="viewed" translatable="false">5</string>
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
+    <string name="post_edit_text">Post Text</string>
+    <string name="save">Save</string>
+    <string name="error_empty_content">Сontent cannot be empty</string>
+    <string name="cancel_post_text_changes">Cancel post text changes</string>
+    <string name="view_move_description">View move</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="authorName">Stanislav Ugarov</string>
+    <string name="channel_remote_name">Server notifications</string>
+    <string name="channel_remote_description">Notifications from remote server</string>
+    <string name="notification_user_liked">User %1$s liked %2$s\'s post</string>
+    <string name="google_play_unavailable">Google Api Unavailable</string>
+    <string name="notification_add_new_post"><big><b>%1$s published post:</b></big></string>
+    <string name="new_notification">There are new kind of notifications in app</string>
+    <string name="notification_update_app">Update app to receive new kind of notifications</string>
+    <string name="error_loading">Something went wrong. Try again later</string>
+    <string name="retry_loading">Retry</string>
+    <string name="empty_posts">There are no posts. If you create a new post, it will appear here</string>
+    <string name="server_error_warning">An error occurred while requesting the server, please try again</string>
+    <string name="empty_content_warning">Content can\'t be empty</string>
+    <string name="new_posts">New posts</string>
+    <string name="clear">Clear</string>
+    <string name="image_description">Image</string>
+    <string name="authorize">Authorize</string>
+    <string name="register">Register</string>
+    <string name="logout">Logout</string>
+    <string name="authorize_error">Authorize error</string>
+    <string name="fields_must_be_filled">Fields must be filled</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="authorization_required">Authorization required</string>
+    <string name="retry">Retry</string>
+    <string name="regname">Name</string>
+    <string name="required">required</string>
+    <string name="avatar">Avatar</string>
+    <string name="register_error">Registration error</string>
+</resources>
