@@ -2,10 +2,12 @@ package ru.netology.nmedia
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,7 +16,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
@@ -28,15 +30,9 @@ import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 @AndroidEntryPoint
-class NewPostFragment : Fragment(R.layout.fragment_new_post) {
-
-    var _binding: FragmentNewPostBinding? = null
-    val binding: FragmentNewPostBinding
-        get() = _binding!!
-
-    val viewModel: PostViewModel by viewModels()
-
-    private val authViewModel: AuthViewModel by viewModels()
+class NewPostFragment : Fragment() {
+    private val viewModel: PostViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     private val photoPickerContract =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -46,6 +42,7 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
                     "Photo pick error",
                     Toast.LENGTH_SHORT
                 ).show()
+
                 Activity.RESULT_OK -> {
                     val uri = it.data?.data ?: return@registerForActivityResult
                     viewModel.setPhoto(PhotoModel(uri, uri.toFile()))
@@ -53,18 +50,12 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
             }
         }
 
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            if (viewModel.isNewPost) {
-                viewModel.saveNewPostContent(binding.content.text.toString())
-            }
-            findNavController().navigateUp()
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentNewPostBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
         arguments?.isNewPost.let {
             if (it == null || it) {
@@ -116,6 +107,7 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
                         AndroidUtils.hideKeyboard(requireView())
                         true
                     }
+
                     else -> false
                 }
         }, viewLifecycleOwner)
@@ -153,16 +145,22 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
             binding.preview.setImageURI(photo.uri)
         }
 
-        setupBackPressed()
-    }
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (viewModel.isNewPost) {
+                        viewModel.saveNewPostContent(binding.content.text.toString())
+                    }
+                    findNavController().navigateUp()
+                }
+            }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            callback
+        )
 
-    private fun setupBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)
+        return binding.root
     }
 
     companion object {

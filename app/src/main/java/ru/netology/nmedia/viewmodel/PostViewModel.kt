@@ -2,6 +2,7 @@ package ru.netology.nmedia.viewmodel
 
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,9 @@ class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     appAuth: AppAuth,
 ) : ViewModel() {
+    private val cached = repository
+        .data
+        .cachedIn(viewModelScope)
 
     val data: Flow<PagingData<FeedItem>> = appAuth.data
         .flatMapLatest { token ->
@@ -163,8 +167,9 @@ class PostViewModel @Inject constructor(
         repository.shareById(_currentPostId.value!!)
     }
 
-    fun viewById(id: Long) {
+    fun viewById(post: Post) {
         toggleNewPost(false)
+        _currentPost.setValue(post)
     }
 
     fun removeById(id: Long) = viewModelScope.launch {

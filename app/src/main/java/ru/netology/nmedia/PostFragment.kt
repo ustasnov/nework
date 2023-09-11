@@ -3,10 +3,12 @@ package ru.netology.nmedia
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,24 +22,17 @@ import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 @AndroidEntryPoint
-class PostFragment : Fragment(R.layout.fragment_post) {
-    var _binding: FragmentPostBinding? = null
-    val binding: FragmentPostBinding
-        get() = _binding!!
+class PostFragment : Fragment() {
+    val viewModel: PostViewModel by activityViewModels()
 
-    val viewModel: PostViewModel by viewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
 
-    private val authViewModel: AuthViewModel by viewModels()
-
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            findNavController().navigateUp()
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentPostBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val binding = FragmentPostBinding.inflate(inflater, container, false)
 
         val viewHolder = PostViewHolder(binding.postFr, object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -97,29 +92,33 @@ class PostFragment : Fragment(R.layout.fragment_post) {
                     startActivity(intent)
                 }
             }
+
+            override fun onViewAttachment(post: Post) {
+                findNavController().navigate(
+                    R.id.action_postFragment_to_postPhotoFragment,
+                    Bundle().apply {
+                        //textArg = "${BuildConfig.BASE_URL}media/${post.attachment!!.url}"
+                        textArg = "${post.attachment!!.url}"
+                    })
+            }
         })
 
         val postId = requireArguments().idArg
+        viewHolder.bind(viewModel.currentPost.value!!)
 
-        /*
-        binding.postFr.apply {
-            viewModel.data.observe(viewLifecycleOwner) { it ->
-                val post = it.posts.find { it.id == postId } ?: return@observe
-                post.let { viewHolder.bind(post) }
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigateUp()
+                }
             }
-        }
-        */
 
-        setupBackPressed()
-    }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            callback
+        )
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    private fun setupBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)
+        return binding.root
     }
 
     companion object {

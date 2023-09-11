@@ -14,6 +14,7 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardAdBinding
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Ad
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.formatValue
@@ -93,37 +94,57 @@ class PostViewHolder(
             share.text = formatValue(post.shared)
             views.text = formatValue(post.views)
 
-            Glide.with(avatar)
-                //.load("${BuildConfig.BASE_URL}avatars/${post.authorAvatar}")
-                .load("${post.authorAvatar}")
-                .circleCrop()
-                .placeholder(R.drawable.ic_loading_100dp)
-                .error(R.drawable.ic_error_100dp)
-                .timeout(10_000)
-                .into(avatar)
-
-            Glide.with(attachment)
-                //.load("${BuildConfig.BASE_URL}media/${post.attachment?.url}")
-                .load("${post.attachment?.url}")
-                .placeholder(R.drawable.ic_loading_100dp)
-                .error(R.drawable.ic_error_100dp)
-                .timeout(10_000)
-                .into(attachment)
-
-            //attachment.contentDescription = post.attachment?.description
-            attachment.isVisible = !post.attachment?.url.isNullOrBlank()
-
-            when (post.video.isNullOrEmpty()) {
-                true -> videoGroup.visibility = View.GONE
-                else -> videoGroup.visibility = View.VISIBLE
+            avatar.isVisible = !post?.authorAvatar.isNullOrBlank()
+            if (avatar.isVisible ) {
+                Glide.with(avatar)
+                    //.load("${BuildConfig.BASE_URL}avatars/${post.authorAvatar}")
+                    .load("${post.authorAvatar}")
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_loading_100dp)
+                    .error(R.drawable.ic_error_100dp)
+                    .timeout(10_000)
+                    .into(avatar)
+            } else {
+                avatar.setImageResource(R.drawable.baseline_account_circle_24)
+                avatar.visibility = View.VISIBLE
             }
 
+            //attachment.contentDescription = post.attachment?.description
+            playVideo.visibility = View.GONE
+            playAudio.visibility = View.GONE
+            pauseAudio.visibility = View.GONE
+            audioSlider.visibility = View.GONE
+            attachment.visibility = View.GONE
+
+            //attachment.isVisible = !post.attachment?.url.isNullOrBlank()
+            if (!post.attachment?.url.isNullOrBlank()) {
+                attachment.visibility = View.VISIBLE
+                if (post.attachment?.type !== AttachmentType.AUDIO) {
+                    Glide.with(attachment)
+                        //.load("${BuildConfig.BASE_URL}media/${post.attachment?.url}")
+                        .load("${post.attachment?.url}")
+                        .placeholder(R.drawable.ic_loading_100dp)
+                        .error(R.drawable.ic_error_100dp)
+                        .timeout(10_000)
+                        .into(attachment)
+                }
+                if (post.attachment?.type === AttachmentType.VIDEO) {
+                    playVideo.visibility = View.VISIBLE
+                } else if (post.attachment?.type === AttachmentType.AUDIO) {
+                    attachment.visibility = View.GONE
+                    playAudio.visibility = View.VISIBLE
+                    audioSlider.visibility = View.VISIBLE
+                }
+            }
+
+            /*
             videoPreview.setOnClickListener {
                 onInteractionListener.onPlayVideo(post)
             }
+            */
 
             playVideo.setOnClickListener {
-                onInteractionListener.onPlayVideo(post)
+                //onInteractionListener.onPlayVideo(post)
             }
 
             attachment.setOnClickListener {
@@ -167,10 +188,13 @@ class PostViewHolder(
 
 class PostDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
     override fun areItemsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {
+        /*
         if (oldItem::class != newItem::class) {
             return false
         }
 
+        return oldItem.id == newItem.id
+         */
         return oldItem.id == newItem.id
     }
 

@@ -15,8 +15,7 @@
         app:layout_constraintBottom_toTopOf="@id/barrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/netology"
-        tools:srcCompat="@sample/posts_avatars" />
+        app:srcCompat="@drawable/baseline_account_circle_24"/>
 
     <TextView
         android:id="@+id/author"
@@ -63,22 +62,33 @@
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="avatar,author,menu"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="80dp" />
+        tools:layout_editor_absoluteX="@dimen/common_spacing"
+        tools:layout_editor_absoluteY="@dimen/size_80dp" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/videoGroup"
+    <TextView
+        android:id="@+id/postText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="videoPreview, playVideo" />
+        android:lineSpacingExtra="@dimen/post_line_spase"
+        android:text="@string/post_text"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier"
+        tools:text="@sample/posts.json/data/postText" />
 
     <ImageView
-        android:id="@+id/videoPreview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/attachment"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/attachment_dimen"
+        android:layout_marginTop="@dimen/common_spacing"
         android:contentDescription="@string/view_move_description"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toBottomOf="@id/barrier"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/postText"
+        app:layout_constraintBottom_toTopOf="@id/barrier1"
         tools:layout_editor_absoluteX="0dp"
         tools:srcCompat="@drawable/youtube" />
 
@@ -87,52 +97,56 @@
         android:layout_width="@dimen/size_80dp"
         android:layout_height="@dimen/size_80dp"
         android:contentDescription="@string/view_move_description"
-        app:layout_constraintBottom_toBottomOf="@id/videoPreview"
-        app:layout_constraintEnd_toEndOf="@id/videoPreview"
-        app:layout_constraintStart_toStartOf="@id/videoPreview"
-        app:layout_constraintTop_toTopOf="@id/videoPreview"
+        app:layout_constraintBottom_toBottomOf="@id/attachment"
+        app:layout_constraintEnd_toEndOf="@id/attachment"
+        app:layout_constraintStart_toStartOf="@id/attachment"
+        app:layout_constraintTop_toTopOf="@id/attachment"
         app:srcCompat="@drawable/ic_play_80" />
 
-    <TextView
-        android:id="@+id/postText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/playAudio"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:layout_marginTop="@dimen/common_spacing"
-        android:lineSpacingExtra="@dimen/post_line_spase"
-        android:text="@string/post_text"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/play_audio"
+        app:layout_constraintBottom_toBottomOf="@id/barrier1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/videoPreview"
-        tools:text="@sample/posts.json/data/postText" />
+        app:layout_constraintTop_toBottomOf="@id/postText"
+        app:srcCompat="@drawable/ic_play_audio_24" />
+
+    <ImageView
+        android:id="@+id/pauseAudio"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        android:layout_marginTop="@dimen/common_spacing"
+        android:contentDescription="@string/play_audio"
+        app:layout_constraintBottom_toBottomOf="@id/barrier1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/postText"
+        app:srcCompat="@drawable/ic_pause_audio_24" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/audioSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/big_spacing"
+        android:contentDescription="@string/play_audio_progress"
+        android:value="0.0"
+        android:valueFrom="0.0"
+        android:valueTo="100.0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/playAudio"
+        app:layout_constraintBottom_toBottomOf="@id/playAudio"
+        />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="postText"
-        tools:layout_editor_absoluteX="16dp"
+        app:constraint_referenced_ids="attachment,postText"
+        tools:layout_editor_absoluteX="@dimen/common_spacing"
         tools:layout_editor_absoluteY="351dp" />
-
-    <ImageView
-        android:id="@+id/attachment"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/attachment_dimen"
-        android:layout_marginTop="16dp"
-        android:contentDescription="@string/view_move_description"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toBottomOf="@id/barrier1"
-        tools:layout_editor_absoluteX="0dp"
-        tools:srcCompat="@drawable/youtube" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="attachment" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/favorite"
@@ -145,7 +159,7 @@
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier2" />
+        app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/share"
@@ -158,7 +172,7 @@
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         app:layout_constraintStart_toEndOf="@id/favorite"
-        app:layout_constraintTop_toBottomOf="@id/barrier2" />
+        app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/views"
@@ -171,7 +185,7 @@
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier2" />
+        app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
     <View
         android:id="@+id/divider"

@@ -15,7 +15,11 @@
             app:destination="@id/newPostFragment" />
         <action
             android:id="@+id/action_feedFragment_to_postFragment"
-            app:destination="@id/postFragment" />
+            app:destination="@id/postFragment"
+            app:enterAnim="@anim/slide_in_upp"
+            app:exitAnim="@anim/slide_out_down"
+            app:popEnterAnim="@anim/slide_in_upp"
+            app:popExitAnim="@anim/slide_out_down" />
         <action
             android:id="@+id/action_feedFragment_to_postPhotoFragment"
             app:destination="@id/postPhotoFragment" />

@@ -43,4 +43,6 @@
     <string name="required">" обязательно заполнить"</string>
     <string name="avatar">Фото</string>
     <string name="register_error">Ошибка регистрации</string>
+    <string name="play_audio">Играть</string>
+    <string name="play_audio_progress">Прогресс аудио проигрывателя</string>
 </resources>

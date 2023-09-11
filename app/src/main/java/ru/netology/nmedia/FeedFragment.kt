@@ -3,31 +3,30 @@ package ru.netology.nmedia
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.view.isVisible
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.PostFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnInteractionListener
-import ru.netology.nmedia.adapter.PostLoadingStateAdapter
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
-import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.empty
-import java.util.*
+import java.util.Locale
 
 fun formatValue(value: Double): String {
     if (value >= 1000000000.0) {
@@ -39,10 +38,12 @@ fun formatValue(value: Double): String {
             suffix = "M"
             String.format(Locale.ROOT, "%f", value / 1000000.0)
         }
+
         value >= 1000.0 -> {
             suffix = "K"
             String.format(Locale.ROOT, "%f", value / 1000.0)
         }
+
         else -> {
             suffix = ""
             String.format(Locale.ROOT, "%f", value)
@@ -54,25 +55,24 @@ fun formatValue(value: Double): String {
     return when {
         (value >= 10000.0 && value < 1000000.0) || value < 1000 || res[dotPosition + 1] == '0' ->
             res.substring(0, dotPosition) + suffix
+
         else -> res.substring(0, dotPosition + 2) + suffix
     }
 }
 
 @AndroidEntryPoint
-class FeedFragment : Fragment(R.layout.fragment_feed) {
-    var _binding: FragmentFeedBinding? = null
-    val binding: FragmentFeedBinding
-        get() = _binding!!
+class FeedFragment : Fragment() {
+    val viewModel: PostViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
 
-    val viewModel: PostViewModel by viewModels()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        saveInstanceState: Bundle?
+    ): View {
+        val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
-    private val authViewModel: AuthViewModel by viewModels()
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentFeedBinding.bind(view)
         val adapter = PostsAdapter(object : OnInteractionListener {
-
             override fun onLike(post: Post) {
                 if (authViewModel.isAuthorized) {
                     viewModel.likeById(post)
@@ -140,7 +140,13 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             }
 
             override fun onViewPost(post: Post) {
-
+                viewModel.viewById(post)
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_postFragment,
+                    Bundle().apply {
+                        idArg = post.id
+                    }
+                )
             }
         })
 
@@ -179,10 +185,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
                     .show()
             }
         }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        return binding.root
     }
 }

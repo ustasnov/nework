@@ -1,33 +1,31 @@
 package ru.netology.nmedia
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import okhttp3.internal.wait
 import ru.netology.nmedia.databinding.FragmentAuthBinding
 import ru.netology.nmedia.utils.AndroidUtils
 import ru.netology.nmedia.viewmodel.AuthSignViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 @AndroidEntryPoint
-class AuthFragment : Fragment(R.layout.fragment_auth) {
-    var _binding: FragmentAuthBinding? = null
-    val binding: FragmentAuthBinding
-        get() = _binding!!
+class AuthFragment : Fragment() {
+    private val viewModel: AuthSignViewModel by activityViewModels()
+    private val postViewModel: PostViewModel by activityViewModels()
 
-    private val viewModel: AuthSignViewModel by viewModels()
-
-    private val postViewModel: PostViewModel by viewModels()
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentAuthBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val binding = FragmentAuthBinding.inflate(inflater, container, false)
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.loading.isVisible = state.loading
@@ -46,8 +44,8 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
 
             AndroidUtils.hideKeyboard(binding.root)
 
-            val login = binding.loginField.text.toString().trim()
-            val password = binding.passwordField.text.toString()
+            val login = binding.loginField.editText?.text.toString().trim()
+            val password = binding.passwordField.editText?.text.toString()
 
             if (login.isBlank() || password.isBlank()) {
                 binding.emptyField.isVisible = true
@@ -68,10 +66,7 @@ class AuthFragment : Fragment(R.layout.fragment_auth) {
             viewLifecycleOwner,
             callback
         )
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        return binding.root
     }
 }

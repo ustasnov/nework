@@ -49,4 +49,6 @@
     <string name="required">required</string>
     <string name="avatar">Avatar</string>
     <string name="register_error">Registration error</string>
+    <string name="play_audio">Play audio</string>
+    <string name="play_audio_progress">Play audio progress</string>
 </resources>

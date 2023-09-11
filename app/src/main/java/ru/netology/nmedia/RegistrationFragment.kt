@@ -2,14 +2,16 @@ package ru.netology.nmedia
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,14 +22,10 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.RegisterViewModel
 
 @AndroidEntryPoint
-class RegistrationFragment : Fragment(R.layout.fragment_registration) {
-    var _binding: FragmentRegistrationBinding? = null
-    val binding: FragmentRegistrationBinding
-        get() = _binding!!
+class RegistrationFragment : Fragment() {
+    private val viewModel: RegisterViewModel by activityViewModels()
 
-    private val viewModel: RegisterViewModel by viewModels()
-
-    private val postViewModel: PostViewModel by viewModels()
+    private val postViewModel: PostViewModel by activityViewModels()
 
     private val photoPickerContract =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -37,6 +35,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                     "Photo pick error",
                     Toast.LENGTH_SHORT
                 ).show()
+
                 Activity.RESULT_OK -> {
                     val uri = it.data?.data ?: return@registerForActivityResult
                     viewModel.setPhoto(PhotoModel(uri, uri.toFile()))
@@ -44,9 +43,12 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
             }
         }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentRegistrationBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val binding = FragmentRegistrationBinding.inflate(inflater, container, false)
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.loading.isVisible = state.loading
@@ -102,10 +104,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
             viewLifecycleOwner,
             callback
         )
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        return binding.root
     }
 }
