@@ -1,5 +1,6 @@
 package ru.netology.nmedia.adapter
 
+import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.formatValue
+import ru.netology.nmedia.media.MediaLifecycleObserver
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}
@@ -27,10 +29,12 @@ interface OnInteractionListener {
     fun onPlayVideo(post: Post) {}
     fun onViewPost(post: Post) {}
     fun onViewAttachment(post: Post) {}
+    //fun onPlayAudio(post: Post) {}
 }
 
 class PostsAdapter(
-    private val onInteractionListener: OnInteractionListener
+    private val onInteractionListener: OnInteractionListener,
+    private val mediaLifecycleObserver: MediaLifecycleObserver
 ) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(PostDiffCallback()) {
     override fun getItemViewType(position: Int): Int  =
         when (getItem(position)) {
@@ -44,7 +48,7 @@ class PostsAdapter(
             R.layout.card_post -> {
                 val binding =
                     CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                PostViewHolder(binding, onInteractionListener)
+                PostViewHolder(binding, onInteractionListener, mediaLifecycleObserver)
             }
             R.layout.card_ad -> {
                 val binding =
@@ -80,7 +84,8 @@ class AdViewHolder(
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val onInteractionListener: OnInteractionListener
+    private val onInteractionListener: OnInteractionListener,
+    private val mediaLifecycleObserver: MediaLifecycleObserver
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
@@ -139,9 +144,30 @@ class PostViewHolder(
 
             /*
             videoPreview.setOnClickListener {
-                onInteractionListener.onPlayVideo(post)
+
             }
             */
+
+            playAudio.setOnClickListener {
+                val isPlaying = mediaLifecycleObserver?.mediaPlayer?.isPlaying() ?: false
+
+                //if (!isPlaying) {
+                    mediaLifecycleObserver?.stop()
+                    mediaLifecycleObserver?.mediaPlayer?.reset()
+                    mediaLifecycleObserver?.mediaPlayer?.setDataSource("${post.attachment?.url}")
+                    mediaLifecycleObserver?.play()
+                //} else {
+                //    mediaLifecycleObserver?.play()
+                //}
+                playAudio.visibility = View.GONE
+                pauseAudio.visibility = View.VISIBLE
+            }
+
+            pauseAudio.setOnClickListener {
+                mediaLifecycleObserver.pause()
+                playAudio.visibility = View.VISIBLE
+                pauseAudio.visibility = View.GONE
+            }
 
             playVideo.setOnClickListener {
                 //onInteractionListener.onPlayVideo(post)

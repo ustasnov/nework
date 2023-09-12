@@ -1,6 +1,7 @@
 package ru.netology.nmedia
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.media.MediaLifecycleObserver
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.empty
@@ -64,6 +66,7 @@ fun formatValue(value: Double): String {
 class FeedFragment : Fragment() {
     val viewModel: PostViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
+    private val observer = MediaLifecycleObserver()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,6 +74,8 @@ class FeedFragment : Fragment() {
         saveInstanceState: Bundle?
     ): View {
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
+
+        lifecycle.addObserver(observer)
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -122,6 +127,20 @@ class FeedFragment : Fragment() {
                 )
             }
 
+            /*
+            override fun onPlayAudio(post: Post) {
+
+
+                MediaPlayer.create(this,).apply {
+                    start()
+
+                }
+
+
+            }
+
+            */
+
             override fun onPlayVideo(post: Post) {
                 viewModel.toggleNewPost(false)
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
@@ -148,7 +167,7 @@ class FeedFragment : Fragment() {
                     }
                 )
             }
-        })
+        }, observer)
 
         binding.list.adapter = adapter
 

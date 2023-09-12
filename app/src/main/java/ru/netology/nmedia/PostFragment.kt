@@ -17,6 +17,7 @@ import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostViewHolder
 import ru.netology.nmedia.databinding.FragmentPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.media.MediaLifecycleObserver
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
@@ -24,8 +25,8 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 @AndroidEntryPoint
 class PostFragment : Fragment() {
     val viewModel: PostViewModel by activityViewModels()
-
     private val authViewModel: AuthViewModel by activityViewModels()
+    private val observer = MediaLifecycleObserver()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +34,8 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentPostBinding.inflate(inflater, container, false)
+
+        lifecycle.addObserver(observer)
 
         val viewHolder = PostViewHolder(binding.postFr, object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -101,7 +104,7 @@ class PostFragment : Fragment() {
                         textArg = "${post.attachment!!.url}"
                     })
             }
-        })
+        }, observer)
 
         val postId = requireArguments().idArg
         viewHolder.bind(viewModel.currentPost.value!!)
