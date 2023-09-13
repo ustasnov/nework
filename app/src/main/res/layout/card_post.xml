@@ -92,6 +92,18 @@
         tools:layout_editor_absoluteX="0dp"
         tools:srcCompat="@drawable/youtube" />
 
+    <VideoView
+        android:id="@+id/video"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/attachment_dimen"
+        android:layout_marginTop="@dimen/common_spacing"
+        android:contentDescription="@string/view_move_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/postText"
+        app:layout_constraintBottom_toTopOf="@id/barrier1"
+        tools:layout_editor_absoluteX="0dp" />
+
     <ImageView
         android:id="@+id/playVideo"
         android:layout_width="@dimen/size_80dp"
@@ -123,20 +135,21 @@
         app:layout_constraintBottom_toBottomOf="@id/barrier1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/postText"
-        app:srcCompat="@drawable/ic_pause_audio_24" />
+        app:srcCompat="@drawable/baseline_stop_24" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/audioSlider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_spacing"
         android:layout_marginStart="@dimen/big_spacing"
         android:contentDescription="@string/play_audio_progress"
         android:value="0.0"
         android:valueFrom="0.0"
         android:valueTo="100.0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/playAudio"
-        app:layout_constraintBottom_toBottomOf="@id/playAudio"
+        app:layout_constraintTop_toBottomOf="@id/postText"
+        app:layout_constraintBottom_toTopOf="@id/barrier1"
         />
 
     <androidx.constraintlayout.widget.Barrier

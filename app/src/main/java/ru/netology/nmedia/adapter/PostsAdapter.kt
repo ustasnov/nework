@@ -1,6 +1,7 @@
 package ru.netology.nmedia.adapter
 
-import android.media.MediaPlayer
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,6 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardAdBinding
 import ru.netology.nmedia.databinding.CardPostBinding
@@ -20,6 +20,8 @@ import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.formatValue
 import ru.netology.nmedia.media.MediaLifecycleObserver
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}
@@ -36,7 +38,7 @@ class PostsAdapter(
     private val onInteractionListener: OnInteractionListener,
     private val mediaLifecycleObserver: MediaLifecycleObserver
 ) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(PostDiffCallback()) {
-    override fun getItemViewType(position: Int): Int  =
+    override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
             is Ad -> R.layout.card_ad
             is Post -> R.layout.card_post
@@ -50,11 +52,13 @@ class PostsAdapter(
                     CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 PostViewHolder(binding, onInteractionListener, mediaLifecycleObserver)
             }
+
             R.layout.card_ad -> {
                 val binding =
                     CardAdBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 AdViewHolder(binding)
             }
+
             else -> error("unknown view type: $viewType")
         }
 
@@ -88,7 +92,43 @@ class PostViewHolder(
     private val mediaLifecycleObserver: MediaLifecycleObserver
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    //var timer: Timer? = null
+    var afterPlaying = false
+    var timer: Timer? = null
+    var currentPost: Post? = null
+    var oldPost: Post? = null
+
+    private fun setProgress() {
+        timer = Timer()
+        timer?.scheduleAtFixedRate(
+            timerTask() {
+                Handler(Looper.getMainLooper()).post {
+                    var isPlaying = mediaLifecycleObserver?.mediaPlayer?.isPlaying() ?: false
+                    if (isPlaying) {
+                        if (oldPost === currentPost) {
+                            val duration = mediaLifecycleObserver?.mediaPlayer?.duration ?: 100
+                            val currentPosition =
+                                mediaLifecycleObserver?.mediaPlayer?.currentPosition ?: 0
+                            binding.audioSlider.valueTo = duration.toFloat();
+                            binding.audioSlider.value = currentPosition.toFloat()
+                            afterPlaying = true
+                        }
+                        oldPost = currentPost
+                    } else {
+                        if (afterPlaying) {
+                            binding.audioSlider.value = 0f
+                            binding.playAudio.visibility = View.VISIBLE
+                            binding.pauseAudio.visibility = View.GONE
+                            timer?.cancel()
+                        }
+                    }
+                }
+            }, 1000, 1000
+        )
+    }
+
     fun bind(post: Post) {
+        currentPost = post
         binding.apply {
             author.text = post.author
             published.text = post.published.toString()
@@ -100,7 +140,7 @@ class PostViewHolder(
             views.text = formatValue(post.views)
 
             avatar.isVisible = !post?.authorAvatar.isNullOrBlank()
-            if (avatar.isVisible ) {
+            if (avatar.isVisible) {
                 Glide.with(avatar)
                     //.load("${BuildConfig.BASE_URL}avatars/${post.authorAvatar}")
                     .load("${post.authorAvatar}")
@@ -120,6 +160,7 @@ class PostViewHolder(
             pauseAudio.visibility = View.GONE
             audioSlider.visibility = View.GONE
             attachment.visibility = View.GONE
+            video.visibility = View.GONE
 
             //attachment.isVisible = !post.attachment?.url.isNullOrBlank()
             if (!post.attachment?.url.isNullOrBlank()) {
@@ -149,22 +190,24 @@ class PostViewHolder(
             */
 
             playAudio.setOnClickListener {
-                val isPlaying = mediaLifecycleObserver?.mediaPlayer?.isPlaying() ?: false
-
-                //if (!isPlaying) {
-                    mediaLifecycleObserver?.stop()
-                    mediaLifecycleObserver?.mediaPlayer?.reset()
-                    mediaLifecycleObserver?.mediaPlayer?.setDataSource("${post.attachment?.url}")
-                    mediaLifecycleObserver?.play()
-                //} else {
-                //    mediaLifecycleObserver?.play()
-                //}
+                afterPlaying = false
+                mediaLifecycleObserver?.stop()
+                mediaLifecycleObserver?.mediaPlayer?.reset()
+                mediaLifecycleObserver?.mediaPlayer?.setDataSource("${post.attachment?.url}")
+                audioSlider.valueFrom = 0f;
+                audioSlider.valueTo = 100f;
+                mediaLifecycleObserver?.play()
                 playAudio.visibility = View.GONE
                 pauseAudio.visibility = View.VISIBLE
+                setProgress()
             }
 
             pauseAudio.setOnClickListener {
+                afterPlaying = false
                 mediaLifecycleObserver.pause()
+                audioSlider.valueFrom = 0f;
+                audioSlider.valueTo = 100f;
+                audioSlider.value = 0f;
                 playAudio.visibility = View.VISIBLE
                 pauseAudio.visibility = View.GONE
             }
@@ -195,10 +238,12 @@ class PostViewHolder(
                                 onInteractionListener.onRemove(post)
                                 true
                             }
+
                             R.id.edit -> {
                                 onInteractionListener.onEdit(post)
                                 true
                             }
+
                             else -> false
                         }
                     }
