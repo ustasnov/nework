@@ -25,7 +25,7 @@ class PostAttachmentFragment : Fragment() {
     private val observer = MediaLifecycleObserver()
     var prepared = false
     var timer: Timer? = null
-    var playMode = false;
+    var playMode = false; // проигрывание на паузе или завершено активна кнопка play
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,13 +45,15 @@ class PostAttachmentFragment : Fragment() {
             "video" -> watchVideo(binding, requireNotNull(requireArguments().urlArg))
         }
 
+        binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
+
         binding.backButton.setOnClickListener {
             findNavController().navigateUp()
         }
 
         binding.playAudio.setOnClickListener {
             if (!playMode) {
-                binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
+                binding.playAudio.setImageResource(R.drawable.ic_pause_audio_24)
                 if (prepared)
                     observer.play()
                 else {
@@ -60,10 +62,11 @@ class PostAttachmentFragment : Fragment() {
                 }
                 setProgress(binding, observer)
             } else {
-                binding.playAudio.setImageResource(R.drawable.ic_pause_audio_24)
+                playMode = false
+                binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
                 observer.pause()
             }
-            playMode = !playMode
+
         }
 
         return binding.root
@@ -76,16 +79,17 @@ class PostAttachmentFragment : Fragment() {
                 Handler(Looper.getMainLooper()).post {
                     var isPlaying = mediaObserver.mediaPlayer?.isPlaying() ?: false
                     if (isPlaying) {
+                        playMode = true
                         val duration = mediaObserver.mediaPlayer?.duration ?: 100
-                        val currentPosition =
-                            mediaObserver.mediaPlayer?.currentPosition ?: 0
+                        val currentPosition = mediaObserver.mediaPlayer?.currentPosition ?: 0
                         binding.audioSlider.valueTo = duration.toFloat();
                         binding.audioSlider.value = currentPosition.toFloat()
-                       // afterPlaying = true
-                    } else if (Math.abs(binding.audioSlider.value - binding.audioSlider.valueTo) < 0.00001) {
-                       binding.audioSlider.value = 0f
-                       //binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
-                       //timer?.cancel()
+                    } else if (playMode) {
+                        playMode = false
+                        binding.audioSlider.value = 0f
+                        binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
+                        timer?.cancel()
+                        timer = null
                     }
                 }
             }, 1000, 1000
@@ -118,6 +122,14 @@ class PostAttachmentFragment : Fragment() {
                 .error(R.drawable.ic_error_100dp)
                 .timeout(10_000)
                 .into(binding.photo)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (timer != null) {
+            timer?.cancel()
+            timer = null
         }
     }
 
