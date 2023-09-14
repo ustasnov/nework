@@ -35,7 +35,7 @@ class PostFragment : Fragment() {
     ): View {
         val binding = FragmentPostBinding.inflate(inflater, container, false)
 
-        lifecycle.addObserver(observer)
+        //lifecycle.addObserver(observer)
 
         val viewHolder = PostViewHolder(binding.postFr, object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -104,7 +104,8 @@ class PostFragment : Fragment() {
                         textArg = "${post.attachment!!.url}"
                     })
             }
-        }, observer)
+        //}, observer)
+        }, this)
 
         val postId = requireArguments().idArg
         viewHolder.bind(viewModel.currentPost.value!!)

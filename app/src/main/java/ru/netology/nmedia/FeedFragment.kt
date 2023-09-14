@@ -66,7 +66,7 @@ fun formatValue(value: Double): String {
 class FeedFragment : Fragment() {
     val viewModel: PostViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
-    private val observer = MediaLifecycleObserver()
+    //private val observer = MediaLifecycleObserver()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,7 +75,7 @@ class FeedFragment : Fragment() {
     ): View {
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
-        lifecycle.addObserver(observer)
+        //lifecycle.addObserver(observer)
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -129,17 +129,11 @@ class FeedFragment : Fragment() {
 
             /*
             override fun onPlayAudio(post: Post) {
-
-
                 MediaPlayer.create(this,).apply {
                     start()
 
                 }
-
-
             }
-
-            */
 
             override fun onPlayVideo(post: Post) {
                 viewModel.toggleNewPost(false)
@@ -148,6 +142,8 @@ class FeedFragment : Fragment() {
                     startActivity(intent)
                 }
             }
+
+            */
 
             override fun onViewAttachment(post: Post) {
                 findNavController().navigate(
@@ -167,7 +163,8 @@ class FeedFragment : Fragment() {
                     }
                 )
             }
-        }, observer)
+        //}, observer)
+        }, this)
 
         binding.list.adapter = adapter
 

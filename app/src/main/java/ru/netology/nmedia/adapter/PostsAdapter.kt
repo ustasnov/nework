@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -36,7 +37,8 @@ interface OnInteractionListener {
 
 class PostsAdapter(
     private val onInteractionListener: OnInteractionListener,
-    private val mediaLifecycleObserver: MediaLifecycleObserver
+    //private val mediaLifecycleObserver: MediaLifecycleObserver
+    private val fragment: Fragment
 ) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(PostDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
@@ -50,7 +52,8 @@ class PostsAdapter(
             R.layout.card_post -> {
                 val binding =
                     CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                PostViewHolder(binding, onInteractionListener, mediaLifecycleObserver)
+                //PostViewHolder(binding, onInteractionListener, mediaLifecycleObserver)
+                PostViewHolder(binding, onInteractionListener, fragment)
             }
 
             R.layout.card_ad -> {
@@ -89,31 +92,29 @@ class AdViewHolder(
 class PostViewHolder(
     private val binding: CardPostBinding,
     private val onInteractionListener: OnInteractionListener,
-    private val mediaLifecycleObserver: MediaLifecycleObserver
+    //private val mediaLifecycleObserver: MediaLifecycleObserver
+    private val fragment: Fragment
 ) : RecyclerView.ViewHolder(binding.root) {
 
     //var timer: Timer? = null
     var afterPlaying = false
     var timer: Timer? = null
-    var currentPost: Post? = null
-    var oldPost: Post? = null
+    //val mediaLifecycleObserver = MediaLifecycleObserver()
+    //val lifecycle = fragment.lifecycle.addObserver(mediaLifecycleObserver)
 
-    private fun setProgress() {
+    private fun setProgress(mediaObserver: MediaLifecycleObserver) {
         timer = Timer()
         timer?.scheduleAtFixedRate(
             timerTask() {
                 Handler(Looper.getMainLooper()).post {
-                    var isPlaying = mediaLifecycleObserver?.mediaPlayer?.isPlaying() ?: false
+                    var isPlaying = mediaObserver?.mediaPlayer?.isPlaying() ?: false
                     if (isPlaying) {
-                        if (oldPost === currentPost) {
-                            val duration = mediaLifecycleObserver?.mediaPlayer?.duration ?: 100
+                            val duration = mediaObserver?.mediaPlayer?.duration ?: 100
                             val currentPosition =
-                                mediaLifecycleObserver?.mediaPlayer?.currentPosition ?: 0
+                                mediaObserver?.mediaPlayer?.currentPosition ?: 0
                             binding.audioSlider.valueTo = duration.toFloat();
                             binding.audioSlider.value = currentPosition.toFloat()
                             afterPlaying = true
-                        }
-                        oldPost = currentPost
                     } else {
                         if (afterPlaying) {
                             binding.audioSlider.value = 0f
@@ -128,7 +129,9 @@ class PostViewHolder(
     }
 
     fun bind(post: Post) {
-        currentPost = post
+        val mediaLifecycleObserver = MediaLifecycleObserver()
+        fragment.lifecycle.addObserver(mediaLifecycleObserver)
+
         binding.apply {
             author.text = post.author
             published.text = post.published.toString()
@@ -199,7 +202,7 @@ class PostViewHolder(
                 mediaLifecycleObserver?.play()
                 playAudio.visibility = View.GONE
                 pauseAudio.visibility = View.VISIBLE
-                setProgress()
+                setProgress(mediaLifecycleObserver)
             }
 
             pauseAudio.setOnClickListener {
