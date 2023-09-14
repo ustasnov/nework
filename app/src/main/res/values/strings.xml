@@ -51,4 +51,6 @@
     <string name="register_error">Registration error</string>
     <string name="play_audio">Play audio</string>
     <string name="play_audio_progress">Play audio progress</string>
+    <string name="stop_audio">Stop audio</string>
+    <string name="back">Back</string>
 </resources>

@@ -45,4 +45,6 @@
     <string name="register_error">Ошибка регистрации</string>
     <string name="play_audio">Играть</string>
     <string name="play_audio_progress">Прогресс аудио проигрывателя</string>
+    <string name="stop_audio">Остановить аудио</string>
+    <string name="back">Назад</string>
 </resources>

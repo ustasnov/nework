@@ -1,8 +1,6 @@
 package ru.netology.nmedia
 
 import android.content.Intent
-import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,12 +17,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
+import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
 import ru.netology.nmedia.PostFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.media.MediaLifecycleObserver
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.empty
@@ -147,10 +147,16 @@ class FeedFragment : Fragment() {
 
             override fun onViewAttachment(post: Post) {
                 findNavController().navigate(
-                    R.id.action_feedFragment_to_postPhotoFragment,
+                    R.id.action_feedFragment_to_postAttachmentFragment,
                     Bundle().apply {
                         //textArg = "${BuildConfig.BASE_URL}media/${post.attachment!!.url}"
-                        textArg = "${post.attachment!!.url}"
+                        urlArg = "${post.attachment!!.url}"
+                        typeArg = when (post.attachment?.type) {
+                            AttachmentType.IMAGE -> "image"
+                            AttachmentType.AUDIO -> "audio"
+                            AttachmentType.VIDEO -> "video"
+                            else -> ""
+                        }
                     })
             }
 
@@ -164,7 +170,7 @@ class FeedFragment : Fragment() {
                 )
             }
         //}, observer)
-        }, this)
+        })
 
         binding.list.adapter = adapter
 

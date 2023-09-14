@@ -13,9 +13,12 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
+import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostViewHolder
 import ru.netology.nmedia.databinding.FragmentPostBinding
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.media.MediaLifecycleObserver
 import ru.netology.nmedia.utils.LongArg
@@ -26,7 +29,6 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 class PostFragment : Fragment() {
     val viewModel: PostViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
-    private val observer = MediaLifecycleObserver()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,8 +36,6 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentPostBinding.inflate(inflater, container, false)
-
-        //lifecycle.addObserver(observer)
 
         val viewHolder = PostViewHolder(binding.postFr, object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -98,14 +98,20 @@ class PostFragment : Fragment() {
 
             override fun onViewAttachment(post: Post) {
                 findNavController().navigate(
-                    R.id.action_postFragment_to_postPhotoFragment,
+                    R.id.action_feedFragment_to_postAttachmentFragment,
                     Bundle().apply {
                         //textArg = "${BuildConfig.BASE_URL}media/${post.attachment!!.url}"
-                        textArg = "${post.attachment!!.url}"
+                        urlArg = "${post.attachment!!.url}"
+                        typeArg = when (post.attachment?.type) {
+                            AttachmentType.IMAGE -> "image"
+                            AttachmentType.AUDIO -> "audio"
+                            AttachmentType.VIDEO -> "video"
+                            else -> ""
+                        }
                     })
             }
         //}, observer)
-        }, this)
+        })
 
         val postId = requireArguments().idArg
         viewHolder.bind(viewModel.currentPost.value!!)

@@ -36,9 +36,7 @@ interface OnInteractionListener {
 }
 
 class PostsAdapter(
-    private val onInteractionListener: OnInteractionListener,
-    //private val mediaLifecycleObserver: MediaLifecycleObserver
-    private val fragment: Fragment
+    private val onInteractionListener: OnInteractionListener
 ) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(PostDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
@@ -53,7 +51,7 @@ class PostsAdapter(
                 val binding =
                     CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 //PostViewHolder(binding, onInteractionListener, mediaLifecycleObserver)
-                PostViewHolder(binding, onInteractionListener, fragment)
+                PostViewHolder(binding, onInteractionListener)
             }
 
             R.layout.card_ad -> {
@@ -91,17 +89,16 @@ class AdViewHolder(
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val onInteractionListener: OnInteractionListener,
-    //private val mediaLifecycleObserver: MediaLifecycleObserver
-    private val fragment: Fragment
+    private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     //var timer: Timer? = null
-    var afterPlaying = false
-    var timer: Timer? = null
+    //var afterPlaying = false
+    //var timer: Timer? = null
     //val mediaLifecycleObserver = MediaLifecycleObserver()
     //val lifecycle = fragment.lifecycle.addObserver(mediaLifecycleObserver)
 
+    /*
     private fun setProgress(mediaObserver: MediaLifecycleObserver) {
         timer = Timer()
         timer?.scheduleAtFixedRate(
@@ -127,10 +124,11 @@ class PostViewHolder(
             }, 1000, 1000
         )
     }
+     */
 
     fun bind(post: Post) {
-        val mediaLifecycleObserver = MediaLifecycleObserver()
-        fragment.lifecycle.addObserver(mediaLifecycleObserver)
+        //val mediaLifecycleObserver = MediaLifecycleObserver()
+        //fragment.lifecycle.addObserver(mediaLifecycleObserver)
 
         binding.apply {
             author.text = post.author
@@ -159,11 +157,11 @@ class PostViewHolder(
 
             //attachment.contentDescription = post.attachment?.description
             playVideo.visibility = View.GONE
-            playAudio.visibility = View.GONE
-            pauseAudio.visibility = View.GONE
-            audioSlider.visibility = View.GONE
+            //playAudio.visibility = View.GONE
+            //pauseAudio.visibility = View.GONE
+            //audioSlider.visibility = View.GONE
             attachment.visibility = View.GONE
-            video.visibility = View.GONE
+            //video.visibility = View.GONE
 
             //attachment.isVisible = !post.attachment?.url.isNullOrBlank()
             if (!post.attachment?.url.isNullOrBlank()) {
@@ -176,7 +174,11 @@ class PostViewHolder(
                         .error(R.drawable.ic_error_100dp)
                         .timeout(10_000)
                         .into(attachment)
+                } else {
+                    attachment.setImageResource(R.drawable.audio)
                 }
+
+                /*
                 if (post.attachment?.type === AttachmentType.VIDEO) {
                     playVideo.visibility = View.VISIBLE
                 } else if (post.attachment?.type === AttachmentType.AUDIO) {
@@ -184,6 +186,7 @@ class PostViewHolder(
                     playAudio.visibility = View.VISIBLE
                     audioSlider.visibility = View.VISIBLE
                 }
+                 */
             }
 
             /*
@@ -192,6 +195,7 @@ class PostViewHolder(
             }
             */
 
+            /*
             playAudio.setOnClickListener {
                 afterPlaying = false
                 mediaLifecycleObserver?.stop()
@@ -218,6 +222,8 @@ class PostViewHolder(
             playVideo.setOnClickListener {
                 //onInteractionListener.onPlayVideo(post)
             }
+
+             */
 
             attachment.setOnClickListener {
                 onInteractionListener.onViewAttachment(post)
