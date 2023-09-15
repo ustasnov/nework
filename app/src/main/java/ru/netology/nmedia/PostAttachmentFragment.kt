@@ -1,6 +1,5 @@
 package ru.netology.nmedia
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,24 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.databinding.FragmentPostAttachmentBinding
 import ru.netology.nmedia.media.MediaLifecycleObserver
 import ru.netology.nmedia.utils.StringArg
-import ru.netology.nmedia.viewmodel.PostViewModel
+import java.io.IOException
 import java.util.Timer
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
 
 @AndroidEntryPoint
 class PostAttachmentFragment : Fragment() {
-    val viewModel: PostViewModel by activityViewModels()
     private val observer = MediaLifecycleObserver()
-    var prepared = false
-    var timer: Timer? = null
-    var playMode = false; // проигрывание на паузе или завершено активна кнопка play
+    private var prepared = false
+    private var timer: Timer? = null
+    private var playMode = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,12 +51,16 @@ class PostAttachmentFragment : Fragment() {
 
         binding.playAudio.setOnClickListener {
             if (!playMode) {
-                binding.playAudio.setImageResource(R.drawable.ic_pause_audio_24)
-                if (prepared)
-                    observer.play()
-                else {
-                    observer.playPrepared()
-                    prepared = true
+                try {
+                    binding.playAudio.setImageResource(R.drawable.ic_pause_audio_24)
+                    if (prepared)
+                        observer.play()
+                    else {
+                        observer.playPrepared()
+                        prepared = true
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
                 setProgress(binding, observer)
             } else {
@@ -66,27 +68,30 @@ class PostAttachmentFragment : Fragment() {
                 binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
                 observer.pause()
             }
-
         }
 
         return binding.root
     }
 
-    private fun setProgress(binding: FragmentPostAttachmentBinding, mediaObserver: MediaLifecycleObserver) {
+    private fun setProgress(
+        binding: FragmentPostAttachmentBinding,
+        mediaObserver: MediaLifecycleObserver
+    ) {
         timer = Timer()
         timer?.scheduleAtFixedRate(
-            timerTask() {
+            timerTask {
                 Handler(Looper.getMainLooper()).post {
-                    var isPlaying = mediaObserver.mediaPlayer?.isPlaying() ?: false
+                    val isPlaying = mediaObserver.isPlaying
                     if (isPlaying) {
                         playMode = true
-                        val duration = mediaObserver.mediaPlayer?.duration ?: 100
-                        val currentPosition = mediaObserver.mediaPlayer?.currentPosition ?: 0
-                        binding.audioSlider.valueTo = duration.toFloat();
-                        binding.audioSlider.value = currentPosition.toFloat()
+                        binding.audioSlider.valueTo = mediaObserver.duration.toFloat()
+                        binding.audioSlider.value = mediaObserver.currentPosition.toFloat()
+                        binding.curTime.text = convertToMMSS(mediaObserver.currentPosition)
+                        binding.duration.text = convertToMMSS(mediaObserver.duration)
                     } else if (playMode) {
                         playMode = false
                         binding.audioSlider.value = 0f
+                        binding.curTime.text = "00:00"
                         binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
                         timer?.cancel()
                         timer = null
@@ -96,33 +101,27 @@ class PostAttachmentFragment : Fragment() {
         )
     }
 
-    fun listenToAudio(binding: FragmentPostAttachmentBinding, url: String) {
-        if (binding != null) {
-            binding.photo.visibility = View.GONE
-            binding.audioGroup.visibility = View.VISIBLE
-            observer.mediaPlayer?.setDataSource(requireArguments().urlArg)
-        }
+    private fun listenToAudio(binding: FragmentPostAttachmentBinding, url: String) {
+        binding.photo.visibility = View.GONE
+        binding.audioGroup.visibility = View.VISIBLE
+        observer.mediaPlayer?.setDataSource(url)
     }
 
-    fun watchVideo(binding: FragmentPostAttachmentBinding, url: String) {
-        if (binding != null) {
-            binding.photo.visibility = View.GONE
-            binding.audioGroup.visibility = View.GONE
-        }
+    private fun watchVideo(binding: FragmentPostAttachmentBinding, url: String) {
+        binding.photo.visibility = View.GONE
+        binding.audioGroup.visibility = View.GONE
     }
 
-    fun seePicture(binding: FragmentPostAttachmentBinding, url: String) {
-        if (binding != null) {
-            binding.photo.visibility = View.VISIBLE
-            binding.audioGroup.visibility = View.GONE
+    private fun seePicture(binding: FragmentPostAttachmentBinding, url: String) {
+        binding.photo.visibility = View.VISIBLE
+        binding.audioGroup.visibility = View.GONE
 
-            Glide.with(binding.photo)
-                .load(url)
-                .placeholder(R.drawable.ic_loading_100dp)
-                .error(R.drawable.ic_error_100dp)
-                .timeout(10_000)
-                .into(binding.photo)
-        }
+        Glide.with(binding.photo)
+            .load(url)
+            .placeholder(R.drawable.ic_loading_100dp)
+            .error(R.drawable.ic_error_100dp)
+            .timeout(10_000)
+            .into(binding.photo)
     }
 
     override fun onStop() {
@@ -136,5 +135,12 @@ class PostAttachmentFragment : Fragment() {
     companion object {
         var Bundle.urlArg: String? by StringArg
         var Bundle.typeArg: String? by StringArg
+
+        fun convertToMMSS(duration: Int): String {
+            return String.format("%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(duration.toLong()) % TimeUnit.HOURS.toMinutes(1),
+                TimeUnit.MILLISECONDS.toSeconds(duration.toLong()) % TimeUnit.MINUTES.toSeconds(1)
+            )
+        }
     }
 }
