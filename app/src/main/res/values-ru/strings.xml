@@ -47,4 +47,11 @@
     <string name="play_audio_progress">Прогресс аудио проигрывателя</string>
     <string name="stop_audio">Остановить аудио</string>
     <string name="back">Назад</string>
+    <string name="postsTitle">Сообщения</string>
+    <string name="audio">Аудио</string>
+    <string name="video">Видео</string>
+    <string name="picture">Картинка</string>
+    <string name="audio_description">Аудио картинка</string>
+    <string name="published_label">Опубликовал %1$s</string>
+    <string name="video_description">Видео экран</string>
 </resources>

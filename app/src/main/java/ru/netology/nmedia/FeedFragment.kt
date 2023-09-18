@@ -2,14 +2,21 @@ package ru.netology.nmedia
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ActionMode
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+
 import android.view.ViewGroup
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
@@ -17,11 +24,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.PostAttachmentFragment.Companion.autorArg
+import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
 import ru.netology.nmedia.PostFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
@@ -29,6 +39,7 @@ import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.empty
 import java.util.Locale
+import javax.inject.Inject
 
 fun formatValue(value: Double): String {
     if (value >= 1000000000.0) {
@@ -66,6 +77,8 @@ fun formatValue(value: Double): String {
 class FeedFragment : Fragment() {
     val viewModel: PostViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
+    @Inject
+    lateinit var appAuth: AppAuth
     //private val observer = MediaLifecycleObserver()
 
     override fun onCreateView(
@@ -75,7 +88,10 @@ class FeedFragment : Fragment() {
     ): View {
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
+        requireActivity().setTitle(getString(R.string.postsTitle))
+
         //lifecycle.addObserver(observer)
+        //binding.fragmentToolbar.setTitle(getString(R.string.postsTitle))
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -157,6 +173,8 @@ class FeedFragment : Fragment() {
                             AttachmentType.VIDEO -> "video"
                             else -> ""
                         }
+                        autorArg = "${post.author}"
+                        publishedArg = "${post.published}"
                     })
             }
 

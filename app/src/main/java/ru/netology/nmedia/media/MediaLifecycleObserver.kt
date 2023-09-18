@@ -7,18 +7,17 @@ import androidx.lifecycle.LifecycleOwner
 
 class MediaLifecycleObserver: LifecycleEventObserver {
     var mediaPlayer: MediaPlayer? = MediaPlayer()
-    var isPlaying: Boolean = false
+    val isPlaying: Boolean
         get() = mediaPlayer?.isPlaying ?: false
-    var duration: Int = 0
+    val duration: Int
         get() = mediaPlayer?.duration ?: 0
-    var currentPosition: Int = -1
+    val currentPosition
         get() =  mediaPlayer?.currentPosition ?: -1
 
     fun playPrepared() {
         mediaPlayer?.setOnPreparedListener {
             it.start()
         }
-
         mediaPlayer?.prepareAsync()
     }
 
@@ -30,9 +29,11 @@ class MediaLifecycleObserver: LifecycleEventObserver {
         mediaPlayer?.pause()
     }
 
+    /*
     fun stop() {
         mediaPlayer?.stop()
     }
+     */
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {

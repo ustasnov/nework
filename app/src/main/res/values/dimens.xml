@@ -9,4 +9,5 @@
     <dimen name="attachment_dimen">230dp</dimen>
     <dimen name="big_spacing">48dp</dimen>
     <dimen name="medium_spacing">64dp</dimen>
+    <dimen name="size_8dp">8dp</dimen>
 </resources>

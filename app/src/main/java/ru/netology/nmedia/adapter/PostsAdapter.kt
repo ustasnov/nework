@@ -1,13 +1,10 @@
 package ru.netology.nmedia.adapter
 
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -20,9 +17,7 @@ import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.formatValue
-import ru.netology.nmedia.media.MediaLifecycleObserver
-import java.util.Timer
-import kotlin.concurrent.timerTask
+import ru.netology.nmedia.utils.AndroidUtils.formatDate
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}
@@ -32,7 +27,6 @@ interface OnInteractionListener {
     fun onPlayVideo(post: Post) {}
     fun onViewPost(post: Post) {}
     fun onViewAttachment(post: Post) {}
-    //fun onPlayAudio(post: Post) {}
 }
 
 class PostsAdapter(
@@ -79,7 +73,7 @@ class AdViewHolder(
     fun bind(ad: Ad) {
         Glide.with(binding.image)
             //.load("${BuildConfig.BASE_URL}media/${ad.image}")
-            .load("${ad.image}")
+            .load(ad.image)
             .placeholder(R.drawable.ic_loading_100dp)
             .error(R.drawable.ic_error_100dp)
             .timeout(10_000)
@@ -92,47 +86,10 @@ class PostViewHolder(
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    //var timer: Timer? = null
-    //var afterPlaying = false
-    //var timer: Timer? = null
-    //val mediaLifecycleObserver = MediaLifecycleObserver()
-    //val lifecycle = fragment.lifecycle.addObserver(mediaLifecycleObserver)
-
-    /*
-    private fun setProgress(mediaObserver: MediaLifecycleObserver) {
-        timer = Timer()
-        timer?.scheduleAtFixedRate(
-            timerTask() {
-                Handler(Looper.getMainLooper()).post {
-                    var isPlaying = mediaObserver?.mediaPlayer?.isPlaying() ?: false
-                    if (isPlaying) {
-                            val duration = mediaObserver?.mediaPlayer?.duration ?: 100
-                            val currentPosition =
-                                mediaObserver?.mediaPlayer?.currentPosition ?: 0
-                            binding.audioSlider.valueTo = duration.toFloat();
-                            binding.audioSlider.value = currentPosition.toFloat()
-                            afterPlaying = true
-                    } else {
-                        if (afterPlaying) {
-                            binding.audioSlider.value = 0f
-                            binding.playAudio.visibility = View.VISIBLE
-                            binding.pauseAudio.visibility = View.GONE
-                            timer?.cancel()
-                        }
-                    }
-                }
-            }, 1000, 1000
-        )
-    }
-     */
-
     fun bind(post: Post) {
-        //val mediaLifecycleObserver = MediaLifecycleObserver()
-        //fragment.lifecycle.addObserver(mediaLifecycleObserver)
-
         binding.apply {
             author.text = post.author
-            published.text = post.published.toString()
+            published.text = formatDate(post.published)
             postText.text = post.content
             favorite.isChecked = post.likedByMe
             favorite.isCheckable = post.ownedByMe
@@ -140,7 +97,7 @@ class PostViewHolder(
             share.text = formatValue(post.shared)
             views.text = formatValue(post.views)
 
-            avatar.isVisible = !post?.authorAvatar.isNullOrBlank()
+            avatar.isVisible = !post.authorAvatar.isNullOrBlank()
             if (avatar.isVisible) {
                 Glide.with(avatar)
                     //.load("${BuildConfig.BASE_URL}avatars/${post.authorAvatar}")
@@ -155,15 +112,9 @@ class PostViewHolder(
                 avatar.visibility = View.VISIBLE
             }
 
-            //attachment.contentDescription = post.attachment?.description
             playVideo.visibility = View.GONE
-            //playAudio.visibility = View.GONE
-            //pauseAudio.visibility = View.GONE
-            //audioSlider.visibility = View.GONE
             attachment.visibility = View.GONE
-            //video.visibility = View.GONE
 
-            //attachment.isVisible = !post.attachment?.url.isNullOrBlank()
             if (!post.attachment?.url.isNullOrBlank()) {
                 attachment.visibility = View.VISIBLE
                 if (post.attachment?.type !== AttachmentType.AUDIO) {
@@ -177,53 +128,7 @@ class PostViewHolder(
                 } else {
                     attachment.setImageResource(R.drawable.audio)
                 }
-
-                /*
-                if (post.attachment?.type === AttachmentType.VIDEO) {
-                    playVideo.visibility = View.VISIBLE
-                } else if (post.attachment?.type === AttachmentType.AUDIO) {
-                    attachment.visibility = View.GONE
-                    playAudio.visibility = View.VISIBLE
-                    audioSlider.visibility = View.VISIBLE
-                }
-                 */
             }
-
-            /*
-            videoPreview.setOnClickListener {
-
-            }
-            */
-
-            /*
-            playAudio.setOnClickListener {
-                afterPlaying = false
-                mediaLifecycleObserver?.stop()
-                mediaLifecycleObserver?.mediaPlayer?.reset()
-                mediaLifecycleObserver?.mediaPlayer?.setDataSource("${post.attachment?.url}")
-                audioSlider.valueFrom = 0f;
-                audioSlider.valueTo = 100f;
-                mediaLifecycleObserver?.play()
-                playAudio.visibility = View.GONE
-                pauseAudio.visibility = View.VISIBLE
-                setProgress(mediaLifecycleObserver)
-            }
-
-            pauseAudio.setOnClickListener {
-                afterPlaying = false
-                mediaLifecycleObserver.pause()
-                audioSlider.valueFrom = 0f;
-                audioSlider.valueTo = 100f;
-                audioSlider.value = 0f;
-                playAudio.visibility = View.VISIBLE
-                pauseAudio.visibility = View.GONE
-            }
-
-            playVideo.setOnClickListener {
-                //onInteractionListener.onPlayVideo(post)
-            }
-
-             */
 
             attachment.setOnClickListener {
                 onInteractionListener.onViewAttachment(post)
@@ -268,13 +173,6 @@ class PostViewHolder(
 
 class PostDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
     override fun areItemsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {
-        /*
-        if (oldItem::class != newItem::class) {
-            return false
-        }
-
-        return oldItem.id == newItem.id
-         */
         return oldItem.id == newItem.id
     }
 

@@ -53,4 +53,12 @@
     <string name="play_audio_progress">Play audio progress</string>
     <string name="stop_audio">Stop audio</string>
     <string name="back">Back</string>
+    <string name="postsTitle">Posts</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+    <string name="picture">Picture</string>
+    <string name="audio_description">Audio picture</string>
+    <string name="published_label">Published by %1$s</string>
+    <string name="start_time" translatable="false">00:00</string>
+    <string name="video_description">Video screen</string>
 </resources>

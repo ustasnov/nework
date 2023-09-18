@@ -10,13 +10,29 @@
         android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/medium_spacing"
+        android:layout_marginBottom="@dimen/medium_spacing"
         android:adjustViewBounds="true"
         android:contentDescription="@string/image_description"
         android:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        tools:src="@drawable/youtube" />
+
+    <VideoView
+        android:id="@+id/video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/size_80dp"
+        android:layout_marginBottom="@dimen/size_80dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/video_description"
+        android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:src="@drawable/youtube" />
 
     <ImageButton
@@ -36,9 +52,8 @@
         android:layout_marginStart="@dimen/common_spacing"
         android:backgroundTint="@color/material_dynamic_neutral70"
         android:contentDescription="@string/play_audio"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/ic_play_audio_24" />
 
     <com.google.android.material.slider.Slider
@@ -51,9 +66,8 @@
         android:value="0.0"
         android:valueFrom="0.0"
         android:valueTo="100.0"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:thumbColor="@color/material_dynamic_neutral80"
         app:tickColorInactive="@color/material_dynamic_neutral_variant70"
         app:trackColorActive="@color/material_dynamic_neutral70"
@@ -87,6 +101,31 @@
         android:id="@+id/audioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="playAudio,audioSlider" />
+        app:constraint_referenced_ids="playAudio,audioSlider,curTime,duration" />
+
+    <TextView
+        android:id="@+id/mediaPublishedBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/common_spacing"
+        android:layout_marginTop="@dimen/size_8dp"
+        android:text=""
+        android:textColor="@color/material_dynamic_neutral_variant70"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Published by jokerman" />
+
+    <TextView
+        android:id="@+id/mediaPublishedWhen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/common_spacing"
+        android:text=""
+        android:textColor="@color/material_dynamic_neutral_variant70"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintTop_toBottomOf="@id/mediaPublishedBy"
+        tools:text="16.09.2023 21:21" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

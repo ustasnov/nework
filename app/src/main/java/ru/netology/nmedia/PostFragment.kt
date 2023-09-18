@@ -20,7 +20,6 @@ import ru.netology.nmedia.adapter.PostViewHolder
 import ru.netology.nmedia.databinding.FragmentPostBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.media.MediaLifecycleObserver
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
@@ -98,10 +97,9 @@ class PostFragment : Fragment() {
 
             override fun onViewAttachment(post: Post) {
                 findNavController().navigate(
-                    R.id.action_feedFragment_to_postAttachmentFragment,
+                    R.id.action_postFragment_to_postAttachmentFragment,
                     Bundle().apply {
-                        //textArg = "${BuildConfig.BASE_URL}media/${post.attachment!!.url}"
-                        urlArg = "${post.attachment!!.url}"
+                        urlArg = post.attachment!!.url
                         typeArg = when (post.attachment?.type) {
                             AttachmentType.IMAGE -> "image"
                             AttachmentType.AUDIO -> "audio"
@@ -110,10 +108,9 @@ class PostFragment : Fragment() {
                         }
                     })
             }
-        //}, observer)
         })
 
-        val postId = requireArguments().idArg
+        //val postId = requireArguments().idArg
         viewHolder.bind(viewModel.currentPost.value!!)
 
         val callback: OnBackPressedCallback =
