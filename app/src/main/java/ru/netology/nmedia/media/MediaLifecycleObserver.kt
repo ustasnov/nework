@@ -37,7 +37,7 @@ class MediaLifecycleObserver: LifecycleEventObserver {
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
-            Lifecycle.Event.ON_PAUSE -> mediaPlayer?.pause()
+            Lifecycle.Event.ON_PAUSE -> if (mediaPlayer?.isPlaying ?: false) { mediaPlayer?.pause() }
             Lifecycle.Event.ON_STOP -> {
                 mediaPlayer?.release()
                 mediaPlayer = null

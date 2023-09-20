@@ -86,7 +86,7 @@ class PostAttachmentFragment : Fragment() {
                     binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
                     observer.pause()
                 }
-
+                /*
                 "video" -> {
                     if (playMode) {
                         //mp?.pause()
@@ -102,6 +102,7 @@ class PostAttachmentFragment : Fragment() {
                         binding.playAudio.setImageResource(R.drawable.ic_pause_audio_24)
                     }
                 }
+                 */
 
                 else -> Unit
             }
@@ -144,6 +145,8 @@ class PostAttachmentFragment : Fragment() {
         )
     }
 
+
+    /*
     private fun setVideoProgress(
         binding: FragmentPostAttachmentBinding,
         videoView: VideoView
@@ -175,6 +178,7 @@ class PostAttachmentFragment : Fragment() {
             }, 1000, 1000
         )
     }
+     */
 
     private fun listenToAudio(binding: FragmentPostAttachmentBinding, url: String) {
         requireActivity().title = getString(R.string.audio)

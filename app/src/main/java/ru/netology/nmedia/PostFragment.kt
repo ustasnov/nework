@@ -13,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.PostAttachmentFragment.Companion.autorArg
+import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
 import ru.netology.nmedia.adapter.OnInteractionListener
@@ -106,6 +108,8 @@ class PostFragment : Fragment() {
                             AttachmentType.VIDEO -> "video"
                             else -> ""
                         }
+                        autorArg = "${post.author}"
+                        publishedArg = "${post.published}"
                     })
             }
         })
