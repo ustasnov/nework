@@ -195,7 +195,7 @@ class PostAttachmentFragment : Fragment() {
             visibility = View.VISIBLE
             val mediaController = MediaController(this.context)
 
-            mediaController!!.setAnchorView(binding.video)
+            mediaController.setAnchorView(binding.video)
             setMediaController(mediaController)
 
             setVideoURI(Uri.parse(url))
@@ -205,7 +205,6 @@ class PostAttachmentFragment : Fragment() {
                 start()
             }
         }
-
     }
 
     private fun seePicture(binding: FragmentPostAttachmentBinding, url: String) {
