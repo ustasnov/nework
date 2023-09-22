@@ -53,7 +53,7 @@ data class PostEntity(
                 shared = dto.shared,
                 views = dto.views,
                 video = dto.video,
-                attachment = AttachmentEmbeddable?.fromDto(dto.attachment),
+                attachment = AttachmentEmbeddable.fromDto(dto.attachment),
             )
     }
 }

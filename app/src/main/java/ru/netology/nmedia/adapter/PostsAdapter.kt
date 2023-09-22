@@ -36,7 +36,7 @@ class PostsAdapter(
         when (getItem(position)) {
             is Ad -> R.layout.card_ad
             is Post -> R.layout.card_post
-            null -> R.layout.card_post
+            null -> error("unknown view type")
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -62,6 +62,7 @@ class PostsAdapter(
             is Ad -> (holder as? AdViewHolder)?.bind(item)
             is Post -> (holder as? PostViewHolder)?.bind(item)
             null -> error("unknown view type")
+            //null -> Unit
         }
     }
 
