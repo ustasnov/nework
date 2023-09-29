@@ -76,7 +76,7 @@ class PostRemoteMediator(
                             )
                         }
                         */
-                        postRemoteKeyDao.clear()
+                        //postRemoteKeyDao.clear()
                         postRemoteKeyDao.insert(
                             listOf(
                                 PostRemoteKeyEntity(
