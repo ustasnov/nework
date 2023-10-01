@@ -54,4 +54,7 @@
     <string name="audio_description">Аудио картинка</string>
     <string name="published_label">Опубликовал %1$s</string>
     <string name="video_description">Видео экран</string>
+    <string name="users">Пользователи</string>
+    <string name="events">События</string>
+    <string name="profile">Профиль</string>
 </resources>

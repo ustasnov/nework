@@ -2,11 +2,17 @@ package ru.netology.nmedia
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextMenu
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -40,6 +46,10 @@ class AppActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityAppBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_24);
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         intent?.let {
             if (it.action != Intent.ACTION_SEND) {
@@ -94,20 +104,28 @@ class AppActivity : AppCompatActivity() {
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
                     when (menuItem.itemId) {
+                        android.R.id.home -> {
+                            binding.drawer.openDrawer(GravityCompat.START)
+                            true
+                        }
+
                         R.id.auth -> {
                             //AppAuth.getInstance().setToken(Token(5L, "x-token"))
                             findNavController(R.id.navigation).navigate(R.id.authFragment)
                             true
                         }
+
                         R.id.register -> {
                             findNavController(R.id.navigation).navigate(R.id.registrationFragment)
                             true
                         }
+
                         R.id.logout -> {
                             appAuth.clearAuth()
                             postViewModel.refresh()
                             true
                         }
+
                         else -> {
                             false
                         }
@@ -116,7 +134,37 @@ class AppActivity : AppCompatActivity() {
                 oldMenuProvider = this
             }, this)
         }
+
+        binding.navView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.users -> {
+                    Toast.makeText(this@AppActivity, "Users", Toast.LENGTH_SHORT).show()
+                }
+
+                R.id.events -> {
+                    Toast.makeText(this@AppActivity, "Events", Toast.LENGTH_SHORT).show()
+                }
+
+                R.id.profile -> {
+                    Toast.makeText(this@AppActivity, "Profile", Toast.LENGTH_SHORT).show()
+                }
+            }
+            binding.drawer.closeDrawer(GravityCompat.START)
+            true
+        }
+
     }
+
+    /*
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menuInflater.inflate(R.menu.posts_menu, menu)
+    }
+    */
 
     /*
     private fun requestNotificationsPermission() {

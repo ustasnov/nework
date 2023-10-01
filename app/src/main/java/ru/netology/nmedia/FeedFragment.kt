@@ -194,7 +194,8 @@ class FeedFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.data.collectLatest(adapter::submitData)
+                //viewModel.data.collectLatest(adapter::submitData)
+                viewModel.data.collect(adapter::submitData)
             }
         }
 

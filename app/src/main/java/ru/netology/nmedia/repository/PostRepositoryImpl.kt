@@ -147,7 +147,7 @@ class PostRepositoryImpl @Inject constructor(
                 post.copy(
                     attachment = Attachment(
                         media.id,
-                        //"",
+                        //"",§
                         AttachmentType.IMAGE
                     )
                 )
