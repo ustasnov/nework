@@ -17,7 +17,7 @@
         app:srcCompat="@drawable/baseline_account_circle_24"/>
 
     <TextView
-        android:id="@+id/author"
+        android:id="@+id/userName"
         android:layout_width="@dimen/size_0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing"

@@ -62,4 +62,8 @@
         android:id="@+id/registrationFragment"
         android:name="ru.netology.nmedia.RegistrationFragment"
         android:label="RegistrationFragment" />
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="ru.netology.nmedia.UsersFragment"
+        android:label="UsersFragment" />
 </navigation>

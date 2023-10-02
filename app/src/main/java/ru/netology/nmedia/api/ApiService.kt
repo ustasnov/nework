@@ -5,20 +5,23 @@ import retrofit2.Response
 import retrofit2.http.*
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.dto.PushToken
+import ru.netology.nmedia.dto.User
 
 interface ApiService {
+
+    // posts
+
     @GET("posts")
     suspend fun getAll(): Response<List<Post>>
 
     @GET("posts/latest")
-    suspend fun getLatest(@Query("count") count : Int): Response<List<Post>>
+    suspend fun getLatest(@Query("count") count: Int): Response<List<Post>>
 
     @GET("posts/{id}/before")
-    suspend fun getBefore(@Path("id") id: Long, @Query("count") count : Int): Response<List<Post>>
+    suspend fun getBefore(@Path("id") id: Long, @Query("count") count: Int): Response<List<Post>>
 
     @GET("posts/{id}/after")
-    suspend fun getAfter(@Path("id") id: Long, @Query("count") count : Int): Response<List<Post>>
+    suspend fun getAfter(@Path("id") id: Long, @Query("count") count: Int): Response<List<Post>>
 
     @POST("posts")
     suspend fun save(@Body post: Post): Response<Post>
@@ -39,8 +42,12 @@ interface ApiService {
     @POST("media")
     suspend fun uploadMedia(@Part file: MultipartBody.Part): Response<Media>
 
-    /*
-    @POST("users/authentication/")
-    suspend fun sendPushToken(@Body token: PushToken): Response<Unit>
-     */
+    // users
+
+    @GET("users")
+    suspend fun getUsers(): Response<List<User>>
+
+    @GET("users/{id}")
+    suspend fun getUser(@Path("id") id: Long): Response<User>
+
 }

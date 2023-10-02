@@ -1,9 +1,5 @@
 package ru.netology.nmedia.dto
 
-sealed interface FeedItem {
-    val id: Long
-}
-
 data class Post(
     override val id: Long,
     val author: String,
