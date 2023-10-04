@@ -26,6 +26,11 @@ data class Attachment(
     val type: AttachmentType,
 )
 
+data class Coordinates(
+    val lat: String,
+    val long: String,
+)
+
 enum class AttachmentType {
     IMAGE,
     VIDEO,

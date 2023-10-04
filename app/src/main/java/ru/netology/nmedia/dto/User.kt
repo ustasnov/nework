@@ -6,3 +6,12 @@ data class User (
     val name: String,
     val avatar: String?,
 ) : FeedItem
+
+data class UserPreview(
+    val name: String,
+    val avatar: String? = null
+)
+
+data class Users(
+    val userPreviews: List<UserPreview> = emptyList<UserPreview>()
+)
