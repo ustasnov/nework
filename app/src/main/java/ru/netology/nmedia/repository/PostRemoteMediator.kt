@@ -8,7 +8,9 @@ import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.PostRemoteKeyEntity
+import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.entity.toEntity
+import ru.netology.nmedia.entity.toEntityWithLists
 import ru.netology.nmedia.error.ApiError
 import java.io.IOException
 
@@ -18,11 +20,13 @@ class PostRemoteMediator(
     private val postDao: PostDao,
     private val postRemoteKeyDao: PostRemoteKeyDao,
     private val appDb: AppDb,
-) : RemoteMediator<Int, PostEntity>() {
+//) : RemoteMediator<Int, PostEntity>() {
+) : RemoteMediator<Int, PostWithLists>() {
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, PostEntity>
+        //state: PagingState<Int, PostEntity>
+        state: PagingState<Int, PostWithLists>
     ): MediatorResult {
         try {
             val response = when (loadType) {
@@ -115,7 +119,8 @@ class PostRemoteMediator(
                 }
 
                 //postDao.insert(body.map(PostEntity::fromDto))
-                postDao.insert(body.toEntity())
+                //postDao.insert(body.toEntity())
+                postDao.insertPostsWithLists(body.toEntityWithLists())
             }
             return MediatorResult.Success(endOfPaginationReached = body.isEmpty())
         } catch (e: IOException) {

@@ -38,6 +38,8 @@ interface ApiService {
     @GET("posts/{id}/newer")
     suspend fun getNewer(@Path("id") id: Long): Response<List<Post>>
 
+    // media
+
     @Multipart
     @POST("media")
     suspend fun uploadMedia(@Part file: MultipartBody.Part): Response<Media>
@@ -49,5 +51,8 @@ interface ApiService {
 
     @GET("users/{id}")
     suspend fun getUser(@Path("id") id: Long): Response<User>
+
+    // events
+
 
 }

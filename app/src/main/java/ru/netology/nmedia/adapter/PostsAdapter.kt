@@ -16,8 +16,8 @@ import ru.netology.nmedia.dto.Ad
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.formatValue
 import ru.netology.nmedia.utils.AndroidUtils.formatDate
+import java.util.Locale
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}
@@ -95,9 +95,22 @@ class PostViewHolder(
             postText.text = post.content
             favorite.isChecked = post.likedByMe
             favorite.isCheckable = post.ownedByMe
-            favorite.text = formatValue(post.likes)
-            share.text = formatValue(post.shared)
-            views.text = formatValue(post.views)
+            //favorite.text = formatValue(post.likes)
+            //share.text = formatValue(post.shared)
+            //views.text = formatValue(post.views)
+            likesCount.text = formatValue(post.likeOwnerIds.size.toDouble())
+            if (post.link.isNullOrBlank()) {
+                views.setIconTintResource(R.color.ext_gray);
+            } else {
+                views.setIconTintResource(R.color.teal_700);
+            }
+            if (post.mentionIds.size > 0) {
+                share.setIconTintResource(R.color.teal_700);
+                share.text = formatValue(post.mentionIds.size.toDouble())
+            } else {
+                share.setIconTintResource(R.color.ext_gray);
+                share.text = ""
+            }
 
             avatar.isVisible = !post.authorAvatar.isNullOrBlank()
             if (avatar.isVisible) {
@@ -159,7 +172,6 @@ class PostViewHolder(
                                 onInteractionListener.onEdit(post)
                                 true
                             }
-
                             else -> false
                         }
                     }
@@ -180,5 +192,37 @@ class PostDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
 
     override fun areContentsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {
         return oldItem == newItem
+    }
+}
+
+fun formatValue(value: Double): String {
+    if (value >= 1000000000.0) {
+        return "\u221e"
+    }
+    val suffix: String
+    val res = when {
+        value >= 1000000.0 -> {
+            suffix = "M"
+            String.format(Locale.ROOT, "%f", value / 1000000.0)
+        }
+
+        value >= 1000.0 -> {
+            suffix = "K"
+            String.format(Locale.ROOT, "%f", value / 1000.0)
+        }
+
+        else -> {
+            suffix = ""
+            String.format(Locale.ROOT, "%f", value)
+        }
+    }
+
+    val dotPosition = res.indexOf(".")
+
+    return when {
+        (value >= 10000.0 && value < 1000000.0) || value < 1000 || res[dotPosition + 1] == '0' ->
+            res.substring(0, dotPosition) + suffix
+
+        else -> res.substring(0, dotPosition + 2) + suffix
     }
 }

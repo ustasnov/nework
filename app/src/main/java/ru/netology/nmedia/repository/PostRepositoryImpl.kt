@@ -17,6 +17,7 @@ import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.*
 import ru.netology.nmedia.entity.PostEntity
+import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.entity.toEntity
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
@@ -24,7 +25,6 @@ import ru.netology.nmedia.error.NetworkError
 import ru.netology.nmedia.model.PhotoModel
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.random.Random
 
 class PostRepositoryImpl @Inject constructor(
     context: Application,
@@ -51,7 +51,8 @@ class PostRepositoryImpl @Inject constructor(
             appDb = appDb
         )
     ).flow
-        .map { it.map(PostEntity::toDto)
+        //.map { it.map(PostEntity::toDto)
+        .map { it.map(PostWithLists::toDto)
         /*
         .insertSeparators { previous, _ ->
             if (previous?.id?.rem(5) == 0L) {

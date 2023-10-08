@@ -20,16 +20,24 @@ import javax.inject.Inject
 
 val empty = Post(
     id = 0L,
-    author = "",
     authorId = 0L,
-    authorAvatar = "",
+    author = "",
+    authorAvatar = null,
+    authorJob = null,
     content = "",
     published = "",
+    coords = null,
+    link = null,
+    likeOwnerIds = emptyList(),
+    mentionIds = emptyList(),
+    mentionedMe = false,
     likedByMe = false,
+    attachment = null,
+    ownedByMe = false,
     likes = 0.0,
     shared = 0.0,
     views = 0.0,
-    video = ""
+    video = null
 )
 
 @HiltViewModel
@@ -75,7 +83,8 @@ class PostViewModel @Inject constructor(
         get() = _currentPostId
 
     private val _currentPost =
-        MutableLiveData(
+        MutableLiveData(empty.copy())
+        /*
             Post(
                 0,
                 "",
@@ -90,6 +99,8 @@ class PostViewModel @Inject constructor(
                 null,
             )
         )
+       */
+
     val currentPost: LiveData<Post>
         get() = _currentPost
 

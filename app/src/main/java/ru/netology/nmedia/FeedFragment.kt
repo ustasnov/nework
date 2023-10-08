@@ -41,37 +41,6 @@ import ru.netology.nmedia.viewmodel.empty
 import java.util.Locale
 import javax.inject.Inject
 
-fun formatValue(value: Double): String {
-    if (value >= 1000000000.0) {
-        return "\u221e"
-    }
-    val suffix: String
-    val res = when {
-        value >= 1000000.0 -> {
-            suffix = "M"
-            String.format(Locale.ROOT, "%f", value / 1000000.0)
-        }
-
-        value >= 1000.0 -> {
-            suffix = "K"
-            String.format(Locale.ROOT, "%f", value / 1000.0)
-        }
-
-        else -> {
-            suffix = ""
-            String.format(Locale.ROOT, "%f", value)
-        }
-    }
-
-    val dotPosition = res.indexOf(".")
-
-    return when {
-        (value >= 10000.0 && value < 1000000.0) || value < 1000 || res[dotPosition + 1] == '0' ->
-            res.substring(0, dotPosition) + suffix
-
-        else -> res.substring(0, dotPosition + 2) + suffix
-    }
-}
 
 @AndroidEntryPoint
 class FeedFragment : Fragment() {

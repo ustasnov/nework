@@ -8,7 +8,7 @@
     <string name="views">Views</string>
     <string name="author" translatable="false">Нетология. Университет интернет-профессий</string>
     <string name="published" translatable="false">15 января в 13:55</string>
-    <string name="post_text" translatable="false">Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растем сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остается с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия   - помочь встать на путь роста и начать цепочку   перемен -> http://www.netolo.gy/fyb</string>
+    <string name="post_text" translatable="false">Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Но самое важное остается с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. http://www.netolo.gy/fyb</string>
     <string name="likes" translatable="false">9.9K</string>
     <string name="shared" translatable="false">5</string>
     <string name="viewed" translatable="false">5</string>
@@ -64,4 +64,5 @@
     <string name="users">Users</string>
     <string name="events">Events</string>
     <string name="profile">Profile</string>
+    <string name="like_caption">Likes:</string>
 </resources>

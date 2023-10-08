@@ -11,13 +11,13 @@ data class Event(
     val published: String,
     val coordinates: Coordinates? = null,
     val type: String,
-    val likeOwnerIds: Array<Long> = emptyArray(),
+    val likeOwnerIds: List<Long> = emptyList(),
     val likedByMe: Boolean = false,
-    val speakerIds: Array<Long> = emptyArray(),
-    val participantsIds: Array<Long> = emptyArray(),
+    val speakerIds: List<Long> = emptyList(),
+    val participantsIds: List<Long> = emptyList(),
     val participatedByMe: Boolean = false,
     var attachment: Attachment? = null,
     val link: String? = null,
     val ownedByMe: Boolean = false,
-    val users: Users = Users()
+    val users: Map<String, UserPreview> = mutableMapOf(),
 ) : FeedItem
