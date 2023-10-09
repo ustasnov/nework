@@ -8,11 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import ru.netology.nmedia.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UsersAdapter
 import ru.netology.nmedia.databinding.FragmentUsersBinding
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.utils.LongArg
+import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.UserViewModel
 
 @AndroidEntryPoint
@@ -46,7 +49,7 @@ class UsersFragment : Fragment() {
         binding.list.adapter = adapter
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
-            adapter.submitList(state.users)
+           adapter.submitList(state.users)
         }
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
@@ -54,7 +57,7 @@ class UsersFragment : Fragment() {
             when (state.error) {
                 ErrorType.LOADING ->
                     Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.retry_loading) { viewModel.loadPosts() }
+                        .setAction(R.string.retry_loading) { viewModel.loadUsers() }
                         .show()
                 else -> Unit
             }
@@ -69,4 +72,5 @@ class UsersFragment : Fragment() {
 
         return binding.root
     }
+
 }

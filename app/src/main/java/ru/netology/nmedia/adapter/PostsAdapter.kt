@@ -100,16 +100,21 @@ class PostViewHolder(
             //views.text = formatValue(post.views)
             likesCount.text = formatValue(post.likeOwnerIds.size.toDouble())
             if (post.link.isNullOrBlank()) {
-                views.setIconTintResource(R.color.ext_gray);
+                link.setIconTintResource(R.color.ext_gray)
             } else {
-                views.setIconTintResource(R.color.teal_700);
+                link.setIconTintResource(R.color.teal_700)
             }
             if (post.mentionIds.size > 0) {
-                share.setIconTintResource(R.color.teal_700);
-                share.text = formatValue(post.mentionIds.size.toDouble())
+                ment.setIconTintResource(R.color.teal_700)
+                ment.text = formatValue(post.mentionIds.size.toDouble())
             } else {
-                share.setIconTintResource(R.color.ext_gray);
-                share.text = ""
+                ment.setIconTintResource(R.color.ext_gray)
+                ment.text = ""
+            }
+            if (post.coords != null) {
+                geo.setIconTintResource(R.color.teal_700)
+            } else {
+                geo.setIconTintResource(R.color.ext_gray)
             }
 
             avatar.isVisible = !post.authorAvatar.isNullOrBlank()
@@ -140,6 +145,9 @@ class PostViewHolder(
                         .error(R.drawable.ic_error_100dp)
                         .timeout(10_000)
                         .into(attachment)
+                    if (post.attachment?.type === AttachmentType.VIDEO) {
+                        playVideo.visibility = View.VISIBLE
+                    }
                 } else {
                     attachment.setImageResource(R.drawable.audio)
                 }
@@ -153,9 +161,12 @@ class PostViewHolder(
                 onInteractionListener.onLike(post)
             }
 
+            /*
             share.setOnClickListener {
                 onInteractionListener.onShare(post)
             }
+
+             */
 
             menu.isVisible = post.ownedByMe
             menu.setOnClickListener {

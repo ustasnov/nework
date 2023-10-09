@@ -5,17 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.ErrorType
-import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.UserModel
-import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.UserRepository
 import javax.inject.Inject
 
@@ -32,10 +28,10 @@ class UserViewModel @Inject constructor(
         get() = _dataState
 
     init {
-        loadPosts()
+        loadUsers()
     }
 
-    fun loadPosts() = viewModelScope.launch {
+    fun loadUsers() = viewModelScope.launch {
         _dataState.value = FeedModelState(loading = true)
         try {
             repository.getAll()

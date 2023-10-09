@@ -6,6 +6,21 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/common_spacing">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/geo"
+        style="@style/Widget.AppTheme.GeoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:checkable="true"
+        android:contentDescription="@string/press_if_like"
+        android:minWidth="@dimen/avatar_size"
+        android:minHeight="@dimen/avatar_size"
+        android:paddingLeft="@dimen/size_12dp"
+        app:layout_constraintEnd_toStartOf="@+id/link"
+        app:layout_constraintTop_toBottomOf="@id/barrier1" />
+
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
@@ -97,6 +112,7 @@
         android:layout_width="@dimen/size_80dp"
         android:layout_height="@dimen/size_80dp"
         android:contentDescription="@string/view_move_description"
+        app:tint="@color/material_dynamic_secondary70"
         app:layout_constraintBottom_toBottomOf="@id/attachment"
         app:layout_constraintEnd_toEndOf="@id/attachment"
         app:layout_constraintStart_toStartOf="@id/attachment"
@@ -122,12 +138,12 @@
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        app:layout_constraintEnd_toStartOf="@+id/share"
+        app:layout_constraintEnd_toStartOf="@+id/ment"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/share"
-        style="@style/Widget.AppTheme.ShareButton"
+        android:id="@+id/ment"
+        style="@style/Widget.AppTheme.MentorButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -137,12 +153,12 @@
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
         app:icon="@drawable/ic_mentors_24"
-        app:layout_constraintEnd_toStartOf="@+id/views"
+        app:layout_constraintEnd_toStartOf="@+id/geo"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/views"
-        style="@style/Widget.AppTheme.ViewButton"
+        android:id="@+id/link"
+        style="@style/Widget.AppTheme.LinkButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
