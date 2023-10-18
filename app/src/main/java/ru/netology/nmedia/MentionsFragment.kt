@@ -8,18 +8,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.toList
+import ru.netology.nmedia.adapter.MentionsAdapter
+import ru.netology.nmedia.adapter.OnMentionsInteractionListener
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UsersAdapter
 import ru.netology.nmedia.databinding.FragmentUsersBinding
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.dto.UserItem
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
+import ru.netology.nmedia.viewmodel.MentionViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
 
 @AndroidEntryPoint
-class UsersFragment : Fragment() {
-    val viewModel: UserViewModel by activityViewModels()
+class MentionsFragment : Fragment() {
+    val viewModel: MentionViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,10 +33,10 @@ class UsersFragment : Fragment() {
     ): View {
 
         val binding = FragmentUsersBinding.inflate(inflater, container, false)
-        requireActivity().title = getString(R.string.users)
+        requireActivity().title = getString(R.string.mentors)
 
-        val adapter = UsersAdapter(object : OnUsersInteractionListener {
-            override fun onViewUser(user: User) {
+        val adapter = MentionsAdapter(object : OnMentionsInteractionListener {
+            override fun onViewUser(user: UserItem) {
                 viewModel.viewById(user.id)
                 /*
                 findNavController().navigate(
@@ -48,26 +53,10 @@ class UsersFragment : Fragment() {
 
         binding.list.adapter = adapter
 
+        viewModel.setData(requireArguments().idArg!!)
+
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.users)
-        }
-
-        viewModel.dataState.observe(viewLifecycleOwner) { state ->
-            binding.swiperefresh.isRefreshing = state.refreshing
-            when (state.error) {
-                ErrorType.LOADING ->
-                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.retry_loading) { viewModel.loadUsers() }
-                        .show()
-                else -> Unit
-            }
-        }
-
-        val swipeRefresh = binding.swiperefresh
-        swipeRefresh.setOnRefreshListener {
-            swipeRefresh.isRefreshing = true
-            viewModel.refresh()
-            swipeRefresh.isRefreshing = false
         }
 
         return binding.root
@@ -75,6 +64,5 @@ class UsersFragment : Fragment() {
 
     companion object {
         var Bundle.idArg: Long? by LongArg
-        var Bundle.listType: String? by StringArg
     }
 }

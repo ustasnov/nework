@@ -116,6 +116,7 @@ class PostFragment : Fragment() {
             }
 
             override fun onViewLikeOwners(post: Post) {
+                /*
                 if (post.likeOwnerIds.size > 0) {
                     findNavController().navigate(R.id.action_postFragment_to_usersFragment,
                         Bundle().apply {
@@ -123,9 +124,12 @@ class PostFragment : Fragment() {
                             listType = "likeOwners"
                         })
                 }
+
+                 */
             }
 
             override fun onViewMentions(post: Post) {
+                /*
                 if (post.mentionIds.size > 0) {
                     findNavController().navigate(R.id.action_postFragment_to_usersFragment,
                         Bundle().apply {
@@ -133,6 +137,8 @@ class PostFragment : Fragment() {
                             listType = "mentions"
                         })
                 }
+
+                 */
             }
         })
 

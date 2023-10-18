@@ -1,4 +1,4 @@
-package ru.netology.nmedia.entity
+package ru.netology.nmedia.dto
 
 data class UserItem(
     val id: Long,

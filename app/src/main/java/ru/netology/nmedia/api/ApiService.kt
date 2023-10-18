@@ -6,7 +6,6 @@ import retrofit2.http.*
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
-import ru.netology.nmedia.entity.UserItem
 
 interface ApiService {
 
@@ -48,10 +47,10 @@ interface ApiService {
     // users
 
     @GET("users")
-    suspend fun getUsers(): Response<List<UserItem>>
+    suspend fun getUsers(): Response<List<User>>
 
     @GET("users/{id}")
-    suspend fun getUser(@Path("id") id: Long): Response<UserItem>
+    suspend fun getUser(@Path("id") id: Long): Response<User>
 
     // events
 

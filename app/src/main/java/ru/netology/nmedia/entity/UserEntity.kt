@@ -8,20 +8,19 @@ import ru.netology.nmedia.dto.User
 data class UserEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
-    val login: String?,
+    val login: String,
     val name: String,
     val avatar: String?,
 ) {
-    fun toDto() = UserItem(
+    fun toDto() = User(
         id = id,
-        postId = -1L,
         login = login,
         name = name,
         avatar = avatar,
     )
 
     companion object {
-        fun fromDto(dto: UserItem) =
+        fun fromDto(dto: User) =
             UserEntity(
                 id = dto.id,
                 login = dto.login,
@@ -31,7 +30,7 @@ data class UserEntity(
     }
 }
 
-fun List<UserEntity>.toDto(): List<UserItem> = map(UserEntity::toDto)
-fun List<UserItem>.toEntity(): List<UserEntity> = map {
+fun List<UserEntity>.toDto(): List<User> = map(UserEntity::toDto)
+fun List<User>.toEntity(): List<UserEntity> = map {
     UserEntity.fromDto(it)
 }

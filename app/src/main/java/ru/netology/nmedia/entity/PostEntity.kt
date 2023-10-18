@@ -8,6 +8,7 @@ import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Coordinates
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.UserItem
 import ru.netology.nmedia.dto.UserPreview
 
 @Entity

@@ -24,8 +24,8 @@
             android:id="@+id/action_feedFragment_to_postAttachmentFragment"
             app:destination="@id/postAttachmentFragment" />
         <action
-            android:id="@+id/action_feedFragment_to_usersFragment"
-            app:destination="@id/usersFragment" />
+            android:id="@+id/action_feedFragment_to_mentionsFragment"
+            app:destination="@id/mentionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -45,9 +45,6 @@
         <action
             android:id="@+id/action_postFragment_to_postAttachmentFragment"
             app:destination="@id/postAttachmentFragment" />
-        <action
-            android:id="@+id/action_postFragment_to_usersFragment"
-            app:destination="@id/usersFragment" />
     </fragment>
     <fragment
         android:id="@+id/postAttachmentFragment"
@@ -72,4 +69,8 @@
         android:id="@+id/usersFragment"
         android:name="ru.netology.nmedia.UsersFragment"
         android:label="UsersFragment" />
+    <fragment
+        android:id="@+id/mentionsFragment"
+        android:name="ru.netology.nmedia.MentionsFragment"
+        android:label="MentionsFragment" />
 </navigation>

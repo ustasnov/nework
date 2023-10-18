@@ -2,21 +2,14 @@ package ru.netology.nmedia
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.ActionMode
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
-
 import android.view.ViewGroup
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
@@ -29,7 +22,6 @@ import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
 import ru.netology.nmedia.PostFragment.Companion.idArg
-import ru.netology.nmedia.UsersFragment.Companion.listType
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
@@ -39,7 +31,6 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.empty
-import java.util.Locale
 import javax.inject.Inject
 
 
@@ -159,6 +150,7 @@ class FeedFragment : Fragment() {
             }
 
             override fun onViewLikeOwners(post: Post) {
+                /*
                 if (post.likeOwnerIds.size > 0) {
                     findNavController().navigate(R.id.action_feedFragment_to_usersFragment,
                         Bundle().apply {
@@ -166,16 +158,20 @@ class FeedFragment : Fragment() {
                             listType = "likeOwners"
                         })
                 }
+
+                 */
             }
 
             override fun onViewMentions(post: Post) {
+
                 if (post.mentionIds.size > 0) {
-                    findNavController().navigate(R.id.action_feedFragment_to_usersFragment,
+                    findNavController().navigate(R.id.action_feedFragment_to_mentionsFragment,
                         Bundle().apply {
                             idArg = post.id
-                            listType = "mentions"
                         })
                 }
+
+
             }
         //}, observer)
         })

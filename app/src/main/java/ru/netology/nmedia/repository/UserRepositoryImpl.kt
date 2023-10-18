@@ -7,9 +7,6 @@ import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.entity.UserEntity
 import kotlinx.coroutines.flow.*
-import ru.netology.nmedia.entity.LikeOwnerEntity
-import ru.netology.nmedia.entity.MentionEntity
-import ru.netology.nmedia.entity.UserItem
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -19,7 +16,7 @@ class UserRepositoryImpl @Inject constructor(
     appDb: AppDb,
 ) : UserRepository {
 
-    override var data: Flow<List<UserItem>> =
+    override var data: Flow<List<User>> =
         userDao.getAll().map { it.map(UserEntity::toDto) }
 
     override suspend fun getAll() {
@@ -31,11 +28,4 @@ class UserRepositoryImpl @Inject constructor(
         userDao.insert(users.map { UserEntity.fromDto(it) })
     }
 
-    override fun getPostMentions(id: Long): Flow<List<UserItem>> {
-        return userDao.getPostMentions(id).map {it.map(MentionEntity::toDto)}
-    }
-
-    override fun getLikeOwners(id: Long): Flow<List<UserItem>> {
-        return userDao.getLikeOwners(id).map {it.map(LikeOwnerEntity::toDto)}
-    }
 }

@@ -17,4 +17,7 @@ object DaoModule {
 
     @Provides
     fun provideUserDao(db: AppDb): UserDao = db.userDao()
+
+    @Provides
+    fun provideMentionDao(db: AppDb): MentionDao = db.mentionDao()
 }

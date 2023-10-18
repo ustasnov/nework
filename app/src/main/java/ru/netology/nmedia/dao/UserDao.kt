@@ -31,11 +31,4 @@ interface UserDao {
 
     @Query("SELECT COUNT(*) FROM UserEntity")
     suspend fun countUsers(): Int
-
-    @Query("SELECT * FROM MentionEntity WHERE postId = :id ORDER BY name")
-    fun getPostMentions(id: Long): Flow<List<MentionEntity>>
-
-    @Query("SELECT * FROM LikeOwnerEntity WHERE postId = :id ORDER BY name")
-    fun getLikeOwners(id: Long): Flow<List<LikeOwnerEntity>>
-
 }

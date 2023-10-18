@@ -10,41 +10,40 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardUserBinding
-import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.dto.UserItem
 
-interface OnUsersInteractionListener {
-    fun onViewUser(user: User) {}
+interface OnMentionsInteractionListener {
+    fun onViewUser(user: UserItem) {}
 }
 
-class UsersAdapter(
-    private val onUsersInteractionListener: OnUsersInteractionListener
-) : ListAdapter<User, UserViewHolder>(UserDiffCallback()) {
+class MentionsAdapter(
+    private val onMentionsInteractionListener: OnMentionsInteractionListener
+) : ListAdapter<UserItem, MentionViewHolder>(MentionDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MentionViewHolder {
         val binding = CardUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return UserViewHolder(binding, onUsersInteractionListener)
+        return MentionViewHolder(binding, onMentionsInteractionListener)
     }
 
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MentionViewHolder, position: Int) {
         val user = getItem(position)
         holder.bind(user)
     }
-
 }
 
-class UserViewHolder(
+class MentionViewHolder(
     private val binding: CardUserBinding,
-    private val onUsersInteractionListener: OnUsersInteractionListener
+    private val onMentionsInteractionListener: OnMentionsInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(user: User) {
+    fun bind(userItem: UserItem) {
         binding.apply {
-            userName.text = user.name
+            userName.text = userItem.name
 
-            userAvatar.isVisible = !user.avatar.isNullOrBlank()
+            userAvatar.isVisible = !userItem.avatar.isNullOrBlank()
             if (userAvatar.isVisible) {
                 Glide.with(userAvatar)
-                    .load("${user.avatar}")
+                    .load("${userItem.avatar}")
                     .circleCrop()
                     .placeholder(R.drawable.ic_loading_100dp)
                     .error(R.drawable.ic_error_100dp)
@@ -56,19 +55,18 @@ class UserViewHolder(
             }
 
             root.setOnClickListener {
-                onUsersInteractionListener.onViewUser(user)
+                onMentionsInteractionListener.onViewUser(userItem)
             }
         }
     }
 }
 
-class UserDiffCallback : DiffUtil.ItemCallback<User>() {
-    override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
+class MentionDiffCallback : DiffUtil.ItemCallback<UserItem>() {
+    override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
+    override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
         return oldItem == newItem
     }
 }
-

@@ -7,11 +7,9 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.dto.ErrorType
-import ru.netology.nmedia.entity.UserItem
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.UserModel
 import ru.netology.nmedia.repository.UserRepository
@@ -31,7 +29,7 @@ class UserViewModel @Inject constructor(
         get() = _dataState
 
     init {
-        //loadUsers()
+        loadUsers()
     }
 
     fun loadUsers() = viewModelScope.launch {
@@ -42,14 +40,6 @@ class UserViewModel @Inject constructor(
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
         }
-    }
-
-    fun loadMentors(id: Long?): LiveData<UserModel> {
-        return repository.getPostMentions(id!!).map(::UserModel).asLiveData(Dispatchers.Default)
-    }
-
-    fun loadLikeOwners(id: Long?): LiveData<UserModel> {
-        return repository.getLikeOwners(id!!).map(::UserModel).asLiveData(Dispatchers.Default)
     }
 
     fun refresh() = viewModelScope.launch {
@@ -64,16 +54,5 @@ class UserViewModel @Inject constructor(
 
     fun viewById(id: Long) {
         //toggleNewPost(false)
-    }
-
-
-    fun setDataByType(dataType: String?, id: Long?): LiveData<UserModel> {
-        when (dataType) {
-            "all" ->  return repository.data.map(::UserModel).asLiveData(Dispatchers.Default)
-            "mentions" -> return repository.getPostMentions(id!!).map(::UserModel).asLiveData(Dispatchers.Default)
-            "likeOwners" -> return repository.getLikeOwners(id!!).map(::UserModel).asLiveData(Dispatchers.Default)
-            else -> return repository.data.map(::UserModel).asLiveData(Dispatchers.Default)
-        }
-
     }
 }
