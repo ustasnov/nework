@@ -5,6 +5,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
+import ru.netology.nmedia.entity.LikeOwnerEntity
+import ru.netology.nmedia.entity.MentionEntity
 import ru.netology.nmedia.entity.UserEntity
 
 @Dao
@@ -29,4 +31,11 @@ interface UserDao {
 
     @Query("SELECT COUNT(*) FROM UserEntity")
     suspend fun countUsers(): Int
+
+    @Query("SELECT * FROM MentionEntity WHERE postId = :id ORDER BY name")
+    fun getPostMentions(id: Long): Flow<List<MentionEntity>>
+
+    @Query("SELECT * FROM LikeOwnerEntity WHERE postId = :id ORDER BY name")
+    fun getLikeOwners(id: Long): Flow<List<LikeOwnerEntity>>
+
 }

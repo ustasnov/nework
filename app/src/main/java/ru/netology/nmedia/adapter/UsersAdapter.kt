@@ -11,14 +11,15 @@ import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardUserBinding
 import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.entity.UserItem
 
 interface OnUsersInteractionListener {
-    fun onViewUser(user: User) {}
+    fun onViewUser(user: UserItem) {}
 }
 
 class UsersAdapter(
     private val onUsersInteractionListener: OnUsersInteractionListener
-) : ListAdapter<User, UserViewHolder>(UserDiffCallback()) {
+) : ListAdapter<UserItem, UserViewHolder>(UserDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding = CardUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -37,7 +38,7 @@ class UserViewHolder(
     private val onUsersInteractionListener: OnUsersInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(user: User) {
+    fun bind(user: UserItem) {
         binding.apply {
             userName.text = user.name
 
@@ -62,12 +63,12 @@ class UserViewHolder(
     }
 }
 
-class UserDiffCallback : DiffUtil.ItemCallback<User>() {
-    override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
+class UserDiffCallback : DiffUtil.ItemCallback<UserItem>() {
+    override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
+    override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
         return oldItem == newItem
     }
 }

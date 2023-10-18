@@ -27,6 +27,8 @@ interface OnInteractionListener {
     fun onPlayVideo(post: Post) {}
     fun onViewPost(post: Post) {}
     fun onViewAttachment(post: Post) {}
+    fun onViewLikeOwners(post: Post) {}
+    fun onViewMentions(post: Post) {}
 }
 
 class PostsAdapter(
@@ -161,12 +163,13 @@ class PostViewHolder(
                 onInteractionListener.onLike(post)
             }
 
-            /*
-            share.setOnClickListener {
-                onInteractionListener.onShare(post)
+            likeCaption.setOnClickListener {
+                onInteractionListener.onViewLikeOwners(post)
             }
 
-             */
+            ment.setOnClickListener {
+                onInteractionListener.onViewMentions(post)
+            }
 
             menu.isVisible = post.ownedByMe
             menu.setOnClickListener {

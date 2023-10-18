@@ -3,6 +3,7 @@ package ru.netology.nmedia.model
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.entity.UserItem
 
 data class FeedModel (
     val posts: List<Post> = emptyList(),
@@ -10,7 +11,7 @@ data class FeedModel (
 )
 
 data class UserModel (
-    val users: List<User> = emptyList(),
+    val users: List<UserItem> = emptyList(),
     val empty: Boolean = false
 )
 

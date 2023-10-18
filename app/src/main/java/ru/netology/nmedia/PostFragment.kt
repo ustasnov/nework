@@ -17,6 +17,8 @@ import ru.netology.nmedia.PostAttachmentFragment.Companion.autorArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
+import ru.netology.nmedia.UsersFragment.Companion.idArg
+import ru.netology.nmedia.UsersFragment.Companion.listType
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostViewHolder
 import ru.netology.nmedia.databinding.FragmentPostBinding
@@ -111,6 +113,26 @@ class PostFragment : Fragment() {
                         autorArg = "${post.author}"
                         publishedArg = "${post.published}"
                     })
+            }
+
+            override fun onViewLikeOwners(post: Post) {
+                if (post.likeOwnerIds.size > 0) {
+                    findNavController().navigate(R.id.action_postFragment_to_usersFragment,
+                        Bundle().apply {
+                            idArg = post.id
+                            listType = "likeOwners"
+                        })
+                }
+            }
+
+            override fun onViewMentions(post: Post) {
+                if (post.mentionIds.size > 0) {
+                    findNavController().navigate(R.id.action_postFragment_to_usersFragment,
+                        Bundle().apply {
+                            idArg = post.id
+                            listType = "mentions"
+                        })
+                }
             }
         })
 

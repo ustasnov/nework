@@ -9,11 +9,13 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.PostFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UsersAdapter
 import ru.netology.nmedia.databinding.FragmentUsersBinding
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.entity.UserItem
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.UserViewModel
@@ -27,12 +29,11 @@ class UsersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentUsersBinding.inflate(inflater, container, false)
 
         requireActivity().title = getString(R.string.users)
 
         val adapter = UsersAdapter(object : OnUsersInteractionListener {
-            override fun onViewUser(user: User) {
+            override fun onViewUser(user: UserItem) {
                 viewModel.viewById(user.id)
                 /*
                 findNavController().navigate(
@@ -46,10 +47,19 @@ class UsersFragment : Fragment() {
             //}, observer)
         })
 
+        val binding = FragmentUsersBinding.inflate(inflater, container, false)
         binding.list.adapter = adapter
 
+        viewModel.setDataByType(requireArguments().listType, requireArguments().idArg)
+
+        when (requireArguments().listType) {
+            "all" -> { viewModel.loadUsers() }
+            "mentions" -> { viewModel.data = viewModel.loadMentors(requireArguments().idArg) }
+            else -> { viewModel.data = viewModel.loadLikeOwners(requireArguments().idArg) }
+        }
+
         viewModel.data.observe(viewLifecycleOwner) { state ->
-           adapter.submitList(state.users)
+            adapter.submitList(state.users)
         }
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
@@ -73,4 +83,8 @@ class UsersFragment : Fragment() {
         return binding.root
     }
 
+    companion object {
+        var Bundle.idArg: Long? by LongArg
+        var Bundle.listType: String? by StringArg
+    }
 }

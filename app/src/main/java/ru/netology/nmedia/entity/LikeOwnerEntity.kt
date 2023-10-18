@@ -27,3 +27,8 @@ data class LikeOwnerEntity(
             )
     }
 }
+
+fun List<LikeOwnerEntity>.toDto(): List<UserItem> = map(LikeOwnerEntity::toDto)
+fun List<UserItem>.toLikeOwnersEntity(): List<LikeOwnerEntity> = map {
+    LikeOwnerEntity.fromDto(it)
+}

@@ -27,3 +27,8 @@ data class MentionEntity(
             )
     }
 }
+
+fun List<MentionEntity>.toDto(): List<UserItem> = map(MentionEntity::toDto)
+fun List<UserItem>.toMentionsEntity(): List<LikeOwnerEntity> = map {
+    LikeOwnerEntity.fromDto(it)
+}

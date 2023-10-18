@@ -29,6 +29,7 @@ import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
 import ru.netology.nmedia.PostFragment.Companion.idArg
+import ru.netology.nmedia.UsersFragment.Companion.listType
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
@@ -155,6 +156,26 @@ class FeedFragment : Fragment() {
                         idArg = post.id
                     }
                 )
+            }
+
+            override fun onViewLikeOwners(post: Post) {
+                if (post.likeOwnerIds.size > 0) {
+                    findNavController().navigate(R.id.action_feedFragment_to_usersFragment,
+                        Bundle().apply {
+                            idArg = post.id
+                            listType = "likeOwners"
+                        })
+                }
+            }
+
+            override fun onViewMentions(post: Post) {
+                if (post.mentionIds.size > 0) {
+                    findNavController().navigate(R.id.action_feedFragment_to_usersFragment,
+                        Bundle().apply {
+                            idArg = post.id
+                            listType = "mentions"
+                        })
+                }
             }
         //}, observer)
         })
