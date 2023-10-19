@@ -49,6 +49,7 @@ class AppActivity : AppCompatActivity() {
         val binding = ActivityAppBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_24);
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -211,5 +212,6 @@ class AppActivity : AppCompatActivity() {
         }
     }
      */
+
 }
 

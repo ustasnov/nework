@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
@@ -33,7 +34,12 @@ class MentionsFragment : Fragment() {
     ): View {
 
         val binding = FragmentUsersBinding.inflate(inflater, container, false)
+
         requireActivity().title = getString(R.string.mentors)
+
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_24)
+        //activity.supportActionBar?.hide()
 
         val adapter = MentionsAdapter(object : OnMentionsInteractionListener {
             override fun onViewUser(user: UserItem) {
@@ -59,7 +65,20 @@ class MentionsFragment : Fragment() {
             adapter.submitList(state.users)
         }
 
+        val swipeRefresh = binding.swiperefresh
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = true
+            viewModel.setData(requireArguments().idArg!!)
+            swipeRefresh.isRefreshing = false
+        }
+
         return binding.root
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_24)
     }
 
     companion object {

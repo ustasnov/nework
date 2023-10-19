@@ -9,7 +9,7 @@ data class LikeOwnerEntity(
     @PrimaryKey val id: Long,
     val postId: Long,
     val name: String,
-    val avatar: String? = null
+    val avatar: String?,
 ) {
     fun toDto() = UserItem(
         id = id,
