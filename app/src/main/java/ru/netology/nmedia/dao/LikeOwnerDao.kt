@@ -7,7 +7,6 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.entity.LikeOwnerEntity
 
-
 @Dao
 interface LikeOwnerDao {
     @Query("SELECT * FROM LikeOwnerEntity ORDER BY name")

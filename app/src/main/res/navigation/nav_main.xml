@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_feedFragment_to_mentionsFragment"
             app:destination="@id/mentionsFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_likeOwnersFragment"
+            app:destination="@id/likeOwnersFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -73,4 +76,8 @@
         android:id="@+id/mentionsFragment"
         android:name="ru.netology.nmedia.MentionsFragment"
         android:label="MentionsFragment" />
+    <fragment
+        android:id="@+id/likeOwnersFragment"
+        android:name="ru.netology.nmedia.LikeOwnersFragment"
+        android:label="LikeOwnersFragment" />
 </navigation>

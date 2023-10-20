@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ru.netology.nmedia.dao.Converters
+import ru.netology.nmedia.dao.LikeOwnerDao
 import ru.netology.nmedia.dao.MentionDao
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
@@ -25,4 +26,5 @@ abstract class AppDb : RoomDatabase() {
     abstract fun postRemoteKeyDao(): PostRemoteKeyDao
     abstract  fun userDao(): UserDao
     abstract  fun mentionDao(): MentionDao
+    abstract  fun likeOwnersDao(): LikeOwnerDao
 }

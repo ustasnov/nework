@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.netology.nmedia.repository.LikeOwnersRepository
+import ru.netology.nmedia.repository.LikeOwnersRepositoryImpl
 import ru.netology.nmedia.repository.MentionsRepository
 import ru.netology.nmedia.repository.MentionsRepositotyImpl
 import ru.netology.nmedia.repository.PostRepository
@@ -26,4 +28,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsMentionRepository(impl: MentionsRepositotyImpl): MentionsRepository
+
+    @Singleton
+    @Binds
+    fun bindsLikeOwnersRepository(impl: LikeOwnersRepositoryImpl): LikeOwnersRepository
 }

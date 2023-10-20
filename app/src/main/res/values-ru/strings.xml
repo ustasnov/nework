@@ -59,4 +59,5 @@
     <string name="profile">Профиль</string>
     <string name="like_caption">Нравится:</string>
     <string name="mentors">Наставники</string>
+    <string name="like_title">Нравится</string>
 </resources>

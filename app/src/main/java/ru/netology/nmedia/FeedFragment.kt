@@ -150,16 +150,13 @@ class FeedFragment : Fragment() {
             }
 
             override fun onViewLikeOwners(post: Post) {
-                /*
+
                 if (post.likeOwnerIds.size > 0) {
-                    findNavController().navigate(R.id.action_feedFragment_to_usersFragment,
+                    findNavController().navigate(R.id.action_feedFragment_to_likeOwnersFragment,
                         Bundle().apply {
                             idArg = post.id
-                            listType = "likeOwners"
                         })
                 }
-
-                 */
             }
 
             override fun onViewMentions(post: Post) {

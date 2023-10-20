@@ -12,28 +12,28 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardUserBinding
 import ru.netology.nmedia.dto.UserItem
 
-interface OnMentionsInteractionListener {
+interface OnUserItemInteractionListener {
     fun onViewUser(user: UserItem) {}
 }
 
-class MentionsAdapter(
-    private val onMentionsInteractionListener: OnMentionsInteractionListener
-) : ListAdapter<UserItem, MentionViewHolder>(MentionDiffCallback()) {
+class UserItemAdapter(
+    private val onUserItemInteractionListener: OnUserItemInteractionListener
+) : ListAdapter<UserItem, UserItemViewHolder>(UserItemDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MentionViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserItemViewHolder {
         val binding = CardUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MentionViewHolder(binding, onMentionsInteractionListener)
+        return UserItemViewHolder(binding, onUserItemInteractionListener)
     }
 
-    override fun onBindViewHolder(holder: MentionViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserItemViewHolder, position: Int) {
         val user = getItem(position)
         holder.bind(user)
     }
 }
 
-class MentionViewHolder(
+class UserItemViewHolder(
     private val binding: CardUserBinding,
-    private val onMentionsInteractionListener: OnMentionsInteractionListener
+    private val onUserItemInteractionListener: OnUserItemInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(userItem: UserItem) {
@@ -55,13 +55,13 @@ class MentionViewHolder(
             }
 
             root.setOnClickListener {
-                onMentionsInteractionListener.onViewUser(userItem)
+                onUserItemInteractionListener.onViewUser(userItem)
             }
         }
     }
 }
 
-class MentionDiffCallback : DiffUtil.ItemCallback<UserItem>() {
+class UserItemDiffCallback : DiffUtil.ItemCallback<UserItem>() {
     override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
         return oldItem.id == newItem.id
     }

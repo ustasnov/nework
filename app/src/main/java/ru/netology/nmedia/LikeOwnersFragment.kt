@@ -14,11 +14,11 @@ import ru.netology.nmedia.adapter.OnUserItemInteractionListener
 import ru.netology.nmedia.databinding.FragmentUsersItemsBinding
 import ru.netology.nmedia.dto.UserItem
 import ru.netology.nmedia.utils.LongArg
-import ru.netology.nmedia.viewmodel.MentionViewModel
+import ru.netology.nmedia.viewmodel.LikeOwnersViewModel
 
 @AndroidEntryPoint
-class MentionsFragment : Fragment() {
-    val viewModel: MentionViewModel by activityViewModels()
+class LikeOwnersFragment : Fragment() {
+    val viewModel: LikeOwnersViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +28,7 @@ class MentionsFragment : Fragment() {
 
         val binding = FragmentUsersItemsBinding.inflate(inflater, container, false)
 
-        binding.topAppBar.title = getString(R.string.mentors)
+        binding.topAppBar.title = getString(R.string.like_title)
 
         val activity = requireActivity() as AppCompatActivity
         activity.supportActionBar?.hide()

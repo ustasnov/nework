@@ -20,4 +20,7 @@ object DaoModule {
 
     @Provides
     fun provideMentionDao(db: AppDb): MentionDao = db.mentionDao()
+
+    @Provides
+    fun provideLikeOwnersDao(db: AppDb): LikeOwnerDao = db.likeOwnersDao()
 }
