@@ -9,16 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.netology.nmedia.adapter.UserItemAdapter
 import ru.netology.nmedia.adapter.OnUserItemInteractionListener
+import ru.netology.nmedia.adapter.UserItemAdapter
 import ru.netology.nmedia.databinding.FragmentUsersItemsBinding
 import ru.netology.nmedia.dto.UserItem
 import ru.netology.nmedia.utils.LongArg
-import ru.netology.nmedia.viewmodel.MentionViewModel
+import ru.netology.nmedia.viewmodel.SpeakersViewModel
 
 @AndroidEntryPoint
-class MentionsFragment : Fragment() {
-    val viewModel: MentionViewModel by activityViewModels()
+class SpeakersFragment : Fragment() {
+    val viewModel: SpeakersViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +28,7 @@ class MentionsFragment : Fragment() {
 
         val binding = FragmentUsersItemsBinding.inflate(inflater, container, false)
 
-        binding.topAppBar.title = getString(R.string.mentors)
+        binding.topAppBar.title = getString(R.string.speakers)
 
         val activity = requireActivity() as AppCompatActivity
         activity.supportActionBar?.hide()

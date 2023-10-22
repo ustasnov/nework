@@ -152,6 +152,10 @@ class AppActivity : AppCompatActivity() {
                             typeArg = "all"
                         })
                 }
+                R.id.events -> {
+                    //Toast.makeText(this@AppActivity, "Events", Toast.LENGTH_SHORT).show()
+                    findNavController(R.id.navigation).navigate(R.id.eventsFeedFragment)
+                }
 
                 R.id.events -> {
                     Toast.makeText(this@AppActivity, "Events", Toast.LENGTH_SHORT).show()

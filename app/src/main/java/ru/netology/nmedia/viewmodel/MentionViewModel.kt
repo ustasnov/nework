@@ -24,11 +24,11 @@ class MentionViewModel @Inject constructor(
         repository.data.map(::UserItemModel).asLiveData(Dispatchers.Default)
 
     fun setData(id: Long) {
-        data = repository.getPostMentions(id!!).map(::UserItemModel).asLiveData(Dispatchers.Default)
+        data = repository.getMentions(id!!).map(::UserItemModel).asLiveData(Dispatchers.Default)
     }
 
     fun getMentions(id: Long): LiveData<UserItemModel> {
-        return repository.getPostMentions(id).map(::UserItemModel).asLiveData(Dispatchers.Default)
+        return repository.getMentions(id).map(::UserItemModel).asLiveData(Dispatchers.Default)
     }
 
     fun viewById(id: Long) {

@@ -17,10 +17,6 @@ data class Post(
     var attachment: Attachment? = null,
     val ownedByMe: Boolean = false,
     val users: Map<String, UserPreview> = mutableMapOf(),
-    val likes: Double,
-    val shared: Double,
-    val views: Double,
-    val video: String? = null,
 ) : FeedItem
 
 data class Ad(

@@ -3,10 +3,11 @@ package ru.netology.nmedia.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.Event
+import ru.netology.nmedia.dto.EventType
 
 @Entity
-data class PostEntity(
+data class EventEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val authorId: Long,
@@ -14,54 +15,60 @@ data class PostEntity(
     val authorAvatar: String?,
     val authorJob: String?,
     val content: String,
+    val datetime: String,
     val published: String,
     @Embedded
     var coords: CoordinatesEmbeddable?,
-    val link: String?,
-    val mentionedMe: Boolean,
+    val eventType: String,
     val likedByMe: Boolean,
+    val participatedByMe: Boolean,
     @Embedded
     var attachment: AttachmentEmbeddable?,
+    val link: String?,
     val ownedByMe: Boolean,
 ) {
-    fun toDto() = Post(
+    fun toDto() = Event(
         id = id,
         authorId = authorId,
         author = author,
         authorAvatar = authorAvatar,
         authorJob = authorJob,
         content = content,
+        datetime = datetime,
         published = published,
         coords = coords?.toDto(),
-        link = link,
-        mentionedMe = mentionedMe,
+        type = enumValueOf<EventType>(eventType),
         likedByMe = likedByMe,
+        participatedByMe = participatedByMe,
         attachment = attachment?.toDto(),
+        link = link,
         ownedByMe = ownedByMe,
     )
 
     companion object {
-        fun fromDto(dto: Post) =
-            PostEntity(
+        fun fromDto(dto: Event) =
+            EventEntity(
                 id = dto.id,
                 authorId = dto.authorId,
                 author = dto.author,
                 authorAvatar = dto.authorAvatar,
                 authorJob = dto.authorJob,
                 content = dto.content,
+                datetime = dto.datetime,
                 published = dto.published,
                 coords = CoordinatesEmbeddable.fromDto(dto.coords),
-                link = dto.link,
-                mentionedMe = dto.mentionedMe,
+                eventType = dto.type.name,
                 likedByMe = dto.likedByMe,
+                participatedByMe = dto.participatedByMe,
                 attachment = AttachmentEmbeddable.fromDto(dto.attachment),
+                link = dto.link,
                 ownedByMe = dto.ownedByMe,
             )
     }
 }
 
-fun List<PostEntity>.toDto(): List<Post> = map(PostEntity::toDto)
-fun List<Post>.toEntity(): List<PostEntity> = map {
-    PostEntity.fromDto(it)
-}
+fun List<EventEntity>.toDto(): List<Event> = map(EventEntity::toDto)
 
+fun List<Event>.toEntity(): List<EventEntity> = map {
+    EventEntity.fromDto(it)
+}

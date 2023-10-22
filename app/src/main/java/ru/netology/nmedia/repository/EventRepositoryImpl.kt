@@ -4,19 +4,31 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.ApiService
-import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.dao.PostRemoteKeyDao
+import ru.netology.nmedia.dao.EventDao
+import ru.netology.nmedia.dao.EventRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.dto.*
-import ru.netology.nmedia.entity.PostEntity
-import ru.netology.nmedia.entity.PostWithLists
+import ru.netology.nmedia.dto.Attachment
+import ru.netology.nmedia.dto.AttachmentType
+import ru.netology.nmedia.dto.Event
+import ru.netology.nmedia.dto.FeedItem
+import ru.netology.nmedia.dto.Media
+import ru.netology.nmedia.entity.EventEntity
+import ru.netology.nmedia.entity.EventWithLists
 import ru.netology.nmedia.entity.toEntity
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
@@ -25,72 +37,71 @@ import ru.netology.nmedia.model.PhotoModel
 import java.io.IOException
 import javax.inject.Inject
 
-class PostRepositoryImpl @Inject constructor(
+class EventRepositoryImpl @Inject constructor(
     context: Application,
-    private val postDao: PostDao,
+    private val eventDao: EventDao,
     private val apiService: ApiService,
-    postRemoteKeyDao: PostRemoteKeyDao,
+    eventRemoteKeyDao: EventRemoteKeyDao,
     appDb: AppDb,
-) : PostRepository {
+) : EventRepository {
     private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
-    private val key = "newPostContent"
-    private var newPostContentValue = MutableLiveData<String>()
+    private val key = "newEventContent"
+    private var newEventContentValue = MutableLiveData<String>()
 
     @OptIn(ExperimentalPagingApi::class)
     override val data: Flow<PagingData<FeedItem>> = Pager(
         config = PagingConfig(pageSize = 60,
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
             enablePlaceholders = false),
-        pagingSourceFactory = { postDao.getPagingSource() },
-        remoteMediator = PostRemoteMediator(
+        pagingSourceFactory = { eventDao.getPagingSource() },
+        remoteMediator = EventRemoteMediator(
             apiService = apiService,
-            postDao = postDao,
-            postRemoteKeyDao = postRemoteKeyDao,
+            eventDao = eventDao,
+            eventRemoteKeyDao = eventRemoteKeyDao,
             appDb = appDb
         )
     ).flow
         //.map { it.map(PostEntity::toDto)
-        .map { it.map(PostWithLists::toDto)
-        /*
-        .insertSeparators { previous, _ ->
-            if (previous?.id?.rem(5) == 0L) {
-                Ad(Random.nextLong(), "figma.jpg")
-            } else {
-                null
+        .map { it.map(EventWithLists::toDto)
+            /*
+            .insertSeparators { previous, _ ->
+                if (previous?.id?.rem(5) == 0L) {
+                    Ad(Random.nextLong(), "figma.jpg")
+                } else {
+                    null
+                }
             }
+            */
         }
-        */
-    }
 
     override fun getNewer(id: Long): Flow<Int> = flow {
         while (true) {
             delay(10_000)
 
-            val response = apiService.getNewer(id)
+            val response = apiService.getNewerEvents(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-            val posts = response.body().orEmpty()
-            postDao.insert(posts.toEntity())
-            emit(posts.size)
-
+            val events = response.body().orEmpty()
+            eventDao.insert(events.toEntity())
+            emit(events.size)
         }
     }.catch { e -> throw AppError.from(e) }
         .flowOn(Dispatchers.Default)
 
     override suspend fun getAll() {
-        val response = apiService.getAll()
+        val response = apiService.getAllEvents()
         if (!response.isSuccessful) {
             throw RuntimeException(response.message())
         }
-        val posts = response.body() ?: throw RuntimeException("body is null")
-        postDao.insert(posts.map { PostEntity.fromDto(it) })
+        val events = response.body() ?: throw RuntimeException("body is null")
+        eventDao.insert(events.map { EventEntity.fromDto(it) })
     }
 
     override suspend fun likeById(id: Long) {
         try {
-            postDao.likeById(id)
-            val response = apiService.likeById(id)
+            eventDao.likeById(id)
+            val response = apiService.likeEventById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -103,8 +114,8 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun unlikeById(id: Long) {
         try {
-            postDao.unlikeById(id)
-            val response = apiService.unlikeById(id)
+            eventDao.unlikeById(id)
+            val response = apiService.unlikeEventById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -115,14 +126,14 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun save(post: Post) {
+    override suspend fun save(event: Event) {
         try {
-            val response = apiService.save(post.copy(attachment = null))
+            val response = apiService.saveEvent(event.copy(attachment = null))
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            postDao.insert(PostEntity.fromDto(body))
+            eventDao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -130,12 +141,12 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveWithAttachment(post: Post, photoModel: PhotoModel) {
+    override suspend fun saveWithAttachment(event: Event, photoModel: PhotoModel) {
         try {
             val media = uploadMedia(photoModel)
 
-            val response = apiService.save(
-                post.copy(
+            val response = apiService.saveEvent(
+                event.copy(
                     attachment = Attachment(
                         media.id,
                         //"",§
@@ -147,7 +158,7 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            postDao.insert(PostEntity.fromDto(body))
+            eventDao.insert(EventEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -167,25 +178,25 @@ class PostRepositoryImpl @Inject constructor(
         return requireNotNull(response.body())
     }
 
-    override fun saveNewPostContent(text: String) {
-        newPostContentValue.value = text
+    override fun saveNewEventContent(text: String) {
+        newEventContentValue.value = text
         with(prefs.edit()) {
-            putString(key, newPostContentValue.value)
+            putString(key, newEventContentValue.value)
             apply()
         }
     }
 
-    override fun getNewPostContent(): LiveData<String> {
+    override fun getNewEventContent(): LiveData<String> {
         prefs.getString(key, "")?.let {
-            newPostContentValue.value = it
+            newEventContentValue.value = it
         }
-        return newPostContentValue
+        return newEventContentValue
     }
 
     override suspend fun removeById(id: Long) {
         try {
-            postDao.removeById(id)
-            apiService.removeById(id)
+            eventDao.removeById(id)
+            apiService.removeEventById(id)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

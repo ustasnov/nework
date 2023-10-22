@@ -7,25 +7,25 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import ru.netology.nmedia.model.UserItemModel
-import ru.netology.nmedia.repository.LikeOwnersRepository
+import ru.netology.nmedia.repository.ParticipantsRepository
 import javax.inject.Inject
 
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-class LikeOwnersViewModel @Inject constructor(
-    private val repository: LikeOwnersRepository,
+class ParticipantsViewModel @Inject constructor(
+    private val repository: ParticipantsRepository,
 ) : ViewModel() {
 
     var data: LiveData<UserItemModel> =
         repository.data.map(::UserItemModel).asLiveData(Dispatchers.Default)
 
     fun setData(id: Long) {
-        data = repository.getLikeOwners(id!!).map(::UserItemModel).asLiveData(
+        data = repository.getParticipants(id!!).map(::UserItemModel).asLiveData(
             Dispatchers.Default)
     }
 
-    fun getLikeOwners(id: Long): LiveData<UserItemModel> {
-        return repository.getLikeOwners(id).map(::UserItemModel).asLiveData(
+    fun getParticipants(id: Long): LiveData<UserItemModel> {
+        return repository.getParticipants(id).map(::UserItemModel).asLiveData(
             Dispatchers.Default)
     }
 

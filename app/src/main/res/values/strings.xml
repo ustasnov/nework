@@ -67,4 +67,11 @@
     <string name="like_caption">Likes:</string>
     <string name="mentors">Mentors</string>
     <string name="like_title">Like</string>
+    <string name="participants">Participants</string>
+    <string name="speakers">Speakers</string>
+    <string name="geo_coordinates">Geo coordinates</string>
+    <string name="site_caption">Site:</string>
+    <string name="new_events">New events</string>
+    <string name="empty_events">There are no events. If you create a new event, it will appear here</string>
+    <string name="add">Add</string>
 </resources>

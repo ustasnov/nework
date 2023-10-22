@@ -10,37 +10,41 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.ErrorType
+import ru.netology.nmedia.dto.Event
+import ru.netology.nmedia.dto.EventType
 import ru.netology.nmedia.dto.FeedItem
-import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
-import ru.netology.nmedia.repository.PostRepository
+import ru.netology.nmedia.repository.EventRepository
 import ru.netology.nmedia.utils.SingleLiveEvent
 import javax.inject.Inject
 
-val empty = Post(
+val emptyEvent = Event(
     id = 0L,
     authorId = 0L,
     author = "",
     authorAvatar = null,
     authorJob = null,
     content = "",
+    datetime = "",
     published = "",
     coords = null,
-    link = null,
+    type = EventType.OFFLINE,
     likeOwnerIds = emptyList(),
-    mentionIds = emptyList(),
-    mentionedMe = false,
     likedByMe = false,
+    speakerIds = emptyList(),
+    participantsIds = emptyList(),
+    participatedByMe = false,
     attachment = null,
+    link = null,
     ownedByMe = false,
     users = mutableMapOf(),
 )
 
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-class PostViewModel @Inject constructor(
-    private val repository: PostRepository,
+class EventViewModel @Inject constructor(
+    private val repository: EventRepository,
     appAuth: AppAuth,
 ) : ViewModel() {
     private val cached = repository
@@ -49,16 +53,16 @@ class PostViewModel @Inject constructor(
 
     val data: Flow<PagingData<FeedItem>> = appAuth.data
         .flatMapLatest { token ->
-            repository.data.map { posts ->
-                posts.map { post ->
-                    if (post is Post) {
-                        post.copy(ownedByMe = post.authorId == token?.id)
+            repository.data.map { events ->
+                events.map { event ->
+                    if (event is Event) {
+                        event.copy(ownedByMe = event.authorId == token?.id)
                     } else {
-                        post
+                        event
                     }
                 }
             }
-    }.flowOn(Dispatchers.Default)
+        }.flowOn(Dispatchers.Default)
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
@@ -68,31 +72,30 @@ class PostViewModel @Inject constructor(
     val photo: LiveData<PhotoModel?>
         get() = _photo
 
-    val edited = MutableLiveData(empty)
-    var isNewPost = false
+    val edited = MutableLiveData(emptyEvent)
+    var isNewEvent = false
 
-    private val _postCreated = SingleLiveEvent<Unit>()
-    val postCreated: LiveData<Unit>
-        get() = _postCreated
+    private val _eventCreated = SingleLiveEvent<Unit>()
+    val eventCreated: LiveData<Unit>
+        get() = _eventCreated
 
-    private val _currentPostId = MutableLiveData<Long>()
-    val currentPostId: LiveData<Long>
-        get() = _currentPostId
+    private val _currentEventId = MutableLiveData<Long>()
+    val currentEventId: LiveData<Long>
+        get() = _currentEventId
 
-    private val _currentPost =
-        MutableLiveData(empty.copy())
+    private val _currentEvent =
+        MutableLiveData(emptyEvent.copy())
 
-    val currentPost: LiveData<Post>
-        get() = _currentPost
+    val currentEvent: LiveData<Event>
+        get() = _currentEvent
 
     init {
-        loadPosts()
+        loadEvents()
     }
 
-    fun loadPosts() = viewModelScope.launch {
+    fun loadEvents() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
-            //repository.getAll()
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
@@ -102,7 +105,6 @@ class PostViewModel @Inject constructor(
     fun refresh() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
-            //repository.getAll()
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
@@ -117,16 +119,16 @@ class PostViewModel @Inject constructor(
                     else -> repository.saveWithAttachment(it.copy(ownedByMe = true), photo)
                 }
             }
-            edited.value = empty
-            _postCreated.postValue(Unit)
+            edited.value = emptyEvent
+            _eventCreated.postValue(Unit)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.SAVE)
         }
     }
 
-    fun edit(post: Post) {
-        toggleNewPost(false)
-        edited.value = post
+    fun edit(event: Event) {
+        toggleNewEvent(false)
+        edited.value = event
     }
 
     fun changeContent(content: String) {
@@ -137,43 +139,43 @@ class PostViewModel @Inject constructor(
         edited.value = edited.value?.copy(content = text)
     }
 
-    fun toggleNewPost(isNew: Boolean) {
-        isNewPost = isNew
+    fun toggleNewEvent(isNew: Boolean) {
+        isNewEvent = isNew
     }
 
-    fun likeById(post: Post) = viewModelScope.launch {
-        _currentPost.setValue(post)
+    fun likeById(event: Event) = viewModelScope.launch {
+        _currentEvent.setValue(event)
         try {
-            if (_currentPost.value?.likedByMe == false) {
-                repository.likeById(_currentPost.value!!.id)
+            if (_currentEvent.value?.likedByMe == false) {
+                repository.likeById(_currentEvent.value!!.id)
             } else {
-                repository.unlikeById(_currentPost.value!!.id)
+                repository.unlikeById(_currentEvent.value!!.id)
             }
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LIKE)
         }
     }
 
-    fun viewById(post: Post) {
-        toggleNewPost(false)
-        _currentPost.setValue(post)
+    fun viewById(event: Event) {
+        toggleNewEvent(false)
+        _currentEvent.setValue(event)
     }
 
     fun removeById(id: Long) = viewModelScope.launch {
-        _currentPostId.setValue(id)
+        _currentEventId.setValue(id)
         try {
-            repository.removeById(_currentPostId.value!!)
+            repository.removeById(_currentEventId.value!!)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.REMOVE)
         }
     }
 
     fun saveNewPostContent(text: String) {
-        repository.saveNewPostContent(text)
+        repository.saveNewEventContent(text)
     }
 
     fun getNewPostCont(): LiveData<String> {
-        return repository.getNewPostContent()
+        return repository.getNewEventContent()
     }
 
     fun clearPhoto() {

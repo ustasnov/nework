@@ -12,8 +12,8 @@ interface MentionDao {
     @Query("SELECT * FROM MentionEntity ORDER BY name")
     fun getAll(): Flow<List<MentionEntity>>
 
-    @Query("SELECT * FROM MentionEntity WHERE postId = :id ORDER BY name")
-    fun getPostMentions(id: Long): Flow<List<MentionEntity>>
+    @Query("SELECT * FROM MentionEntity WHERE parentId = :id ORDER BY name")
+    fun getMentions(id: Long): Flow<List<MentionEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(mentionEntity: MentionEntity)

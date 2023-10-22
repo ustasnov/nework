@@ -6,5 +6,5 @@ import ru.netology.nmedia.dto.UserItem
 interface MentionsRepository {
     var data: Flow<List<UserItem>>
 
-    fun getPostMentions(id: Long): Flow<List<UserItem>>
+    fun getMentions(id: Long): Flow<List<UserItem>>
 }

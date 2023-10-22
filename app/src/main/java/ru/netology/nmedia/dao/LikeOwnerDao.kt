@@ -12,8 +12,8 @@ interface LikeOwnerDao {
     @Query("SELECT * FROM LikeOwnerEntity ORDER BY name")
     fun getAll(): Flow<List<LikeOwnerEntity>>
 
-    @Query("SELECT * FROM LikeOwnerEntity WHERE postId = :id ORDER BY name")
-    fun getPostLikeOwners(id: Long): Flow<List<LikeOwnerEntity>>
+    @Query("SELECT * FROM LikeOwnerEntity WHERE parentId = :id ORDER BY name")
+    fun getLikeOwners(id: Long): Flow<List<LikeOwnerEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(likeOwnerEntity: LikeOwnerEntity)

@@ -6,21 +6,6 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/common_spacing">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/geo"
-        style="@style/Widget.AppTheme.GeoButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:checkable="true"
-        android:contentDescription="@string/geo_coordinates"
-        android:minWidth="@dimen/avatar_size"
-        android:minHeight="@dimen/avatar_size"
-        android:paddingLeft="@dimen/size_12dp"
-        app:layout_constraintEnd_toStartOf="@+id/link"
-        app:layout_constraintTop_toBottomOf="@id/barrier1" />
-
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
@@ -98,13 +83,15 @@
         android:id="@+id/attachment"
         android:layout_width="match_parent"
         android:layout_height="@dimen/attachment_dimen"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="@string/view_move_description"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/postText"
+        app:layout_constraintTop_toBottomOf="@+id/siteUrl"
+        app:layout_constraintVertical_bias="0.0"
         tools:srcCompat="@drawable/youtube" />
 
     <ImageView
@@ -112,12 +99,12 @@
         android:layout_width="@dimen/size_80dp"
         android:layout_height="@dimen/size_80dp"
         android:contentDescription="@string/view_move_description"
-        app:tint="@color/material_dynamic_secondary70"
         app:layout_constraintBottom_toBottomOf="@id/attachment"
         app:layout_constraintEnd_toEndOf="@id/attachment"
         app:layout_constraintStart_toStartOf="@id/attachment"
         app:layout_constraintTop_toTopOf="@id/attachment"
-        app:srcCompat="@drawable/ic_play_80" />
+        app:srcCompat="@drawable/ic_play_80"
+        app:tint="@color/material_dynamic_secondary70" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier1"
@@ -138,26 +125,26 @@
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        app:layout_constraintEnd_toStartOf="@+id/ment"
+        app:layout_constraintEnd_toStartOf="@id/participants"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/ment"
+        android:id="@+id/participants"
         style="@style/Widget.AppTheme.MentorButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        android:contentDescription="@string/share_post"
+        android:contentDescription="@string/participants"
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        app:icon="@drawable/ic_mentors_24"
-        app:layout_constraintEnd_toStartOf="@+id/geo"
+        app:icon="@drawable/ic_parcticipants_24"
+        app:layout_constraintEnd_toStartOf="@id/speakers"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/link"
+        android:id="@+id/speakers"
         style="@style/Widget.AppTheme.LinkButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -166,7 +153,22 @@
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        app:icon="@drawable/ic_link_24"
+        app:icon="@drawable/ic_speakers_24"
+        app:layout_constraintEnd_toStartOf="@id/geo"
+        app:layout_constraintTop_toBottomOf="@id/barrier1" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/geo"
+        style="@style/Widget.AppTheme.GeoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:checkable="true"
+        android:contentDescription="@string/geo_coordinates"
+        android:minWidth="@dimen/avatar_size"
+        android:minHeight="@dimen/avatar_size"
+        android:paddingLeft="@dimen/size_12dp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
@@ -201,5 +203,40 @@
         app:layout_constraintBottom_toBottomOf="@+id/likeCaption"
         app:layout_constraintStart_toEndOf="@+id/likeCaption"
         app:layout_constraintTop_toTopOf="@+id/likeCaption" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/siteGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="siteCaption,siteUrl" />
+
+    <TextView
+        android:id="@+id/siteCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/site_caption"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/postText" />
+
+    <TextView
+        android:id="@+id/siteUrl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:autoLink="web"
+        android:contextClickable="true"
+        android:ellipsize="end"
+        android:linksClickable="true"
+        android:singleLine="true"
+        android:textColorLink="#000077"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/siteCaption"
+        app:layout_constraintTop_toTopOf="@+id/siteCaption"
+        tools:text="https://www.netology.ru" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

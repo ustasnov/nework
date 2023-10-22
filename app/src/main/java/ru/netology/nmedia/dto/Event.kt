@@ -9,8 +9,8 @@ data class Event(
     val content: String,
     val datetime: String,
     val published: String,
-    val coordinates: Coordinates? = null,
-    val type: String,
+    val coords: Coordinates? = null,
+    val type: EventType,
     val likeOwnerIds: List<Long> = emptyList(),
     val likedByMe: Boolean = false,
     val speakerIds: List<Long> = emptyList(),
@@ -21,3 +21,8 @@ data class Event(
     val ownedByMe: Boolean = false,
     val users: Map<String, UserPreview> = mutableMapOf(),
 ) : FeedItem
+
+enum class EventType {
+    OFFLINE,
+    ONLINE
+}

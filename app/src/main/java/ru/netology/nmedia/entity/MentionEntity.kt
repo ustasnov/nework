@@ -7,13 +7,13 @@ import ru.netology.nmedia.dto.UserItem
 @Entity
 data class MentionEntity(
     @PrimaryKey val id: Long,
-    val postId: Long,
+    val parentId: Long,
     val name: String,
     val avatar: String?,
 ) {
     fun toDto() = UserItem(
         id = id,
-        postId = postId,
+        parentId = parentId,
         name = name,
         avatar = avatar,
     )
@@ -22,7 +22,7 @@ data class MentionEntity(
         fun fromDto(dto: UserItem) =
             MentionEntity(
                 id = dto.id,
-                postId = dto.postId,
+                parentId = dto.parentId,
                 name = dto.name,
                 avatar = dto.avatar,
             )
@@ -30,6 +30,6 @@ data class MentionEntity(
 }
 
 fun List<MentionEntity>.toDto(): List<UserItem> = map(MentionEntity::toDto)
-fun List<UserItem>.toMentionsEntity(): List<LikeOwnerEntity> = map {
-    LikeOwnerEntity.fromDto(it)
+fun List<UserItem>.toMentionsEntity(): List<MentionEntity> = map {
+    MentionEntity.fromDto(it)
 }

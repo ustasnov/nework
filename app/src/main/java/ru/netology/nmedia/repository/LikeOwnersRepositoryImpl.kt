@@ -11,9 +11,9 @@ class LikeOwnersRepositoryImpl  @Inject constructor(
     private val likeOwnerDao: LikeOwnerDao
 ): LikeOwnersRepository {
     override var data: Flow<List<UserItem>> =
-        likeOwnerDao.getPostLikeOwners(-1).map { it.map(LikeOwnerEntity::toDto) }
+        likeOwnerDao.getLikeOwners(-1).map { it.map(LikeOwnerEntity::toDto) }
 
-    override fun getPostLikeOwners(id: Long): Flow<List<UserItem>> {
-        return  likeOwnerDao.getPostLikeOwners(id).map { it.map(LikeOwnerEntity::toDto) }
+    override fun getLikeOwners(id: Long): Flow<List<UserItem>> {
+        return  likeOwnerDao.getLikeOwners(id).map { it.map(LikeOwnerEntity::toDto) }
     }
 }

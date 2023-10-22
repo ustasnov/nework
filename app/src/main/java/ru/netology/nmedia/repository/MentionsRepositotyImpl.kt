@@ -11,9 +11,9 @@ class MentionsRepositotyImpl @Inject constructor(
     private val mentionDao: MentionDao
 ): MentionsRepository {
     override var data: Flow<List<UserItem>> =
-        mentionDao.getPostMentions(-1).map { it.map(MentionEntity::toDto) }
+        mentionDao.getMentions(-1).map { it.map(MentionEntity::toDto) }
 
-    override fun getPostMentions(id: Long): Flow<List<UserItem>> {
-        return  mentionDao.getPostMentions(id).map { it.map(MentionEntity::toDto) }
+    override fun getMentions(id: Long): Flow<List<UserItem>> {
+        return  mentionDao.getMentions(id).map { it.map(MentionEntity::toDto) }
     }
 }

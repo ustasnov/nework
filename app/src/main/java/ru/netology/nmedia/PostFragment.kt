@@ -55,6 +55,7 @@ class PostFragment : Fragment() {
                 }
             }
 
+            /*
             override fun onShare(post: Post) {
                 if (authViewModel.isAuthorized) {
                     viewModel.shareById(post.id)
@@ -76,6 +77,8 @@ class PostFragment : Fragment() {
                 }
             }
 
+             */
+
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
                 findNavController().navigate(
@@ -91,6 +94,7 @@ class PostFragment : Fragment() {
                 findNavController().navigate(R.id.action_postFragment_to_feedFragment)
             }
 
+            /*
             override fun onPlayVideo(post: Post) {
                 viewModel.toggleNewPost(false)
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
@@ -98,6 +102,8 @@ class PostFragment : Fragment() {
                     startActivity(intent)
                 }
             }
+
+             */
 
             override fun onViewAttachment(post: Post) {
                 findNavController().navigate(

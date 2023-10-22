@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.UserItem
 
 @Entity
-data class LikeOwnerEntity(
+data class ParticipantEntity(
     @PrimaryKey val id: Long,
     val parentId: Long,
     val name: String,
@@ -20,7 +20,7 @@ data class LikeOwnerEntity(
 
     companion object {
         fun fromDto(dto: UserItem) =
-            LikeOwnerEntity(
+            ParticipantEntity(
                 id = dto.id,
                 parentId = dto.parentId,
                 name = dto.name,
@@ -29,7 +29,7 @@ data class LikeOwnerEntity(
     }
 }
 
-fun List<LikeOwnerEntity>.toDto(): List<UserItem> = map(LikeOwnerEntity::toDto)
-fun List<UserItem>.toLikeOwnersEntity(): List<LikeOwnerEntity> = map {
-    LikeOwnerEntity.fromDto(it)
+fun List<ParticipantEntity>.toDto(): List<UserItem> = map(ParticipantEntity::toDto)
+fun List<UserItem>.toParticipantEntity(): List<ParticipantEntity> = map {
+    ParticipantEntity.fromDto(it)
 }

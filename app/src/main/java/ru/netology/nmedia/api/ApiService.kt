@@ -3,6 +3,7 @@ package ru.netology.nmedia.api
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
+import ru.netology.nmedia.dto.Event
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
@@ -54,5 +55,31 @@ interface ApiService {
 
     // events
 
+    @GET("events")
+    suspend fun getAllEvents(): Response<List<Event>>
+
+    @GET("events/latest")
+    suspend fun getLatestEvents(@Query("count") count: Int): Response<List<Event>>
+
+    @GET("events/{id}/before")
+    suspend fun getBeforeEvents(@Path("id") id: Long, @Query("count") count: Int): Response<List<Event>>
+
+    @GET("events/{id}/after")
+    suspend fun getAfterEvents(@Path("id") id: Long, @Query("count") count: Int): Response<List<Event>>
+
+    @POST("events")
+    suspend fun saveEvent(@Body event: Event): Response<Event>
+
+    @DELETE("events/{id}")
+    suspend fun removeEventById(@Path("id") id: Long): Response<Unit>
+
+    @POST("events/{id}/likes")
+    suspend fun likeEventById(@Path("id") id: Long): Response<Event>
+
+    @DELETE("events/{id}/likes")
+    suspend fun unlikeEventById(@Path("id") id: Long): Response<Event>
+
+    @GET("events/{id}/newer")
+    suspend fun getNewerEvents(@Path("id") id: Long): Response<List<Event>>
 
 }

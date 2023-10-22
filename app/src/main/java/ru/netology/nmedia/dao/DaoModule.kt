@@ -23,4 +23,16 @@ object DaoModule {
 
     @Provides
     fun provideLikeOwnersDao(db: AppDb): LikeOwnerDao = db.likeOwnersDao()
+
+    @Provides
+    fun provideParticipantDao(db: AppDb): ParticipantDao = db.participantDao()
+
+    @Provides
+    fun provideSpeakerDao(db: AppDb): SpeakerDao = db.speakerDao()
+
+    @Provides
+    fun provideEventRemoteKeyDao(db: AppDb): EventRemoteKeyDao = db.eventRemoteKeyDao()
+
+    @Provides
+    fun provideEventDao(db: AppDb): EventDao = db.eventDao()
 }

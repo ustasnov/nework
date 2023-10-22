@@ -60,4 +60,11 @@
     <string name="like_caption">Нравится:</string>
     <string name="mentors">Наставники</string>
     <string name="like_title">Нравится</string>
+    <string name="participants">Участники</string>
+    <string name="speakers">Докладчики</string>
+    <string name="geo_coordinates">Положение на карте</string>
+    <string name="site_caption">Сайт:</string>
+    <string name="new_events">Свежие события</string>
+    <string name="empty_events">Событий нет. Если создадите новое событие, то оно появится здесь</string>
+    <string name="add">Добавить</string>
 </resources>
