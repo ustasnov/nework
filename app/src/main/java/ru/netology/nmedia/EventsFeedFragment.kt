@@ -179,7 +179,7 @@ class EventsFeedFragment : Fragment() {
                 }
             }
             //}, observer)
-        })
+        }, this.requireContext())
 
         binding.list.adapter = adapter
 

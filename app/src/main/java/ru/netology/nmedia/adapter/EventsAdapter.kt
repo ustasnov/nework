@@ -1,5 +1,6 @@
 package ru.netology.nmedia.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardEventBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Event
+import ru.netology.nmedia.dto.EventType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.utils.AndroidUtils
 
@@ -29,7 +31,8 @@ interface OnInteractionEventListener {
 }
 
 class EventsAdapter(
-    private val onInteractionEventListener: OnInteractionEventListener
+    private val onInteractionEventListener: OnInteractionEventListener,
+    private val context: Context
 ) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(EventDiffCallback()) {
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
@@ -42,7 +45,7 @@ class EventsAdapter(
             R.layout.card_event -> {
                 val binding =
                     CardEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                EventViewHolder(binding, onInteractionEventListener)
+                EventViewHolder(binding, onInteractionEventListener, context)
             }
             else -> error("unknown view type: $viewType")
         }
@@ -58,7 +61,8 @@ class EventsAdapter(
 
 class EventViewHolder(
     private val binding: CardEventBinding,
-    private val onInteractionEventListener: OnInteractionEventListener
+    private val onInteractionEventListener: OnInteractionEventListener,
+    private val context: Context
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(event: Event) {
@@ -69,6 +73,12 @@ class EventViewHolder(
             favorite.isChecked = event.likedByMe
             favorite.isCheckable = event.ownedByMe
             likesCount.text = formatValue(event.likeOwnerIds.size.toDouble())
+            if (event.type === EventType.ONLINE) {
+                eventType.text = context.getString(R.string.type_online)
+            } else {
+                eventType.text = context.getString(R.string.type_offline)
+            }
+            eventDatetime.text= AndroidUtils.formatDate(event.datetime)
             if (event.participantsIds.size > 0) {
                 participants.setIconTintResource(R.color.teal_700)
                 participants.text = formatValue(event.participantsIds.size.toDouble())

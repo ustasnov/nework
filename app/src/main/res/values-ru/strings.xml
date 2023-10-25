@@ -67,4 +67,8 @@
     <string name="new_events">Свежие события</string>
     <string name="empty_events">Событий нет. Если создадите новое событие, то оно появится здесь</string>
     <string name="add">Добавить</string>
+    <string name="date_of_the_event">Дата и время:</string>
+    <string name="type">Формат проведения:</string>
+    <string name="type_online">в сети</string>
+    <string name="type_offline">автономно</string>
 </resources>

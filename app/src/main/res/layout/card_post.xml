@@ -54,10 +54,8 @@
         android:layout_width="@dimen/size_0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing"
-        android:layout_marginEnd="@dimen/common_spacing"
         android:text="@string/published"
         app:layout_constraintBottom_toBottomOf="@id/avatar"
-        app:layout_constraintEnd_toStartOf="@id/menu"
         app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/author"
         tools:text="@sample/posts.json/data/published" />
@@ -201,5 +199,15 @@
         app:layout_constraintBottom_toBottomOf="@+id/likeCaption"
         app:layout_constraintStart_toEndOf="@+id/likeCaption"
         app:layout_constraintTop_toTopOf="@+id/likeCaption" />
+
+    <TextView
+        android:id="@+id/postId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/published"
+        app:layout_constraintEnd_toStartOf="@+id/menu"
+        app:layout_constraintStart_toEndOf="@+id/published" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

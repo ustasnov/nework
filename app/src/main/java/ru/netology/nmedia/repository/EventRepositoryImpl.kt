@@ -83,7 +83,8 @@ class EventRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val events = response.body().orEmpty()
-            eventDao.insert(events.toEntity())
+            //eventDao.insert(events.toEntity())
+            eventDao.insertEventWithLists(events.map { EventWithLists.fromDto(it) })
             emit(events.size)
         }
     }.catch { e -> throw AppError.from(e) }
@@ -95,7 +96,7 @@ class EventRepositoryImpl @Inject constructor(
             throw RuntimeException(response.message())
         }
         val events = response.body() ?: throw RuntimeException("body is null")
-        eventDao.insert(events.map { EventEntity.fromDto(it) })
+        eventDao.insertEventWithLists(events.map { EventWithLists.fromDto(it) })
     }
 
     override suspend fun likeById(id: Long) {
@@ -133,7 +134,7 @@ class EventRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            eventDao.insert(EventEntity.fromDto(body))
+            eventDao.insertEventWithLists(EventWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -158,7 +159,7 @@ class EventRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            eventDao.insert(EventEntity.fromDto(body))
+            eventDao.insertEventWithLists(EventWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

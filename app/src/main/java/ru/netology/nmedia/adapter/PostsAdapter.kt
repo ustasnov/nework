@@ -96,6 +96,7 @@ class PostViewHolder(
             postText.text = post.content
             favorite.isChecked = post.likedByMe
             favorite.isCheckable = post.ownedByMe
+            postId.text = post.id.toString()
             //favorite.text = formatValue(post.likes)
             //share.text = formatValue(post.shared)
             //views.text = formatValue(post.views)
