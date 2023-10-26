@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    context: Application,
+    //context: Application,
     private val userDao: UserDao,
     private val apiService: ApiService,
-    appDb: AppDb,
+    //appDb: AppDb,
 ) : UserRepository {
 
     override var data: Flow<List<User>> =

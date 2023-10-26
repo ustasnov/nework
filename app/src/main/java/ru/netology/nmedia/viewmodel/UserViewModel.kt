@@ -52,7 +52,9 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    /*
     fun viewById(id: Long) {
         //toggleNewPost(false)
     }
+     */
 }

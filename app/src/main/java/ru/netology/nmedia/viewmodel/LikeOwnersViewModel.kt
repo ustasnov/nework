@@ -20,7 +20,7 @@ class LikeOwnersViewModel @Inject constructor(
         repository.data.map(::UserItemModel).asLiveData(Dispatchers.Default)
 
     fun setData(id: Long) {
-        data = repository.getLikeOwners(id!!).map(::UserItemModel).asLiveData(
+        data = repository.getLikeOwners(id).map(::UserItemModel).asLiveData(
             Dispatchers.Default)
     }
 
@@ -29,7 +29,9 @@ class LikeOwnersViewModel @Inject constructor(
             Dispatchers.Default)
     }
 
+    /*
     fun viewById(id: Long) {
         //toggleNewPost(false)
     }
+     */
 }

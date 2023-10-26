@@ -20,7 +20,7 @@ class SpeakersViewModel @Inject constructor(
         repository.data.map(::UserItemModel).asLiveData(Dispatchers.Default)
 
     fun setData(id: Long) {
-        data = repository.getSpeakers(id!!).map(::UserItemModel).asLiveData(
+        data = repository.getSpeakers(id).map(::UserItemModel).asLiveData(
             Dispatchers.Default)
     }
 
@@ -29,7 +29,9 @@ class SpeakersViewModel @Inject constructor(
             Dispatchers.Default)
     }
 
+    /*
     fun viewById(id: Long) {
         //toggleNewPost(false)
     }
+     */
 }

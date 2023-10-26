@@ -157,10 +157,6 @@ class AppActivity : AppCompatActivity() {
                     findNavController(R.id.navigation).navigate(R.id.eventsFeedFragment)
                 }
 
-                R.id.events -> {
-                    Toast.makeText(this@AppActivity, "Events", Toast.LENGTH_SHORT).show()
-                }
-
                 R.id.profile -> {
                     Toast.makeText(this@AppActivity, "Profile", Toast.LENGTH_SHORT).show()
                 }

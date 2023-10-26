@@ -39,7 +39,7 @@ class ParticipantsFragment : Fragment() {
 
         val adapter = UserItemAdapter(object : OnUserItemInteractionListener {
             override fun onViewUser(user: UserItem) {
-                viewModel.viewById(user.id)
+                //viewModel.viewById(user.id)
                 /*
                 findNavController().navigate(
                     R.id.action_feedFragment_to_postFragment,

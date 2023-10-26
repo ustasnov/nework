@@ -73,7 +73,6 @@ data class PostWithLists(
                 mentions = fillMentionsList(it)
             )
         }
-
     }
 }
 

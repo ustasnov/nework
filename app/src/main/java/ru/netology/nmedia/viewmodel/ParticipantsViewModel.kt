@@ -20,7 +20,7 @@ class ParticipantsViewModel @Inject constructor(
         repository.data.map(::UserItemModel).asLiveData(Dispatchers.Default)
 
     fun setData(id: Long) {
-        data = repository.getParticipants(id!!).map(::UserItemModel).asLiveData(
+        data = repository.getParticipants(id).map(::UserItemModel).asLiveData(
             Dispatchers.Default)
     }
 
@@ -29,7 +29,10 @@ class ParticipantsViewModel @Inject constructor(
             Dispatchers.Default)
     }
 
+    /*
     fun viewById(id: Long) {
         //toggleNewPost(false)
     }
+
+     */
 }

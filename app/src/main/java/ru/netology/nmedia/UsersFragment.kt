@@ -32,7 +32,7 @@ class UsersFragment : Fragment() {
 
         val adapter = UsersAdapter(object : OnUsersInteractionListener {
             override fun onViewUser(user: User) {
-                viewModel.viewById(user.id)
+                //viewModel.viewById(user.id)
                 /*
                 findNavController().navigate(
                     R.id.action_feedFragment_to_postFragment,
