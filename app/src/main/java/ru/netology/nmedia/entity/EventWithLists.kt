@@ -81,7 +81,7 @@ data class EventWithLists(
 
         fun fillSpeakersList(event: Event): List<SpeakerEntity> {
             val result: MutableList<SpeakerEntity> = mutableListOf()
-            event.participantsIds.forEach {
+            event.speakerIds.forEach {
                 val key = it.toString()
                 if (event.users.containsKey(key)) {
                     val userPreview = event.users[key]

@@ -15,6 +15,7 @@ import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.*
+import ru.netology.nmedia.entity.EventWithLists
 import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.entity.toEntity
@@ -123,7 +124,8 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            postDao.insert(PostEntity.fromDto(body))
+            //postDao.insert(PostEntity.fromDto(body))
+            postDao.insertPostWithLists(PostWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -148,7 +150,8 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            postDao.insert(PostEntity.fromDto(body))
+            //postDao.insert(PostEntity.fromDto(body))
+            postDao.insertPostWithLists(PostWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

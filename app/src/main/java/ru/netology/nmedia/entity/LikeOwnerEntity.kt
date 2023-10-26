@@ -1,12 +1,11 @@
 package ru.netology.nmedia.entity
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.UserItem
 
-@Entity
+@Entity(primaryKeys = ["id", "parentId"])
 data class LikeOwnerEntity(
-    @PrimaryKey val id: Long,
+    val id: Long,
     val parentId: Long,
     val name: String,
     val avatar: String?,

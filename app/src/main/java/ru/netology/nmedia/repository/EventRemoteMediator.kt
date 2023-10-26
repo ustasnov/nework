@@ -92,7 +92,7 @@ class EventRemoteMediator(
                                 ),
                             )
                         )
-                        eventDao.clear()
+                        eventDao.clearWithLists()
                     }
                     LoadType.PREPEND -> {
                         if (body.isNotEmpty()) {

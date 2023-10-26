@@ -89,6 +89,23 @@ interface EventDao {
     @Query("DELETE FROM EventEntity")
     suspend fun clear()
 
+    @Query("DELETE FROM LikeOwnerEntity")
+    suspend fun clearLikeOwners()
+
+    @Query("DELETE FROM ParticipantEntity")
+    suspend fun clearParticipants()
+
+    @Query("DELETE FROM SpeakerEntity")
+    suspend fun clearSpeakers()
+
+    @Transaction
+    suspend fun clearWithLists() {
+        clearLikeOwners()
+        clearParticipants()
+        clearSpeakers()
+        clear()
+    }
+
     @Query("SELECT COUNT(*) FROM EventEntity")
     suspend fun countPosts(): Int
 }

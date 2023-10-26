@@ -78,6 +78,19 @@ interface PostDao {
     @Query("DELETE FROM PostEntity")
     suspend fun clear()
 
+    @Query("DELETE FROM LikeOwnerEntity")
+    suspend fun clearLikeOwners()
+
+    @Query("DELETE FROM MentionEntity")
+    suspend fun clearMentions()
+
+    @Transaction
+    suspend fun clearWithLists() {
+        clearLikeOwners()
+        clearMentions()
+        clear()
+    }
+
     @Query("SELECT COUNT(*) FROM PostEntity")
     suspend fun countPosts(): Int
 }
