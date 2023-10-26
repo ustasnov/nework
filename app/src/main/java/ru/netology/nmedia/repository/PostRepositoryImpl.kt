@@ -71,7 +71,8 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val posts = response.body().orEmpty()
-            postDao.insert(posts.toEntity())
+            //postDao.insert(posts.toEntity())
+            postDao.insertPostsWithLists(posts.map { PostWithLists.fromDto(it) })
             emit(posts.size)
 
         }
@@ -84,7 +85,7 @@ class PostRepositoryImpl @Inject constructor(
             throw RuntimeException(response.message())
         }
         val posts = response.body() ?: throw RuntimeException("body is null")
-        postDao.insert(posts.map { PostEntity.fromDto(it) })
+        postDao.insertPostsWithLists(posts.map { PostWithLists.fromDto(it) })
     }
 
     override suspend fun likeById(id: Long) {

@@ -93,7 +93,7 @@ class PostRemoteMediator(
                                 ),
                             )
                         )
-                        postDao.clear()
+                        //postDao.clear()
                     }
                     LoadType.PREPEND -> {
                         if (body.isNotEmpty()) {
