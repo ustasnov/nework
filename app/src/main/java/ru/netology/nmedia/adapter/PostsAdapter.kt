@@ -96,16 +96,18 @@ class PostViewHolder(
             postText.text = post.content
             favorite.isChecked = post.likedByMe
             favorite.isCheckable = post.ownedByMe
-            postId.text = post.id.toString()
+            //postId.text = post.id.toString()
             //favorite.text = formatValue(post.likes)
             //share.text = formatValue(post.shared)
             //views.text = formatValue(post.views)
             likesCount.text = formatValue(post.likeOwnerIds.size.toDouble())
+            siteUrl.text = post.link
             if (post.link.isNullOrBlank()) {
-                link.setIconTintResource(R.color.ext_gray)
+                siteGroup.visibility = View.GONE
             } else {
-                link.setIconTintResource(R.color.teal_700)
+                siteGroup.visibility = View.VISIBLE
             }
+
             if (post.mentionIds.size > 0) {
                 ment.setIconTintResource(R.color.teal_700)
                 ment.text = formatValue(post.mentionIds.size.toDouble())

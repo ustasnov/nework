@@ -12,13 +12,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
         android:checkable="true"
         android:contentDescription="@string/geo_coordinates"
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        app:layout_constraintEnd_toStartOf="@+id/link"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
     <ImageView
@@ -54,8 +53,10 @@
         android:layout_width="@dimen/size_0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing"
+        android:layout_marginEnd="16dp"
         android:text="@string/published"
         app:layout_constraintBottom_toBottomOf="@id/avatar"
+        app:layout_constraintEnd_toStartOf="@+id/menu"
         app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/author"
         tools:text="@sample/posts.json/data/published" />
@@ -96,13 +97,13 @@
         android:id="@+id/attachment"
         android:layout_width="match_parent"
         android:layout_height="@dimen/attachment_dimen"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="@string/view_move_description"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/postText"
+        app:layout_constraintTop_toBottomOf="@id/siteCaption"
         tools:srcCompat="@drawable/youtube" />
 
     <ImageView
@@ -122,7 +123,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="attachment,postText" />
+        app:constraint_referenced_ids="attachment,postText,siteCaption,siteUrl" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/favorite"
@@ -152,20 +153,6 @@
         android:paddingLeft="@dimen/size_12dp"
         app:icon="@drawable/ic_mentors_24"
         app:layout_constraintEnd_toStartOf="@+id/geo"
-        app:layout_constraintTop_toBottomOf="@id/barrier1" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/link"
-        style="@style/Widget.AppTheme.LinkButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:contentDescription="@string/views"
-        android:minWidth="@dimen/avatar_size"
-        android:minHeight="@dimen/avatar_size"
-        android:paddingLeft="@dimen/size_12dp"
-        app:icon="@drawable/ic_link_24"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
     <View
@@ -200,14 +187,38 @@
         app:layout_constraintStart_toEndOf="@+id/likeCaption"
         app:layout_constraintTop_toTopOf="@+id/likeCaption" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/siteGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="siteCaption,siteUrl" />
+
     <TextView
-        android:id="@+id/postId"
+        android:id="@+id/siteCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/site_caption"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/postText" />
+
+    <TextView
+        android:id="@+id/siteUrl"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/published"
-        app:layout_constraintEnd_toStartOf="@+id/menu"
-        app:layout_constraintStart_toEndOf="@+id/published" />
+        android:layout_marginStart="@dimen/common_spacing"
+        android:autoLink="web"
+        android:contextClickable="true"
+        android:ellipsize="end"
+        android:linksClickable="true"
+        android:singleLine="true"
+        android:textColorLink="#000077"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/siteCaption"
+        app:layout_constraintTop_toTopOf="@+id/siteCaption"
+        tools:text="https://www.netology.ru" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
