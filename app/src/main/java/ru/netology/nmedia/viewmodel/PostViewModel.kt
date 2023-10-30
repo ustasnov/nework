@@ -1,5 +1,6 @@
 package ru.netology.nmedia.viewmodel
 
+import android.os.Parcelable
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -59,6 +60,8 @@ class PostViewModel @Inject constructor(
                 }
             }
     }.flowOn(Dispatchers.Default)
+
+    private lateinit var state: Parcelable
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
@@ -183,4 +186,8 @@ class PostViewModel @Inject constructor(
     fun setPhoto(photoModel: PhotoModel) {
         _photo.value = photoModel
     }
+
+    fun saveRecyclerViewState(parcelable: Parcelable) { state = parcelable }
+    fun restoreRecyclerViewState() : Parcelable = state
+    fun stateInitialized() : Boolean = ::state.isInitialized
 }

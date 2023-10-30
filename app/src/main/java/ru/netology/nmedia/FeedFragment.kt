@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -35,19 +36,30 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class FeedFragment : Fragment() {
+class FeedFragment : Fragment(R.layout.fragment_feed) {
+    var _binding: FragmentFeedBinding? = null
+    val binding: FragmentFeedBinding
+        get() = _binding!!
+
     val viewModel: PostViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     @Inject
     lateinit var appAuth: AppAuth
     //private val observer = MediaLifecycleObserver()
 
+    //val binding = FragmentFeedBinding.inflate(inflater, container, false)
+
+    /*
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         saveInstanceState: Bundle?
     ): View {
-        val binding = FragmentFeedBinding.inflate(inflater, container, false)
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //binding = FragmentFeedBinding.inflate(inflater, container, false)
+        _binding = FragmentFeedBinding.bind(view)
 
         requireActivity().setTitle(getString(R.string.postsTitle))
 
@@ -175,13 +187,15 @@ class FeedFragment : Fragment() {
             }
         //}, observer)
         })
+        //RecyclerView.Adapter.StateRestorationPolicy.PREVENT
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
         binding.list.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                //viewModel.data.collectLatest(adapter::submitData)
-                viewModel.data.collect(adapter::submitData)
+                viewModel.data.collectLatest(adapter::submitData)
+                //viewModel.data.collect(adapter::submitData)
             }
         }
 
@@ -213,6 +227,11 @@ class FeedFragment : Fragment() {
             }
         }
 
-        return binding.root
+        //return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
