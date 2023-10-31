@@ -44,13 +44,13 @@ class EventRemoteMediator(
                 }
                 LoadType.PREPEND -> {
                     val id = eventRemoteKeyDao.max() ?: return MediatorResult.Success(
-                        endOfPaginationReached = false
+                        endOfPaginationReached = true
                     )
                     apiService.getAfterEvents(id, state.config.pageSize)
                 }
                 LoadType.APPEND -> {
                     val id = eventRemoteKeyDao.min() ?: return MediatorResult.Success(
-                        endOfPaginationReached = false
+                        endOfPaginationReached = true
                     )
                     apiService.getBeforeEvents(id, state.config.pageSize)
                 }
@@ -79,7 +79,7 @@ class EventRemoteMediator(
                             )
                         }
                         */
-                        //postRemoteKeyDao.clear()
+                        eventRemoteKeyDao.clear()
                         eventRemoteKeyDao.insert(
                             listOf(
                                 EventRemoteKeyEntity(
@@ -92,7 +92,7 @@ class EventRemoteMediator(
                                 ),
                             )
                         )
-                        eventDao.clearWithLists()
+                        //eventDao.clearWithLists()
                     }
                     LoadType.PREPEND -> {
                         if (body.isNotEmpty()) {

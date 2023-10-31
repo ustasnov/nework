@@ -33,6 +33,7 @@ interface OnInteractionListener {
 class PostsAdapter(
     private val onInteractionListener: OnInteractionListener
 ) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(PostDiffCallback()) {
+
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
             is Ad -> R.layout.card_ad

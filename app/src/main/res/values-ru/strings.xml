@@ -55,7 +55,7 @@
     <string name="published_label">Опубликовал %1$s</string>
     <string name="video_description">Видео экран</string>
     <string name="users">Пользователи</string>
-    <string name="events">События</string>
+    <string name="events">Мероприятия</string>
     <string name="profile">Профиль</string>
     <string name="like_caption">Нравится:</string>
     <string name="mentors">Наставники</string>
@@ -65,7 +65,7 @@
     <string name="geo_coordinates">Положение на карте</string>
     <string name="site_caption">Сайт:</string>
     <string name="new_events">Свежие события</string>
-    <string name="empty_events">Событий нет. Если создадите новое событие, то оно появится здесь</string>
+    <string name="empty_events">Мероприятий нет. Если создадите новое событие, то оно появится здесь</string>
     <string name="add">Добавить</string>
     <string name="date_of_the_event">Дата и время:</string>
     <string name="type">Формат проведения:</string>

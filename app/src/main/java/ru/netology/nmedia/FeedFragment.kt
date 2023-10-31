@@ -37,10 +37,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class FeedFragment : Fragment(R.layout.fragment_feed) {
-    var _binding: FragmentFeedBinding? = null
-    val binding: FragmentFeedBinding
-        get() = _binding!!
-
     val viewModel: PostViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     @Inject
@@ -49,17 +45,13 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
 
     //val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
-    /*
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         saveInstanceState: Bundle?
     ): View {
-     */
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        //binding = FragmentFeedBinding.inflate(inflater, container, false)
-        _binding = FragmentFeedBinding.bind(view)
+        val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
         requireActivity().setTitle(getString(R.string.postsTitle))
 
@@ -188,7 +180,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         //}, observer)
         })
         //RecyclerView.Adapter.StateRestorationPolicy.PREVENT
-        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        //adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
         binding.list.adapter = adapter
 
@@ -227,11 +219,6 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             }
         }
 
-        //return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        return binding.root
     }
 }
