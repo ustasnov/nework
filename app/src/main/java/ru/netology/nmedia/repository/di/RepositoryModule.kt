@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.netology.nmedia.repository.EventRepository
 import ru.netology.nmedia.repository.EventRepositoryImpl
+import ru.netology.nmedia.repository.JobRepository
+import ru.netology.nmedia.repository.JobRepositoryImpl
 import ru.netology.nmedia.repository.LikeOwnersRepository
 import ru.netology.nmedia.repository.LikeOwnersRepositoryImpl
 import ru.netology.nmedia.repository.MentionsRepository
@@ -50,4 +52,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsEventRepository(impl: EventRepositoryImpl): EventRepository
+
+    @Singleton
+    @Binds
+    fun bindsJobRepository(impl: JobRepositoryImpl): JobRepository
 }

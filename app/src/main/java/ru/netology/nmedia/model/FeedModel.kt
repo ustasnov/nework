@@ -1,6 +1,7 @@
 package ru.netology.nmedia.model
 
 import ru.netology.nmedia.dto.ErrorType
+import ru.netology.nmedia.dto.Job
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.dto.UserItem
@@ -24,4 +25,9 @@ data class FeedModelState (
     val error: ErrorType? = null,
     val loading: Boolean = false,
     val refreshing: Boolean = false
+)
+
+data class JobModel (
+    val jobs: List<Job> = emptyList(),
+    val empty: Boolean = false
 )
