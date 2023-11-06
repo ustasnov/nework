@@ -81,6 +81,7 @@ class PostRemoteMediator(
                             )
                         }
                         */
+                        postDao.clearWithLists()
                         postRemoteKeyDao.clear()
                         postRemoteKeyDao.insert(
                             listOf(

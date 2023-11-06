@@ -7,12 +7,17 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import ru.netology.nmedia.dao.JobDao
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Job
+import ru.netology.nmedia.dto.UserItem
+import ru.netology.nmedia.entity.MentionEntity
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.JobModel
+import ru.netology.nmedia.model.UserItemModel
 import ru.netology.nmedia.repository.JobRepository
 import javax.inject.Inject
 
@@ -28,6 +33,7 @@ val emptyJob = Job(
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class JobViewModel @Inject constructor(
+    private val jobDao: JobDao,
     private val repository: JobRepository,
 ) : ViewModel() {
 

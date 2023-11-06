@@ -63,7 +63,7 @@
     <string name="participants">Участники</string>
     <string name="speakers">Докладчики</string>
     <string name="geo_coordinates">Положение на карте</string>
-    <string name="site_caption">Сайт:</string>
+    <string name="site_caption">Ссылка:</string>
     <string name="new_events">Свежие события</string>
     <string name="empty_events">Мероприятий нет. Если создадите новое событие, то оно появится здесь</string>
     <string name="add">Добавить</string>
@@ -71,4 +71,9 @@
     <string name="type">Формат проведения:</string>
     <string name="type_online">в сети</string>
     <string name="type_offline">автономно</string>
+    <string name="company">Организация:</string>
+    <string name="position">Должность:</string>
+    <string name="start_date">Дата начала:</string>
+    <string name="end_date">Дата окончания:</string>
+    <string name="jobs">Места работы</string>
 </resources>

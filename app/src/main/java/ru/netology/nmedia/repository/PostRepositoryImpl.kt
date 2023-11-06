@@ -39,7 +39,7 @@ class PostRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override val data: Flow<PagingData<FeedItem>> = Pager(
-        config = PagingConfig(pageSize = 300,
+        config = PagingConfig(pageSize = 30, initialLoadSize = 120,
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
             enablePlaceholders = false),
         pagingSourceFactory = { postDao.getPagingSource() },
@@ -86,6 +86,7 @@ class PostRepositoryImpl @Inject constructor(
             throw RuntimeException(response.message())
         }
         val posts = response.body() ?: throw RuntimeException("body is null")
+        //postDao.clearWithLists()
         postDao.insertPostsWithLists(posts.map { PostWithLists.fromDto(it) })
     }
 

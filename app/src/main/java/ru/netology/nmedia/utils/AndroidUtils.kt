@@ -24,9 +24,9 @@ object AndroidUtils {
         }, 200)
     }
 
-    fun formatDate(date: String): String {
+    fun formatDate(date: String, pattern: String = "dd MMM yyyy HH:mm:ss"): String {
         val nativeDate = LocalDateTime.parse(date.subSequence(0, 19))
-        val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss")
+        val formatter = DateTimeFormatter.ofPattern(pattern)
         return nativeDate.format(formatter)
     }
 }

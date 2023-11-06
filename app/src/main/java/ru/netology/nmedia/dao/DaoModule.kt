@@ -38,4 +38,5 @@ object DaoModule {
 
     @Provides
     fun provideJobDao(db: AppDb): JobDao = db.jobDao()
+
 }

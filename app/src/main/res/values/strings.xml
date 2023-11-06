@@ -78,4 +78,9 @@
     <string name="type">Type:</string>
     <string name="type_online">online</string>
     <string name="type_offline">offline</string>
+    <string name="company">Company:</string>
+    <string name="position">Position:</string>
+    <string name="start_date">Start date:</string>
+    <string name="end_date">End date:</string>
+    <string name="jobs">Jobs</string>
 </resources>
