@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -227,5 +228,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
     companion object {
         var Bundle.idArg: Long? by LongArg
         var Bundle.type: String? by StringArg
+
+        fun newInstance() = FeedFragment()
     }
 }

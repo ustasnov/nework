@@ -10,6 +10,7 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import ru.netology.nmedia.ProfileFragment.Companion.type
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UsersAdapter
 import ru.netology.nmedia.databinding.FragmentUsersBinding
@@ -40,6 +41,7 @@ class UsersFragment : Fragment() {
                     R.id.action_usersFragment_to_profileFragment,
                     Bundle().apply {
                         idArg = user.id
+                        type = "WALL"
                     }
                 )
 

@@ -6,13 +6,13 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import ru.netology.nmedia.FeedFragment
 import ru.netology.nmedia.JobsFeedFragment
 
-class WallAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
-    private val fragmentList = listOf<Fragment>(JobsFeedFragment(), FeedFragment())
+class WallAdapter(fa: FragmentActivity, private val list: List<Fragment>): FragmentStateAdapter(fa) {
+
     override fun getItemCount(): Int {
-        return fragmentList.size
+        return list.size
     }
 
     override fun createFragment(position: Int): Fragment {
-        return fragmentList[position]
+        return list[position]
     }
 }

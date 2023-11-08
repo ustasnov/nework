@@ -5,9 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import ru.netology.nmedia.ProfileFragment.Companion.idArg
+import ru.netology.nmedia.ProfileFragment.Companion.type
 import ru.netology.nmedia.adapter.JobsAdapter
 import ru.netology.nmedia.adapter.OnJobsInteractionListener
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
@@ -51,11 +54,18 @@ class JobsFeedFragment : Fragment() {
 
         binding.list.adapter = adapter
 
+
+
+        /*
         if (requireArguments().type === "MY") {
             viewModel.loadMyJobs()
         } else {
             viewModel.loadUserJobs(requireArguments().idArg!!)
         }
+
+         */
+
+        loadJobs(viewModel)
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.jobs)
@@ -86,8 +96,23 @@ class JobsFeedFragment : Fragment() {
         return binding.root
     }
 
+
+
+    fun loadJobs(viewModel: JobViewModel) {
+        if (requireArguments().type === "MY") {
+            viewModel.loadMyJobs()
+        } else {
+            viewModel.loadUserJobs(requireArguments().idArg!!)
+        }
+    }
+
+
+
     companion object {
         var Bundle.idArg: Long? by LongArg
         var Bundle.type: String? by StringArg
+
+        @JvmStatic
+        fun newInstance() = JobsFeedFragment()
     }
 }
