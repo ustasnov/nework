@@ -27,6 +27,8 @@ class ProfileFragment : Fragment() {
     val userViewModel: UserViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
+
+
     private val fragTitles = listOf(
         "Места работы",
         "Сообщения",
@@ -38,6 +40,7 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val userId = requireArguments().idArg
+        /*
         val fragList = listOf(
             JobsFeedFragment.newInstance().apply {
                 arguments = bundleOf(
@@ -50,6 +53,28 @@ class ProfileFragment : Fragment() {
                     "idArg" to userId,
                     "type" to  "WALL")
             }
+        )
+
+         */
+
+        val jobsFeedFragment: JobsFeedFragment = JobsFeedFragment.newInstance().apply {
+            arguments = bundleOf(
+                "idArg" to userId,
+                "type" to "WALL"
+            )
+        }
+        val feedFragment: FeedFragment = FeedFragment.newInstance().apply {
+            arguments = bundleOf(
+                "idArg" to userId,
+                "type" to "WALL"
+            )
+        }
+
+        //jobsFeedFragment.loadJobs(jobsFeedFragment.viewModel)
+
+        val fragList = listOf(
+            jobsFeedFragment,
+            feedFragment
         )
 
         val binding = FragmentProfileBinding.inflate(inflater, container, false)
