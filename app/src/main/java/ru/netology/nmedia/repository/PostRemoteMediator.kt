@@ -6,10 +6,8 @@ import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.PostRemoteKeyEntity
 import ru.netology.nmedia.entity.PostWithLists
-import ru.netology.nmedia.entity.toEntity
 import ru.netology.nmedia.entity.toEntityWithLists
 import ru.netology.nmedia.error.ApiError
 import java.io.IOException
@@ -20,6 +18,7 @@ class PostRemoteMediator(
     private val postDao: PostDao,
     private val postRemoteKeyDao: PostRemoteKeyDao,
     private val appDb: AppDb,
+    private val postSource: PostsSource
 //) : RemoteMediator<Int, PostEntity>() {
 ) : RemoteMediator<Int, PostWithLists>() {
 
@@ -41,20 +40,32 @@ class PostRemoteMediator(
                     }
                 }*/
                 LoadType.REFRESH -> {
-                    apiService.getLatest(state.config.initialLoadSize)
+                    when (postSource.sourceType) {
+                        SourceType.WALL -> apiService.getLatestWallPosts(postSource.authorId, state.config.initialLoadSize)
+                        SourceType.MYWALL -> apiService.getLatestMyWallPosts(state.config.initialLoadSize)
+                        else -> apiService.getLatest(state.config.initialLoadSize)
+                    }
                 }
                 LoadType.PREPEND -> {
                     val id = postRemoteKeyDao.max() ?: return MediatorResult.Success(
                         //endOfPaginationReached = false
                         endOfPaginationReached = true
                     )
-                    apiService.getAfter(id, state.config.pageSize)
+                    when (postSource.sourceType) {
+                        SourceType.WALL -> apiService.getAfterWallPosts(postSource.authorId, id, state.config.pageSize)
+                        SourceType.MYWALL -> apiService.getAfterMyWallPosts(id, state.config.pageSize)
+                        else -> apiService.getAfter(id, state.config.pageSize)
+                    }
                 }
                 LoadType.APPEND -> {
                     val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(
                         endOfPaginationReached = true
                     )
-                    apiService.getBefore(id, state.config.pageSize)
+                    when (postSource.sourceType) {
+                        SourceType.WALL -> apiService.getBeforeWallPosts(postSource.authorId, id, state.config.pageSize)
+                        SourceType.MYWALL -> apiService.getBeforeMyWallPosts(id, state.config.pageSize)
+                        else -> apiService.getBefore(id, state.config.pageSize)
+                    }
                 }
             }
 

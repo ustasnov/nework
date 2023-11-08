@@ -29,6 +29,8 @@ import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.utils.LongArg
+import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.empty
@@ -220,5 +222,10 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         }
 
         return binding.root
+    }
+
+    companion object {
+        var Bundle.idArg: Long? by LongArg
+        var Bundle.type: String? by StringArg
     }
 }

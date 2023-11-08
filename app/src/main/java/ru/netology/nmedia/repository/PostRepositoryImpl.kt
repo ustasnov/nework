@@ -15,10 +15,7 @@ import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.*
-import ru.netology.nmedia.entity.EventWithLists
-import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.PostWithLists
-import ru.netology.nmedia.entity.toEntity
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
@@ -38,8 +35,8 @@ class PostRepositoryImpl @Inject constructor(
     private var newPostContentValue = MutableLiveData<String>()
 
     @OptIn(ExperimentalPagingApi::class)
-    override val data: Flow<PagingData<FeedItem>> = Pager(
-        config = PagingConfig(pageSize = 30, initialLoadSize = 120,
+    override var data: Flow<PagingData<FeedItem>> = Pager(
+        config = PagingConfig(pageSize = 300,
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
             enablePlaceholders = false),
         pagingSourceFactory = { postDao.getPagingSource() },
@@ -47,20 +44,11 @@ class PostRepositoryImpl @Inject constructor(
             apiService = apiService,
             postDao = postDao,
             postRemoteKeyDao = postRemoteKeyDao,
-            appDb = appDb
+            appDb = appDb,
+            PostsSource(0, SourceType.POSTS),
         )
     ).flow
-        //.map { it.map(PostEntity::toDto)
         .map { it.map(PostWithLists::toDto)
-        /*
-        .insertSeparators { previous, _ ->
-            if (previous?.id?.rem(5) == 0L) {
-                Ad(Random.nextLong(), "figma.jpg")
-            } else {
-                null
-            }
-        }
-        */
     }
 
     override fun getNewer(id: Long): Flow<Int> = flow {
@@ -198,3 +186,5 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 }
+
+

@@ -142,7 +142,11 @@ class AppActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.posts -> {
                     //Toast.makeText(this@AppActivity, "Posts", Toast.LENGTH_SHORT).show()
-                    findNavController(R.id.navigation).navigate(R.id.feedFragment)
+                    findNavController(R.id.navigation).navigate(R.id.feedFragment,
+                        Bundle().apply {
+                        idArg = 0
+                        typeArg = "POSTS"
+                    })
                 }
                 R.id.users -> {
                     //Toast.makeText(this@AppActivity, "Users", Toast.LENGTH_SHORT).show()

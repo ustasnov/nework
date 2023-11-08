@@ -2,6 +2,9 @@ package ru.netology.nmedia.viewmodel
 
 import android.os.Parcelable
 import androidx.lifecycle.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
@@ -9,13 +12,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.dao.PostDao
+import ru.netology.nmedia.dao.PostRemoteKeyDao
+import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.repository.PostRemoteMediator
 import ru.netology.nmedia.repository.PostRepository
+import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.utils.SingleLiveEvent
 import javax.inject.Inject
 
@@ -43,6 +53,10 @@ val empty = Post(
 class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     appAuth: AppAuth,
+    private val postDao: PostDao,
+    private val apiService: ApiService,
+    val postRemoteKeyDao: PostRemoteKeyDao,
+    val appDb: AppDb,
 ) : ViewModel() {
     private val cached = repository
         .data
@@ -88,8 +102,28 @@ class PostViewModel @Inject constructor(
     val currentPost: LiveData<Post>
         get() = _currentPost
 
+    /*
     init {
         loadPosts()
+    }
+     */
+
+    fun setData(postSource: PostsSource) {
+        @OptIn(ExperimentalPagingApi::class)
+        repository.data = Pager(
+            config = PagingConfig(pageSize = 300,
+                //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
+                enablePlaceholders = false),
+            pagingSourceFactory = { postDao.getPagingSource() },
+            remoteMediator = PostRemoteMediator(
+                apiService = apiService,
+                postDao = postDao,
+                postRemoteKeyDao = postRemoteKeyDao,
+                appDb = appDb,
+                postSource = postSource
+            )
+        ).flow
+            .map { it.map(PostWithLists::toDto) }
     }
 
     fun loadPosts() = viewModelScope.launch {
@@ -128,7 +162,7 @@ class PostViewModel @Inject constructor(
     }
 
     fun edit(post: Post) {
-        toggleNewPost(false)
+        //toggleNewPost(false)
         edited.value = post
     }
 
@@ -194,3 +228,4 @@ class PostViewModel @Inject constructor(
 
      */
 }
+
