@@ -71,7 +71,11 @@
     <fragment
         android:id="@+id/usersFragment"
         android:name="ru.netology.nmedia.UsersFragment"
-        android:label="UsersFragment" />
+        android:label="UsersFragment" >
+        <action
+            android:id="@+id/action_usersFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mentionsFragment"
         android:name="ru.netology.nmedia.MentionsFragment"
@@ -106,4 +110,8 @@
             android:id="@+id/action_eventsFeedFragment_to_postAttachmentFragment"
             app:destination="@id/postAttachmentFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="ru.netology.nmedia.ProfileFragment"
+        android:label="ProfileFragment" />
 </navigation>

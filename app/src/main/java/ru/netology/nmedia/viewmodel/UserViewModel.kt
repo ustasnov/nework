@@ -10,10 +10,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.dto.ErrorType
+import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.UserModel
 import ru.netology.nmedia.repository.UserRepository
 import javax.inject.Inject
+
+val emptyUser = User(
+    id = 0L,
+    login = "",
+    name = "",
+    avatar = null,
+)
 
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -27,6 +36,14 @@ class UserViewModel @Inject constructor(
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
+
+    private val _currentUserId = MutableLiveData<Long>()
+    val currentUserId: LiveData<Long>
+        get() = _currentUserId
+
+    private val _currentUser = MutableLiveData(emptyUser.copy())
+    val currentUser: LiveData<User>
+        get() = _currentUser
 
     init {
         loadUsers()
@@ -52,9 +69,9 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    /*
-    fun viewById(id: Long) {
-        //toggleNewPost(false)
+    fun viewUser(user: User) {
+        _currentUserId.setValue(user.id)
+        _currentUser.setValue(user)
     }
-     */
+
 }

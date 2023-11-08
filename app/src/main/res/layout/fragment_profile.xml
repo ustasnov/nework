@@ -14,7 +14,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include layout="@layout/card_user" />
+        <include
+            android:id="@+id/userFr"
+            layout="@layout/card_user" />
 
     </FrameLayout>
 

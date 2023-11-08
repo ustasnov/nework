@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
@@ -32,15 +34,15 @@ class UsersFragment : Fragment() {
 
         val adapter = UsersAdapter(object : OnUsersInteractionListener {
             override fun onViewUser(user: User) {
-                //viewModel.viewById(user.id)
-                /*
+                viewModel.viewUser(user)
+
                 findNavController().navigate(
-                    R.id.action_feedFragment_to_postFragment,
+                    R.id.action_usersFragment_to_profileFragment,
                     Bundle().apply {
-                        idArg = post.id
+                        idArg = user.id
                     }
                 )
-                 */
+
             }
             //}, observer)
         })
