@@ -20,11 +20,13 @@ import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import ru.netology.nmedia.viewmodel.JobViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     val userViewModel: UserViewModel by activityViewModels()
+    val jobViewModel: JobViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
 
@@ -71,6 +73,7 @@ class ProfileFragment : Fragment() {
         }
 
         //jobsFeedFragment.loadJobs(jobsFeedFragment.viewModel)
+        jobViewModel.refreshUserJobs(userId!!)
 
         val fragList = listOf(
             jobsFeedFragment,
