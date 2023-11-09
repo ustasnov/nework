@@ -9,4 +9,5 @@ interface JobRepository {
     suspend fun saveMyJob(job: Job)
     suspend fun removeByIdMyJob(jobId: Long)
     suspend fun getAllUserJobs(userId: Long)
+    suspend fun clearJobs()
 }

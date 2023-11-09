@@ -55,7 +55,6 @@ class JobsFeedFragment : Fragment() {
         binding.list.adapter = adapter
 
 
-
         /*
         if (requireArguments().type === "MY") {
             viewModel.loadMyJobs()
@@ -65,11 +64,11 @@ class JobsFeedFragment : Fragment() {
 
          */
 
-        loadJobs(viewModel)
-
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.jobs)
         }
+
+        loadJobs(viewModel)
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.swiperefresh.isRefreshing = state.refreshing
@@ -96,8 +95,6 @@ class JobsFeedFragment : Fragment() {
         return binding.root
     }
 
-
-
     fun loadJobs(viewModel: JobViewModel) {
         if (requireArguments().type === "MY") {
             viewModel.loadMyJobs()
@@ -105,8 +102,6 @@ class JobsFeedFragment : Fragment() {
             viewModel.loadUserJobs(requireArguments().idArg!!)
         }
     }
-
-
 
     companion object {
         var Bundle.idArg: Long? by LongArg

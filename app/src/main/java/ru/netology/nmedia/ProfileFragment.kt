@@ -29,8 +29,6 @@ class ProfileFragment : Fragment() {
     val jobViewModel: JobViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
-
-
     private val fragTitles = listOf(
         "Места работы",
         "Сообщения",
@@ -56,30 +54,7 @@ class ProfileFragment : Fragment() {
                     "type" to  "WALL")
             }
         )
-
-         */
-
-        val jobsFeedFragment: JobsFeedFragment = JobsFeedFragment.newInstance().apply {
-            arguments = bundleOf(
-                "idArg" to userId,
-                "type" to "WALL"
-            )
-        }
-        val feedFragment: FeedFragment = FeedFragment.newInstance().apply {
-            arguments = bundleOf(
-                "idArg" to userId,
-                "type" to "WALL"
-            )
-        }
-
-        //jobsFeedFragment.loadJobs(jobsFeedFragment.viewModel)
-        jobViewModel.refreshUserJobs(userId!!)
-
-        val fragList = listOf(
-            jobsFeedFragment,
-            feedFragment
-        )
-
+        */
         val binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         val viewHolder = UserViewHolder(binding.userFr, object : OnUsersInteractionListener {
@@ -88,12 +63,30 @@ class ProfileFragment : Fragment() {
             }
         })
 
-        //val postId = requireArguments().idArg
         viewHolder.bind(userViewModel.currentUser.value!!)
 
+        val jobsFeedFragment: JobsFeedFragment = JobsFeedFragment.newInstance().apply {
+            arguments = bundleOf(
+                "idArg" to userId,
+                "type" to "WALL"
+            )
+        }
+
+        val feedFragment: FeedFragment = FeedFragment.newInstance().apply {
+            arguments = bundleOf(
+                "idArg" to userId,
+                "type" to "WALL"
+            )
+        }
+
+        val fragList = listOf(
+            jobsFeedFragment,
+            feedFragment
+        )
+
+        jobViewModel.refreshUserJobs(userId!!)
 
         val adapter = WallAdapter(requireActivity(), fragList)
-        //val adapter = WallAdapter(requireActivity())
         binding.viewPager.adapter = adapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager) {
             tab, pos -> tab.text = fragTitles[pos]
@@ -106,14 +99,17 @@ class ProfileFragment : Fragment() {
                 }
             }
 
-        //(fragList[0] as JobsFeedFragment).loadJobs()
-
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             callback
         )
 
         return binding.root
+    }
+
+    override fun onStop() {
+        super.onStop()
+        jobViewModel.clearJobs()
     }
 
     companion object {

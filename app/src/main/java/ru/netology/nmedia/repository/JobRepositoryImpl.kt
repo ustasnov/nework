@@ -18,6 +18,7 @@ class JobRepositoryImpl@Inject constructor(
     override suspend fun getAllMyJobs() {
         val response = apiService.getAllMyJobs()
         if (!response.isSuccessful) {
+            jobDao.clear()
             throw RuntimeException(response.message())
         }
         val jobs = response.body() ?: throw RuntimeException("body is null")
@@ -45,10 +46,15 @@ class JobRepositoryImpl@Inject constructor(
     override suspend fun getAllUserJobs(userId: Long) {
         val response = apiService.getAllUserJobs(userId)
         if (!response.isSuccessful) {
+            jobDao.clear()
             throw RuntimeException(response.message())
         }
         val jobs = response.body() ?: throw RuntimeException("body is null")
         jobDao.clear()
         jobDao.insert(jobs.map { JobEntity.fromDto(it) })
+    }
+
+    override suspend fun clearJobs() {
+        jobDao.clear()
     }
 }

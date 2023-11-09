@@ -52,9 +52,9 @@ class JobViewModel @Inject constructor(
     val currentUserId: LiveData<Long>
         get() = _currentUserId
 
-    //init {
-    //    loadUsers()
-    //}
+    init {
+        clearJobs()
+    }
 
     fun loadMyJobs() = viewModelScope.launch {
         _dataState.value = FeedModelState(loading = true)
@@ -117,4 +117,10 @@ class JobViewModel @Inject constructor(
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
         }
     }
+
+    fun clearJobs()  = viewModelScope.launch {
+        repository.clearJobs()
+        repository.data.map(::JobModel).asLiveData(Dispatchers.Default)
+    }
+
 }

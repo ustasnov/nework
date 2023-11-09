@@ -12,35 +12,35 @@
 
     <TextView
         android:id="@+id/companyLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/menu_image_size"
         android:text="@string/company"
-        app:layout_constraintEnd_toStartOf="@id/barrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/positionLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/position"
+        app:layout_constraintEnd_toEndOf="@+id/companyLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/company" />
 
     <TextView
         android:id="@+id/startDateLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/start_date"
+        app:layout_constraintEnd_toEndOf="@+id/companyLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/position" />
 
     <TextView
         android:id="@+id/endDateLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/end_date"
@@ -49,10 +49,11 @@
 
     <TextView
         android:id="@+id/linkLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/site_caption"
+        app:layout_constraintEnd_toEndOf="@+id/companyLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/endDate" />
 
@@ -67,13 +68,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/link" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="left"
-        app:constraint_referenced_ids="company,position,startDate,endDate,link" />
-
     <TextView
         android:id="@+id/company"
         android:layout_width="0dp"
@@ -82,7 +76,7 @@
         android:text="TextView"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintStart_toEndOf="@+id/companyLabel"
         app:layout_constraintTop_toTopOf="@+id/companyLabel" />
 
     <TextView
@@ -94,7 +88,7 @@
         android:text="TextView"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintStart_toEndOf="@+id/positionLabel"
         app:layout_constraintTop_toBottomOf="@+id/company" />
 
     <TextView
@@ -106,7 +100,7 @@
         android:text="TextView"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintStart_toEndOf="@+id/startDateLabel"
         app:layout_constraintTop_toBottomOf="@+id/position" />
 
     <TextView
@@ -118,7 +112,7 @@
         android:text="TextView"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintStart_toEndOf="@+id/endDateLabel"
         app:layout_constraintTop_toBottomOf="@+id/startDate" />
 
     <TextView
@@ -134,7 +128,7 @@
         android:text="TextView"
         android:textColorLink="@color/ic_link"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintStart_toEndOf="@+id/linkLabel"
         app:layout_constraintTop_toBottomOf="@+id/endDate"
         tools:text="www.netology.ru" />
 
