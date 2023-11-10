@@ -39,7 +39,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class FeedFragment : Fragment(R.layout.fragment_feed) {
+class FeedFragment : Fragment() {
     val viewModel: PostViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     @Inject

@@ -17,16 +17,20 @@ import ru.netology.nmedia.adapter.UserViewHolder
 import ru.netology.nmedia.adapter.WallAdapter
 import ru.netology.nmedia.databinding.FragmentProfileBinding
 import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.repository.PostsSource
+import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.JobViewModel
+import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     val userViewModel: UserViewModel by activityViewModels()
     val jobViewModel: JobViewModel by activityViewModels()
+    val postViewModel: PostViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
     private val fragTitles = listOf(
@@ -79,12 +83,15 @@ class ProfileFragment : Fragment() {
             )
         }
 
+        postViewModel.setData(PostsSource(userId!!, SourceType.WALL))
+
         val fragList = listOf(
             jobsFeedFragment,
             feedFragment
         )
 
-        jobViewModel.refreshUserJobs(userId!!)
+        jobViewModel.refreshUserJobs(userId)
+        postViewModel.loadPosts()
 
         val adapter = WallAdapter(requireActivity(), fragList)
         binding.viewPager.adapter = adapter
