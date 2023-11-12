@@ -44,13 +44,12 @@ class JobRepositoryImpl@Inject constructor(
     }
 
     override suspend fun getAllUserJobs(userId: Long) {
+        jobDao.clear()
         val response = apiService.getAllUserJobs(userId)
         if (!response.isSuccessful) {
-            jobDao.clear()
             throw RuntimeException(response.message())
         }
         val jobs = response.body() ?: throw RuntimeException("body is null")
-        jobDao.clear()
         jobDao.insert(jobs.map { JobEntity.fromDto(it) })
     }
 

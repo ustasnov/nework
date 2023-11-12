@@ -7,17 +7,12 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.dao.JobDao
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Job
-import ru.netology.nmedia.dto.UserItem
-import ru.netology.nmedia.entity.MentionEntity
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.JobModel
-import ru.netology.nmedia.model.UserItemModel
 import ru.netology.nmedia.repository.JobRepository
 import javax.inject.Inject
 
@@ -33,7 +28,7 @@ val emptyJob = Job(
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class JobViewModel @Inject constructor(
-    private val jobDao: JobDao,
+    //private val jobDao: JobDao,
     private val repository: JobRepository,
 ) : ViewModel() {
 
@@ -53,6 +48,7 @@ class JobViewModel @Inject constructor(
         get() = _currentUserId
 
     init {
+        //println("From JobViewModel.init.clearJobs()")
         clearJobs()
     }
 
@@ -98,8 +94,10 @@ class JobViewModel @Inject constructor(
 
     fun loadUserJobs(userId: Long) = viewModelScope.launch {
         _dataState.value = FeedModelState(loading = true)
-        _currentUserId.postValue(userId)
+        //_currentUserId.postValue(userId)
+        _currentUserId.value = userId
         try {
+            println("From viewModel.loadUserJobs: ${_currentUserId.value}")
             repository.getAllUserJobs(_currentUserId.value!!)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
@@ -109,8 +107,10 @@ class JobViewModel @Inject constructor(
 
     fun refreshUserJobs(userId: Long) = viewModelScope.launch {
         _dataState.value = FeedModelState(refreshing = true)
-        _currentUserId.postValue(userId)
+        //_currentUserId.postValue(userId)
+        _currentUserId.value = userId
         try {
+            println("From viewModel.refreshUserJobs: ${_currentUserId.value}")
             repository.getAllUserJobs(_currentUserId.value!!)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
@@ -119,8 +119,9 @@ class JobViewModel @Inject constructor(
     }
 
     fun clearJobs()  = viewModelScope.launch {
+        //println("From clearJobs()")
         repository.clearJobs()
-        repository.data.map(::JobModel).asLiveData(Dispatchers.Default)
+        //repository.data.map(::JobModel).asLiveData(Dispatchers.Default)
     }
 
 }

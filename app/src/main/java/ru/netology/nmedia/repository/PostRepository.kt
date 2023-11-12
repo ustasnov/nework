@@ -20,4 +20,5 @@ interface PostRepository {
     suspend fun saveWithAttachment(post: Post, photoModel: PhotoModel)
     fun saveNewPostContent(text: String)
     fun getNewPostContent(): LiveData<String>
+    suspend fun clearPosts()
 }

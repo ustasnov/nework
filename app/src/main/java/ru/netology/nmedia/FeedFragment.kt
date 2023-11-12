@@ -30,6 +30,8 @@ import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.repository.PostsSource
+import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
@@ -56,7 +58,27 @@ class FeedFragment : Fragment() {
     ): View {
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
-        requireActivity().setTitle(getString(R.string.postsTitle))
+        if (arguments == null) {
+            requireActivity().setTitle(getString(R.string.postsTitle))
+
+            arguments = Bundle().apply {
+                putLong("idArg", 0L)
+                putString("type", "POSTS")
+            }
+        } else if (requireArguments().type != "POSTS") {
+            viewModel.clearPosts()
+        }
+
+        val ownerId = requireArguments().idArg
+        val type = requireArguments().type
+
+        viewModel.setData(PostsSource(ownerId!!,
+            when (type) {
+                "WALL" -> SourceType.WALL
+                "MYWALL" -> SourceType.MYWALL
+                else -> SourceType.POSTS
+            })
+        )
 
         //lifecycle.addObserver(observer)
         //binding.fragmentToolbar.setTitle(getString(R.string.postsTitle))
@@ -188,22 +210,24 @@ class FeedFragment : Fragment() {
         binding.list.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            //viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.data.collectLatest(adapter::submitData)
                 //viewModel.data.collect(adapter::submitData)
-            }
+            //}
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            //viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 adapter.loadStateFlow.collectLatest { state ->
                     binding.swiperefresh.isRefreshing =
                         state.refresh is LoadState.Loading ||
                                 state.prepend is LoadState.Loading ||
                                 state.append is LoadState.Loading
                 }
-            }
+            //}
         }
+
+        //viewModel.loadPosts()
 
         binding.swiperefresh.setOnRefreshListener(adapter::refresh)
 
@@ -224,6 +248,14 @@ class FeedFragment : Fragment() {
 
         return binding.root
     }
+
+    /*
+    override fun onStop() {
+        super.onStop()
+        //println("From ProfileFragment.onStop.clearJobs()")
+        //viewModel.clearPosts()
+    }
+     */
 
     companion object {
         var Bundle.idArg: Long? by LongArg

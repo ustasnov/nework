@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import ru.netology.nmedia.JobsFeedFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UserViewHolder
 import ru.netology.nmedia.adapter.WallAdapter
@@ -61,6 +62,8 @@ class ProfileFragment : Fragment() {
         */
         val binding = FragmentProfileBinding.inflate(inflater, container, false)
 
+        requireActivity().setTitle(getString(R.string.user_profile))
+
         val viewHolder = UserViewHolder(binding.userFr, object : OnUsersInteractionListener {
             override fun onViewUser(user: User) {
 
@@ -69,35 +72,49 @@ class ProfileFragment : Fragment() {
 
         viewHolder.bind(userViewModel.currentUser.value!!)
 
-        val jobsFeedFragment: JobsFeedFragment = JobsFeedFragment.newInstance().apply {
+        val jobsFeedFragment: JobsFeedFragment = JobsFeedFragment.newInstance()
+        jobsFeedFragment.arguments = Bundle().apply {
+            /*
             arguments = bundleOf(
                 "idArg" to userId,
                 "type" to "WALL"
             )
+             */
+            putLong("idArg", userId!!)
+            putString("type", "WALL")
         }
 
-        val feedFragment: FeedFragment = FeedFragment.newInstance().apply {
+        val feedFragment: FeedFragment = FeedFragment.newInstance()
+        feedFragment.arguments = Bundle().apply {
+            /*
             arguments = bundleOf(
                 "idArg" to userId,
                 "type" to "WALL"
             )
+            */
+            putLong("idArg", userId!!)
+            putString("type", "WALL")
         }
 
-        postViewModel.setData(PostsSource(userId!!, SourceType.WALL))
+        //postViewModel.setData(PostsSource(userId!!, SourceType.WALL))
 
         val fragList = listOf(
             jobsFeedFragment,
             feedFragment
         )
 
-        jobViewModel.refreshUserJobs(userId)
+        //jobViewModel.refreshUserJobs(userId)
+
         postViewModel.loadPosts()
+        //println("From ProfileFragment: userId = ${userId}")
+        //jobViewModel.refreshUserJobs(userId)
 
         val adapter = WallAdapter(requireActivity(), fragList)
         binding.viewPager.adapter = adapter
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) {
-            tab, pos -> tab.text = fragTitles[pos]
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
+            tab.text = fragTitles[pos]
         }.attach()
+
 
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true) {
@@ -116,7 +133,9 @@ class ProfileFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        println("From ProfileFragment.onStop.clearJobs()")
         jobViewModel.clearJobs()
+        postViewModel.clearPosts()
     }
 
     companion object {

@@ -54,6 +54,8 @@ class JobsFeedFragment : Fragment() {
 
         binding.list.adapter = adapter
 
+        val ownerId = requireArguments().idArg
+        val type = requireArguments().type
 
         /*
         if (requireArguments().type === "MY") {
@@ -61,14 +63,21 @@ class JobsFeedFragment : Fragment() {
         } else {
             viewModel.loadUserJobs(requireArguments().idArg!!)
         }
-
-         */
+        */
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.jobs)
         }
 
-        loadJobs(viewModel)
+
+        viewModel.clearJobs()
+        if (type === "MY") {
+            viewModel.loadMyJobs()
+        } else {
+            viewModel.loadUserJobs(ownerId!!)
+        }
+
+        //loadJobs(viewModel)
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.swiperefresh.isRefreshing = state.refreshing
@@ -84,10 +93,10 @@ class JobsFeedFragment : Fragment() {
         val swipeRefresh = binding.swiperefresh
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
-            if (requireArguments().type === "MY") {
+            if (type === "MY") {
                 viewModel.refreshMyJobs()
             } else {
-                viewModel.refreshUserJobs(requireArguments().idArg!!)
+                viewModel.refreshUserJobs(ownerId!!)
             }
             swipeRefresh.isRefreshing = false
         }
@@ -95,13 +104,17 @@ class JobsFeedFragment : Fragment() {
         return binding.root
     }
 
+    /*
     fun loadJobs(viewModel: JobViewModel) {
         if (requireArguments().type === "MY") {
             viewModel.loadMyJobs()
         } else {
+            println("From JobsFeedFragment.loadJobs(): ${requireArguments().idArg}")
             viewModel.loadUserJobs(requireArguments().idArg!!)
         }
     }
+
+     */
 
     companion object {
         var Bundle.idArg: Long? by LongArg

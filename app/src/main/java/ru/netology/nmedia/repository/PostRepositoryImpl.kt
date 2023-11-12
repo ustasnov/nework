@@ -185,6 +185,15 @@ class PostRepositoryImpl @Inject constructor(
             throw ru.netology.nmedia.error.UnknownError
         }
     }
+
+    override suspend fun clearPosts() {
+        try {
+            //postDao.clearWithLists()
+            postDao.clear()
+        } catch (e: Exception) {
+            throw ru.netology.nmedia.error.UnknownError
+        }
+    }
 }
 
 

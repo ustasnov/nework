@@ -102,11 +102,12 @@ class PostViewModel @Inject constructor(
     val currentPost: LiveData<Post>
         get() = _currentPost
 
-    /*
+
     init {
-        loadPosts()
+        clearPosts()
+        //loadPosts()
     }
-     */
+
 
     fun setData(postSource: PostsSource) {
         @OptIn(ExperimentalPagingApi::class)
@@ -219,6 +220,10 @@ class PostViewModel @Inject constructor(
 
     fun setPhoto(photoModel: PhotoModel) {
         _photo.value = photoModel
+    }
+
+    fun clearPosts() = viewModelScope.launch {
+        repository.clearPosts()
     }
 
     /*
