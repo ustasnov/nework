@@ -20,6 +20,8 @@ import ru.netology.nmedia.repository.SpeakersRepository
 import ru.netology.nmedia.repository.SpeakersRepositoryImpl
 import ru.netology.nmedia.repository.UserRepository
 import ru.netology.nmedia.repository.UserRepositoryImpl
+import ru.netology.nmedia.repository.WallRepository
+import ru.netology.nmedia.repository.WallRepositoryImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -56,5 +58,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsJobRepository(impl: JobRepositoryImpl): JobRepository
+
+    @Singleton
+    @Binds
+    fun bindsWallRepository(impl: WallRepositoryImpl): WallRepository
     
 }

@@ -5,14 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import ru.netology.nmedia.JobsFeedFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UserViewHolder
 import ru.netology.nmedia.adapter.WallAdapter
@@ -24,14 +21,14 @@ import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.JobViewModel
-import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
+import ru.netology.nmedia.viewmodel.WallViewModel
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     val userViewModel: UserViewModel by activityViewModels()
     val jobViewModel: JobViewModel by activityViewModels()
-    val postViewModel: PostViewModel by activityViewModels()
+    val postViewModel: WallViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
     private val fragTitles = listOf(
@@ -84,8 +81,8 @@ class ProfileFragment : Fragment() {
             putString("type", "WALL")
         }
 
-        val feedFragment: FeedFragment = FeedFragment.newInstance()
-        feedFragment.arguments = Bundle().apply {
+        val wallFragment: WallFragment = WallFragment.newInstance()
+        wallFragment.arguments = Bundle().apply {
             /*
             arguments = bundleOf(
                 "idArg" to userId,
@@ -96,11 +93,11 @@ class ProfileFragment : Fragment() {
             putString("type", "WALL")
         }
 
-        //postViewModel.setData(PostsSource(userId!!, SourceType.WALL))
+        postViewModel.setData(PostsSource(userId!!, SourceType.WALL))
 
         val fragList = listOf(
             jobsFeedFragment,
-            feedFragment
+            wallFragment
         )
 
         //jobViewModel.refreshUserJobs(userId)
@@ -133,7 +130,7 @@ class ProfileFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        println("From ProfileFragment.onStop.clearJobs()")
+        //println("From ProfileFragment.onStop.clearJobs()")
         jobViewModel.clearJobs()
         postViewModel.clearPosts()
     }

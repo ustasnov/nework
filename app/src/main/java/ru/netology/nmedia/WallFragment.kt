@@ -1,19 +1,14 @@
 package ru.netology.nmedia
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -23,7 +18,6 @@ import ru.netology.nmedia.PostAttachmentFragment.Companion.autorArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
-import ru.netology.nmedia.PostFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
@@ -35,21 +29,17 @@ import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
-import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.WallViewModel
 import ru.netology.nmedia.viewmodel.empty
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class FeedFragment : Fragment() {
-    val viewModel: PostViewModel by activityViewModels()
+class WallFragment : Fragment() {
+    val viewModel: WallViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     @Inject
     lateinit var appAuth: AppAuth
-    //private val observer = MediaLifecycleObserver()
-
-    //val binding = FragmentFeedBinding.inflate(inflater, container, false)
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,20 +48,8 @@ class FeedFragment : Fragment() {
     ): View {
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
+        //requireActivity().setTitle(getString(R.string.postsTitle))
 
-        requireActivity().setTitle(getString(R.string.postsTitle))
-
-        /*
-        if (arguments == null) {
-            requireActivity().setTitle(getString(R.string.postsTitle))
-
-            arguments = Bundle().apply {
-                putLong("idArg", 0L)
-                putString("type", "POSTS")
-            }
-        } else if (requireArguments().type != "POSTS") {
-            viewModel.clearPosts()
-        }
         val ownerId = requireArguments().idArg
         val type = requireArguments().type
 
@@ -79,14 +57,9 @@ class FeedFragment : Fragment() {
             when (type) {
                 "WALL" -> SourceType.WALL
                 "MYWALL" -> SourceType.MYWALL
-                else -> SourceType.POSTS
+                else -> SourceType.MYWALL
             })
         )
-
-         */
-
-        //lifecycle.addObserver(observer)
-        //binding.fragmentToolbar.setTitle(getString(R.string.postsTitle))
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
@@ -254,20 +227,22 @@ class FeedFragment : Fragment() {
         return binding.root
     }
 
+
     /*
     override fun onStop() {
         super.onStop()
         //println("From ProfileFragment.onStop.clearJobs()")
-        //viewModel.clearPosts()
+        viewModel.clearPosts()
     }
+     */
 
 
     companion object {
         var Bundle.idArg: Long? by LongArg
         var Bundle.type: String? by StringArg
 
-        fun newInstance() = FeedFragment()
+        fun newInstance() = WallFragment()
     }
+    
 
-     */
 }

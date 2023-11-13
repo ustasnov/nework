@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.ApiService
-import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.dao.PostRemoteKeyDao
+import ru.netology.nmedia.dao.WallDao
+import ru.netology.nmedia.dao.WallRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.*
-import ru.netology.nmedia.entity.PostWithLists
+import ru.netology.nmedia.entity.WallWithLists
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
@@ -23,15 +23,15 @@ import ru.netology.nmedia.model.PhotoModel
 import java.io.IOException
 import javax.inject.Inject
 
-class PostRepositoryImpl @Inject constructor(
+class WallRepositoryImpl @Inject constructor(
     context: Application,
-    private val postDao: PostDao,
+    private val postDao: WallDao,
     private val apiService: ApiService,
-    postRemoteKeyDao: PostRemoteKeyDao,
+    postRemoteKeyDao: WallRemoteKeyDao,
     appDb: AppDb,
-) : PostRepository {
+) : WallRepository {
     private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
-    private val key = "newPostContent"
+    private val key = "newWallPostContent"
     private var newPostContentValue = MutableLiveData<String>()
 
     @OptIn(ExperimentalPagingApi::class)
@@ -40,14 +40,15 @@ class PostRepositoryImpl @Inject constructor(
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
             enablePlaceholders = false),
         pagingSourceFactory = { postDao.getPagingSource() },
-        remoteMediator = PostRemoteMediator(
+        remoteMediator = WallPostRemoteMediator(
             apiService = apiService,
             postDao = postDao,
             postRemoteKeyDao = postRemoteKeyDao,
-            appDb = appDb
+            appDb = appDb,
+            PostsSource(0, SourceType.POSTS),
         )
     ).flow
-        .map { it.map(PostWithLists::toDto)
+        .map { it.map(WallWithLists::toDto)
     }
 
     override fun getNewer(id: Long): Flow<Int> = flow {
@@ -59,22 +60,20 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val posts = response.body().orEmpty()
-            //postDao.insert(posts.toEntity())
-            postDao.insertPostsWithLists(posts.map { PostWithLists.fromDto(it) })
+            postDao.insertPostsWithLists(posts.map { WallWithLists.fromDto(it) })
             emit(posts.size)
 
         }
     }.catch { e -> throw AppError.from(e) }
         .flowOn(Dispatchers.Default)
 
-    override suspend fun getAll() {
-        val response = apiService.getAll()
+    override suspend fun getAllWallPosts(authorId: Long) {
+        val response = apiService.getAllWallPosts(authorId)
         if (!response.isSuccessful) {
             throw RuntimeException(response.message())
         }
         val posts = response.body() ?: throw RuntimeException("body is null")
-        //postDao.clearWithLists()
-        postDao.insertPostsWithLists(posts.map { PostWithLists.fromDto(it) })
+        postDao.insertPostsWithLists(posts.map { WallWithLists.fromDto(it) })
     }
 
     override suspend fun likeById(id: Long) {
@@ -112,8 +111,7 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            //postDao.insert(PostEntity.fromDto(body))
-            postDao.insertPostWithLists(PostWithLists.fromDto(body))
+            postDao.insertPostWithLists(WallWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -138,8 +136,7 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            //postDao.insert(PostEntity.fromDto(body))
-            postDao.insertPostWithLists(PostWithLists.fromDto(body))
+            postDao.insertPostWithLists(WallWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

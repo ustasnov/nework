@@ -3,28 +3,29 @@ package ru.netology.nmedia.repository
 import androidx.paging.*
 import androidx.room.withTransaction
 import ru.netology.nmedia.api.ApiService
-import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.dao.PostRemoteKeyDao
+import ru.netology.nmedia.dao.WallDao
+import ru.netology.nmedia.dao.WallRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.entity.PostRemoteKeyEntity
-import ru.netology.nmedia.entity.PostWithLists
-import ru.netology.nmedia.entity.toEntityWithLists
+import ru.netology.nmedia.entity.WallRemoteKeyEntity
+import ru.netology.nmedia.entity.WallWithLists
+import ru.netology.nmedia.entity.toWallEntityWithLists
 import ru.netology.nmedia.error.ApiError
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
-class PostRemoteMediator(
+class WallPostRemoteMediator(
     private val apiService: ApiService,
-    private val postDao: PostDao,
-    private val postRemoteKeyDao: PostRemoteKeyDao,
-    private val appDb: AppDb
+    private val postDao: WallDao,
+    private val postRemoteKeyDao: WallRemoteKeyDao,
+    private val appDb: AppDb,
+    private val postSource: PostsSource
 //) : RemoteMediator<Int, PostEntity>() {
-) : RemoteMediator<Int, PostWithLists>() {
+) : RemoteMediator<Int, WallWithLists>() {
 
     override suspend fun load(
         loadType: LoadType,
         //state: PagingState<Int, PostEntity>
-        state: PagingState<Int, PostWithLists>
+        state: PagingState<Int, WallWithLists>
     ): MediatorResult {
         try {
             val response = when (loadType) {
@@ -39,7 +40,15 @@ class PostRemoteMediator(
                     }
                 }*/
                 LoadType.REFRESH -> {
-                    apiService.getLatest(state.config.initialLoadSize)
+                    when (postSource.sourceType) {
+                        SourceType.WALL -> apiService.getLatestWallPosts(
+                            postSource.authorId,
+                            state.config.initialLoadSize
+                        )
+
+                        SourceType.MYWALL -> apiService.getLatestMyWallPosts(state.config.initialLoadSize)
+                        else -> apiService.getLatestMyWallPosts(state.config.initialLoadSize)
+                    }
                 }
 
                 LoadType.PREPEND -> {
@@ -47,15 +56,46 @@ class PostRemoteMediator(
                         //endOfPaginationReached = false
                         endOfPaginationReached = true
                     )
-                    apiService.getAfter(id, state.config.pageSize)
+                    when (postSource.sourceType) {
+                        SourceType.WALL -> apiService.getAfterWallPosts(
+                            postSource.authorId,
+                            id,
+                            state.config.pageSize
+                        )
+
+                        SourceType.MYWALL -> apiService.getAfterMyWallPosts(
+                            id,
+                            state.config.pageSize
+                        )
+
+                        else -> apiService.getAfterMyWallPosts(
+                            id,
+                            state.config.pageSize
+                        )
+                    }
                 }
 
                 LoadType.APPEND -> {
                     val id = postRemoteKeyDao.min() ?: return MediatorResult.Success(
                         endOfPaginationReached = true
                     )
+                    when (postSource.sourceType) {
+                        SourceType.WALL -> apiService.getBeforeWallPosts(
+                            postSource.authorId,
+                            id,
+                            state.config.pageSize
+                        )
 
-                    apiService.getBefore(id, state.config.pageSize)
+                        SourceType.MYWALL -> apiService.getBeforeMyWallPosts(
+                            id,
+                            state.config.pageSize
+                        )
+
+                        else -> apiService.getBeforeMyWallPosts(
+                            id,
+                            state.config.pageSize
+                        )
+                    }
                 }
             }
 
@@ -89,12 +129,12 @@ class PostRemoteMediator(
                         if (body.isNotEmpty()) {
                             postRemoteKeyDao.insert(
                                 listOf(
-                                    PostRemoteKeyEntity(
-                                        type = PostRemoteKeyEntity.KeyType.AFTER,
+                                    WallRemoteKeyEntity(
+                                        type = WallRemoteKeyEntity.KeyType.AFTER,
                                         key = body.first().id,
                                     ),
-                                    PostRemoteKeyEntity(
-                                        type = PostRemoteKeyEntity.KeyType.BEFORE,
+                                    WallRemoteKeyEntity(
+                                        type = WallRemoteKeyEntity.KeyType.BEFORE,
                                         key = body.last().id,
                                     ),
                                 )
@@ -105,8 +145,8 @@ class PostRemoteMediator(
                     LoadType.PREPEND -> {
                         if (body.isNotEmpty()) {
                             postRemoteKeyDao.insert(
-                                PostRemoteKeyEntity(
-                                    type = PostRemoteKeyEntity.KeyType.AFTER,
+                                WallRemoteKeyEntity(
+                                    type = WallRemoteKeyEntity.KeyType.AFTER,
                                     key = body.first().id,
                                 )
                             )
@@ -116,8 +156,8 @@ class PostRemoteMediator(
                     LoadType.APPEND -> {
                         if (body.isNotEmpty()) {
                             postRemoteKeyDao.insert(
-                                PostRemoteKeyEntity(
-                                    type = PostRemoteKeyEntity.KeyType.BEFORE,
+                                WallRemoteKeyEntity(
+                                    type = WallRemoteKeyEntity.KeyType.BEFORE,
                                     key = body.last().id
                                 )
                             )
@@ -126,7 +166,9 @@ class PostRemoteMediator(
                     //else -> Unit
                 }
 
-                postDao.insertPostsWithLists(body.toEntityWithLists())
+                //postDao.insert(body.map(PostEntity::fromDto))
+                //postDao.insert(body.toEntity())
+                postDao.insertPostsWithLists(body.toWallEntityWithLists())
             }
             return MediatorResult.Success(endOfPaginationReached = body.isEmpty())
         } catch (e: IOException) {

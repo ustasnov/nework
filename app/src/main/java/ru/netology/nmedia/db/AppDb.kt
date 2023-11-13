@@ -14,6 +14,8 @@ import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.dao.SpeakerDao
 import ru.netology.nmedia.dao.UserDao
+import ru.netology.nmedia.dao.WallDao
+import ru.netology.nmedia.dao.WallRemoteKeyDao
 import ru.netology.nmedia.entity.EventEntity
 import ru.netology.nmedia.entity.EventRemoteKeyEntity
 import ru.netology.nmedia.entity.JobEntity
@@ -24,6 +26,8 @@ import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.PostRemoteKeyEntity
 import ru.netology.nmedia.entity.SpeakerEntity
 import ru.netology.nmedia.entity.UserEntity
+import ru.netology.nmedia.entity.WallEntity
+import ru.netology.nmedia.entity.WallRemoteKeyEntity
 
 @Database(entities = [PostEntity::class,
     PostRemoteKeyEntity::class,
@@ -34,7 +38,9 @@ import ru.netology.nmedia.entity.UserEntity
     SpeakerEntity::class,
     EventRemoteKeyEntity::class,
     EventEntity::class,
-    JobEntity::class], version = 1, exportSchema = false)
+    JobEntity::class,
+    WallEntity::class,
+    WallRemoteKeyEntity::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDb : RoomDatabase() {
     abstract fun postDao(): PostDao
@@ -47,4 +53,6 @@ abstract class AppDb : RoomDatabase() {
     abstract fun eventRemoteKeyDao(): EventRemoteKeyDao
     abstract fun eventDao(): EventDao
     abstract fun jobDao(): JobDao
+    abstract fun wallDao(): WallDao
+    abstract fun wallRemoteKeyDao(): WallRemoteKeyDao
 }

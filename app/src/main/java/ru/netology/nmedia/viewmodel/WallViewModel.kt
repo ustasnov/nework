@@ -14,22 +14,22 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.auth.AppAuth
-import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.dao.PostRemoteKeyDao
+import ru.netology.nmedia.dao.WallDao
+import ru.netology.nmedia.dao.WallRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.entity.PostWithLists
+import ru.netology.nmedia.entity.WallWithLists
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
-import ru.netology.nmedia.repository.PostRemoteMediator
-import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostsSource
+import ru.netology.nmedia.repository.WallPostRemoteMediator
+import ru.netology.nmedia.repository.WallRepository
 import ru.netology.nmedia.utils.SingleLiveEvent
 import javax.inject.Inject
 
-val empty = Post(
+val emptyWall = Post(
     id = 0L,
     authorId = 0L,
     author = "",
@@ -50,12 +50,12 @@ val empty = Post(
 
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-class PostViewModel @Inject constructor(
-    private val repository: PostRepository,
+class WallViewModel @Inject constructor(
+    private val repository: WallRepository,
     appAuth: AppAuth,
-    private val postDao: PostDao,
+    private val postDao: WallDao,
     private val apiService: ApiService,
-    val postRemoteKeyDao: PostRemoteKeyDao,
+    val postRemoteKeyDao: WallRemoteKeyDao,
     val appDb: AppDb,
 ) : ViewModel() {
     private val cached = repository
@@ -109,7 +109,6 @@ class PostViewModel @Inject constructor(
     }
 
 
-    /*
     fun setData(postSource: PostsSource) {
         @OptIn(ExperimentalPagingApi::class)
         repository.data = Pager(
@@ -117,17 +116,16 @@ class PostViewModel @Inject constructor(
                 //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
                 enablePlaceholders = false),
             pagingSourceFactory = { postDao.getPagingSource() },
-            remoteMediator = PostRemoteMediator(
+            remoteMediator = WallPostRemoteMediator(
                 apiService = apiService,
                 postDao = postDao,
                 postRemoteKeyDao = postRemoteKeyDao,
-                appDb = appDb
+                appDb = appDb,
+                postSource = postSource
             )
         ).flow
-            .map { it.map(PostWithLists::toDto) }
+            .map { it.map(WallWithLists::toDto) }
     }
-
-     */
 
     fun loadPosts() = viewModelScope.launch {
         try {

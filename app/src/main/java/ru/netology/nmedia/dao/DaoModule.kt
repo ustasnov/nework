@@ -39,4 +39,10 @@ object DaoModule {
     @Provides
     fun provideJobDao(db: AppDb): JobDao = db.jobDao()
 
+    @Provides
+    fun provideWallDao(db: AppDb): WallDao = db.wallDao()
+
+    @Provides
+    fun provideWallRemoteKeyDao(db: AppDb): WallRemoteKeyDao = db.wallRemoteKeyDao()
+
 }
