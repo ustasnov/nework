@@ -20,6 +20,7 @@ import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.WallItem
 import ru.netology.nmedia.entity.WallWithLists
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
@@ -46,6 +47,11 @@ val emptyWall = Post(
     attachment = null,
     ownedByMe = false,
     users = mutableMapOf(),
+)
+
+val emptyWallItem = WallItem(
+    ownerId = 0L,
+    type = null
 )
 
 @HiltViewModel
@@ -102,12 +108,15 @@ class WallViewModel @Inject constructor(
     val currentPost: LiveData<Post>
         get() = _currentPost
 
+    private val _wallItem = MutableLiveData(emptyWallItem.copy())
+    val wallItem: LiveData<WallItem>
+        get() = _wallItem
+
 
     init {
         //clearPosts()
         //loadPosts()
     }
-
 
     fun setData(postSource: PostsSource) {
         @OptIn(ExperimentalPagingApi::class)
@@ -232,5 +241,9 @@ class WallViewModel @Inject constructor(
     fun stateInitialized() : Boolean = ::state.isInitialized
 
      */
+
+    fun setWallItem(id: Long, type: String) {
+        _wallItem.postValue(WallItem(id, type))
+    }
 }
 

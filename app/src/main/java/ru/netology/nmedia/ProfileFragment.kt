@@ -7,20 +7,24 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UserViewHolder
 import ru.netology.nmedia.adapter.WallAdapter
 import ru.netology.nmedia.databinding.FragmentProfileBinding
 import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.dto.WallItem
 import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.JobViewModel
+import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
 import ru.netology.nmedia.viewmodel.WallViewModel
 
@@ -42,24 +46,15 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val userId = requireArguments().idArg
-        /*
-        val fragList = listOf(
-            JobsFeedFragment.newInstance().apply {
-                arguments = bundleOf(
-                    "idArg" to userId,
-                    "type" to  "WALL")
-                //loadJobs()
-            },
-            FeedFragment.newInstance().apply {
-                arguments = bundleOf(
-                    "idArg" to userId,
-                    "type" to  "WALL")
-            }
-        )
-        */
-        val binding = FragmentProfileBinding.inflate(inflater, container, false)
+        val type = requireArguments().type
 
-        requireActivity().setTitle(getString(R.string.user_profile))
+        val binding = FragmentProfileBinding.inflate(inflater, container, false)
+        //val title = type == "MYWALL" ? getString(R.string.my_profile) : getString(R.string.user_profile)
+        requireActivity().setTitle(if (type == "MYWALL") {
+            getString(R.string.my_profile)
+        } else {
+            getString(R.string.user_profile)
+        })
 
         val viewHolder = UserViewHolder(binding.userFr, object : OnUsersInteractionListener {
             override fun onViewUser(user: User) {
@@ -67,7 +62,13 @@ class ProfileFragment : Fragment() {
             }
         })
 
-        viewHolder.bind(userViewModel.currentUser.value!!)
+        userViewModel.currentUser.observe(viewLifecycleOwner) {
+            viewHolder.bind(it)
+        }
+
+        postViewModel.setWallItem(userId!!, type!!)
+
+        //println("From profile fragment: ${userViewModel.currentUserId.value}, ${userViewModel.currentUser.value}")
 
         val jobsFeedFragment: JobsFeedFragment = JobsFeedFragment.newInstance()
         jobsFeedFragment.arguments = Bundle().apply {
@@ -76,12 +77,13 @@ class ProfileFragment : Fragment() {
                 "idArg" to userId,
                 "type" to "WALL"
             )
-             */
-            putLong("idArg", userId!!)
+            */
+            putLong("idArg", userId)
             putString("type", "WALL")
         }
 
         val wallFragment: WallFragment = WallFragment.newInstance()
+        /*
         wallFragment.arguments = Bundle().apply {
             /*
             arguments = bundleOf(
@@ -92,17 +94,19 @@ class ProfileFragment : Fragment() {
             putLong("idArg", userId!!)
             putString("type", "WALL")
         }
+         */
 
-        postViewModel.setData(PostsSource(userId!!, SourceType.WALL))
+        postViewModel.setData(PostsSource(userId, SourceType.WALL))
 
         val fragList = listOf(
             jobsFeedFragment,
             wallFragment
         )
 
-        //jobViewModel.refreshUserJobs(userId)
+        jobViewModel.refreshUserJobs(userId)
 
-        postViewModel.loadPosts()
+        postViewModel.setWallItem(userId, "WALL")
+        //postViewModel.loadPosts()
         //println("From ProfileFragment: userId = ${userId}")
         //jobViewModel.refreshUserJobs(userId)
 

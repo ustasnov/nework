@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.ApiService
+import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.dao.WallDao
 import ru.netology.nmedia.dao.WallRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
@@ -27,7 +28,7 @@ class WallRepositoryImpl @Inject constructor(
     context: Application,
     private val postDao: WallDao,
     private val apiService: ApiService,
-    postRemoteKeyDao: WallRemoteKeyDao,
+    private val postRemoteKeyDao: WallRemoteKeyDao,
     appDb: AppDb,
 ) : WallRepository {
     private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
@@ -186,6 +187,7 @@ class WallRepositoryImpl @Inject constructor(
         try {
             //postDao.clearWithLists()
             postDao.clear()
+            postRemoteKeyDao.clear()
         } catch (e: Exception) {
             throw ru.netology.nmedia.error.UnknownError
         }

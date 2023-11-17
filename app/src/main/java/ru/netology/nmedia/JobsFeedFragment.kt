@@ -71,7 +71,7 @@ class JobsFeedFragment : Fragment() {
 
 
         viewModel.clearJobs()
-        if (type === "MY") {
+        if (type === "MYWALL") {
             viewModel.loadMyJobs()
         } else {
             viewModel.loadUserJobs(ownerId!!)
@@ -93,7 +93,7 @@ class JobsFeedFragment : Fragment() {
         val swipeRefresh = binding.swiperefresh
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
-            if (type === "MY") {
+            if (type === "MYWALL") {
                 viewModel.refreshMyJobs()
             } else {
                 viewModel.refreshUserJobs(ownerId!!)

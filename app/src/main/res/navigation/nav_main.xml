@@ -113,5 +113,21 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="ru.netology.nmedia.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_postAttachmentFragment"
+            app:destination="@id/postAttachmentFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_mentionsFragment"
+            app:destination="@id/mentionsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_likeOwnersFragment"
+            app:destination="@id/likeOwnersFragment" />
+    </fragment>
 </navigation>

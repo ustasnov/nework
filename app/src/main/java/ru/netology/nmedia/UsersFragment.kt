@@ -49,7 +49,6 @@ class UsersFragment : Fragment() {
             //}, observer)
         })
 
-
         binding.list.adapter = adapter
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
@@ -73,6 +72,8 @@ class UsersFragment : Fragment() {
             viewModel.refresh()
             swipeRefresh.isRefreshing = false
         }
+
+        viewModel.loadUsers()
 
         return binding.root
     }

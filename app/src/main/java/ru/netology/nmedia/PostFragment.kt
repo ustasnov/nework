@@ -149,7 +149,10 @@ class PostFragment : Fragment() {
         })
 
         //val postId = requireArguments().idArg
-        viewHolder.bind(viewModel.currentPost.value!!)
+        viewModel.currentPost.observe(viewLifecycleOwner) {
+            viewHolder.bind(it)
+        }
+        //viewHolder.bind(viewModel.currentPost.value!!)
 
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true) {

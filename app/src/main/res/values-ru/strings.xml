@@ -77,4 +77,5 @@
     <string name="end_date">Дата окончания:</string>
     <string name="jobs">Места работы</string>
     <string name="user_profile">Профиль пользователя</string>
+    <string name="my_profile">Мой профиль</string>
 </resources>

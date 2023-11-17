@@ -45,9 +45,11 @@ class UserViewModel @Inject constructor(
     val currentUser: LiveData<User>
         get() = _currentUser
 
+    /*
     init {
         loadUsers()
     }
+     */
 
     fun loadUsers() = viewModelScope.launch {
         _dataState.value = FeedModelState(loading = true)
@@ -70,8 +72,18 @@ class UserViewModel @Inject constructor(
     }
 
     fun viewUser(user: User) {
-        _currentUserId.setValue(user.id)
-        _currentUser.setValue(user)
+        _currentUserId.postValue(user.id)
+        _currentUser.postValue(user)
+    }
+
+    fun getUserById(id: Long) = viewModelScope.launch {
+        try {
+            val user = repository.getUser(id)
+            viewUser(user)
+            //println("From viewModel getUserById(): ${_currentUserId.value}, ${_currentUser.value}")
+        } catch (e: Exception) {
+            println(e.message)
+        }
     }
 
 }

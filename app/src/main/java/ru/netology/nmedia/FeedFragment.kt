@@ -215,21 +215,21 @@ class FeedFragment : Fragment() {
         binding.list.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
-            //viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.data.collectLatest(adapter::submitData)
                 //viewModel.data.collect(adapter::submitData)
-            //}
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            //viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 adapter.loadStateFlow.collectLatest { state ->
                     binding.swiperefresh.isRefreshing =
                         state.refresh is LoadState.Loading ||
                                 state.prepend is LoadState.Loading ||
                                 state.append is LoadState.Loading
                 }
-            //}
+            }
         }
 
         //viewModel.loadPosts()

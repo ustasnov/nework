@@ -14,17 +14,21 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
+import androidx.lifecycle.ViewModel
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.NewPostFragment.Companion.isNewPost
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.PostFragment.Companion.idArg
+import ru.netology.nmedia.ProfileFragment.Companion.type
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.ActivityAppBinding
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.UserViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -41,7 +45,7 @@ class AppActivity : AppCompatActivity() {
      */
 
     private val viewModel: AuthViewModel by viewModels()
-
+    private val userViewModel: UserViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,11 +146,14 @@ class AppActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.posts -> {
                     //Toast.makeText(this@AppActivity, "Posts", Toast.LENGTH_SHORT).show()
-                    findNavController(R.id.navigation).navigate(R.id.feedFragment,
+                    findNavController(R.id.navigation).navigate(R.id.feedFragment
+                        /*,
                         Bundle().apply {
                         idArg = 0
                         typeArg = "POSTS"
-                    })
+                    }
+                    */
+                    )
                 }
                 R.id.users -> {
                     //Toast.makeText(this@AppActivity, "Users", Toast.LENGTH_SHORT).show()
@@ -162,7 +169,23 @@ class AppActivity : AppCompatActivity() {
                 }
 
                 R.id.profile -> {
-                    Toast.makeText(this@AppActivity, "Profile", Toast.LENGTH_SHORT).show()
+                    if (viewModel.isAuthorized) {
+                        findNavController(R.id.navigation).navigate(R.id.profileFragment,
+                            Bundle().apply {
+                                idArg = viewModel.data.value?.id
+                                type = "MYWALL"
+                                userViewModel.getUserById(idArg!!)
+                            })
+                    } else {
+                        Snackbar.make(
+                            binding.root,
+                            getString(R.string.authorization_required),
+                            Snackbar.LENGTH_LONG
+                        )
+                            .setAction(R.string.login) { findNavController(R.id.navigation).navigate(R.id.authFragment) }
+                            .show()
+                    }
+                    //Toast.makeText(this@AppActivity, "Profile", Toast.LENGTH_SHORT).show()
                 }
             }
             binding.drawer.closeDrawer(GravityCompat.START)

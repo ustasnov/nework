@@ -28,4 +28,13 @@ class UserRepositoryImpl @Inject constructor(
         userDao.insert(users.map { UserEntity.fromDto(it) })
     }
 
+    override suspend fun getUser(id: Long): User {
+        val response = apiService.getUser(id)
+        if (!response.isSuccessful) {
+            throw RuntimeException(response.message())
+        }
+        val user = response.body() ?: throw RuntimeException("body is null")
+        return user
+    }
+
 }
