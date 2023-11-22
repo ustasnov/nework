@@ -20,11 +20,15 @@ import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.dto.WallItem
 import ru.netology.nmedia.entity.WallWithLists
+import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.model.FeedModelState
+import ru.netology.nmedia.model.JobModel
 import ru.netology.nmedia.model.PhotoModel
 import ru.netology.nmedia.repository.PostsSource
+import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.repository.WallPostRemoteMediator
 import ru.netology.nmedia.repository.WallRepository
 import ru.netology.nmedia.utils.SingleLiveEvent
@@ -54,32 +58,21 @@ val emptyWallItem = WallItem(
     type = null
 )
 
+val emptyPostSource = PostsSource(
+    authorId = 0L,
+    sourceType = null
+)
+
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class WallViewModel @Inject constructor(
     private val repository: WallRepository,
-    appAuth: AppAuth,
-    private val postDao: WallDao,
-    private val apiService: ApiService,
     val postRemoteKeyDao: WallRemoteKeyDao,
     val appDb: AppDb,
 ) : ViewModel() {
-    private val cached = repository
-        .data
-        .cachedIn(viewModelScope)
 
-    val data: Flow<PagingData<FeedItem>> = appAuth.data
-        .flatMapLatest { token ->
-            repository.data.map { posts ->
-                posts.map { post ->
-                    if (post is Post) {
-                        post.copy(ownedByMe = post.authorId == token?.id)
-                    } else {
-                        post
-                    }
-                }
-            }
-    }.flowOn(Dispatchers.Default)
+    var data: LiveData<FeedModel> =
+        repository.data.map(::FeedModel).asLiveData(Dispatchers.Default)
 
     private lateinit var state: Parcelable
 
@@ -112,44 +105,49 @@ class WallViewModel @Inject constructor(
     val wallItem: LiveData<WallItem>
         get() = _wallItem
 
+    private val _postSource = MutableLiveData(emptyPostSource.copy())
+    val postSource: LiveData<PostsSource>
+        get() = _postSource
 
     init {
         //clearPosts()
         //loadPosts()
     }
 
-    fun setData(postSource: PostsSource) {
-        @OptIn(ExperimentalPagingApi::class)
-        repository.data = Pager(
-            config = PagingConfig(pageSize = 300,
-                //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
-                enablePlaceholders = false),
-            pagingSourceFactory = { postDao.getPagingSource() },
-            remoteMediator = WallPostRemoteMediator(
-                apiService = apiService,
-                postDao = postDao,
-                postRemoteKeyDao = postRemoteKeyDao,
-                appDb = appDb,
-                postSource = postSource
-            )
-        ).flow
-            .map { it.map(WallWithLists::toDto) }
-    }
-
-    fun loadPosts() = viewModelScope.launch {
+    fun loadWallPosts(ownerId: Long) = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
-            //repository.getAll()
+            repository.getAllWallPosts(ownerId)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
         }
     }
 
-    fun refresh() = viewModelScope.launch {
+    fun refreshWall(ownerId: Long) = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
-            //repository.getAll()
+            repository.getAllWallPosts(ownerId)
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = ErrorType.LOADING)
+        }
+    }
+
+    fun loadMyWallPosts() = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(loading = true)
+            repository.getMyWallPosts()
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = ErrorType.LOADING)
+        }
+    }
+
+    fun refreshMyWall() = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(refreshing = true)
+            repository.getMyWallPosts()
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
@@ -188,13 +186,18 @@ class WallViewModel @Inject constructor(
         isNewPost = isNew
     }
 
-    fun likeById(post: Post) = viewModelScope.launch {
-        _currentPost.setValue(post)
+    fun likeById(post: Post, user: User) = viewModelScope.launch {
+        //_currentPost.value = post
         try {
-            if (_currentPost.value?.likedByMe == false) {
-                repository.likeById(_currentPost.value!!.id)
+            //if (_currentPost.value?.likedByMe == false) {
+            if (!post.likedByMe) {
+                //repository.likeById(_currentPost.value!!.id)
+                repository.likeById(post.id)
+                repository.insertLikeOwner(post.id, user)
             } else {
-                repository.unlikeById(_currentPost.value!!.id)
+                //repository.unlikeById(_currentPost.value!!.id)
+                repository.unlikeById(post.id)
+                repository.removeLikeOwner(post.id, user.id)
             }
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LIKE)
@@ -244,6 +247,10 @@ class WallViewModel @Inject constructor(
 
     fun setWallItem(id: Long, type: String) {
         _wallItem.postValue(WallItem(id, type))
+    }
+
+    fun setPostSource(authorId: Long, sourceType: SourceType) {
+        _postSource.setValue(PostsSource(authorId, sourceType))
     }
 }
 

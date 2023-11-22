@@ -42,7 +42,7 @@ class WallPostRemoteMediator(
                 LoadType.REFRESH -> {
                     when (postSource.sourceType) {
                         SourceType.WALL -> apiService.getLatestWallPosts(
-                            postSource.authorId,
+                            postSource.authorId!!,
                             state.config.initialLoadSize
                         )
 
@@ -58,7 +58,7 @@ class WallPostRemoteMediator(
                     )
                     when (postSource.sourceType) {
                         SourceType.WALL -> apiService.getAfterWallPosts(
-                            postSource.authorId,
+                            postSource.authorId!!,
                             id,
                             state.config.pageSize
                         )
@@ -81,7 +81,7 @@ class WallPostRemoteMediator(
                     )
                     when (postSource.sourceType) {
                         SourceType.WALL -> apiService.getBeforeWallPosts(
-                            postSource.authorId,
+                            postSource.authorId!!,
                             id,
                             state.config.pageSize
                         )

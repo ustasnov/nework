@@ -14,6 +14,7 @@ import ru.netology.nmedia.databinding.FragmentAuthBinding
 import ru.netology.nmedia.utils.AndroidUtils
 import ru.netology.nmedia.viewmodel.AuthSignViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class AuthFragment : Fragment() {

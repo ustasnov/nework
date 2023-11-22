@@ -6,15 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.autorArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
@@ -22,17 +16,17 @@ import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
 import ru.netology.nmedia.PostFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnInteractionListener
-import ru.netology.nmedia.adapter.PostsAdapter
+import ru.netology.nmedia.adapter.WallPostsAdapter
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.AttachmentType
+import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.repository.SourceType
-import ru.netology.nmedia.utils.LongArg
-import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.ProfileViewModel
+import ru.netology.nmedia.viewmodel.UserViewModel
 import ru.netology.nmedia.viewmodel.WallViewModel
 import ru.netology.nmedia.viewmodel.empty
 import javax.inject.Inject
@@ -42,6 +36,7 @@ import javax.inject.Inject
 class WallFragment : Fragment() {
     val viewModel: WallViewModel by activityViewModels()
     val postViewModel: PostViewModel by activityViewModels()
+    val userViewModel: UserViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     @Inject
     lateinit var appAuth: AppAuth
@@ -53,32 +48,11 @@ class WallFragment : Fragment() {
     ): View {
         val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
-        //requireActivity().setTitle(getString(R.string.postsTitle))
-
-        /*
-        val ownerId = requireArguments().idArg
-        val type = requireArguments().type
-        */
-        var ownerId = 0L
-        var type = ""
-
-
-
-        /*
-        viewModel.setData(PostsSource(ownerId,
-            when (type) {
-                "WALL" -> SourceType.WALL
-                "MYWALL" -> SourceType.MYWALL
-                else -> SourceType.MYWALL
-            })
-        )
-
-         */
-
-        val adapter = PostsAdapter(object : OnInteractionListener {
+        val adapter = WallPostsAdapter(object : OnInteractionListener {
             override fun onLike(post: Post) {
                 if (authViewModel.isAuthorized) {
-                    viewModel.likeById(post)
+                    viewModel.likeById(post, userViewModel.currentUser.value!!)
+                    postViewModel.likeById(post)
                 } else {
                     Snackbar.make(
                         binding.root,
@@ -89,30 +63,6 @@ class WallFragment : Fragment() {
                         .show()
                 }
             }
-
-            /*
-            override fun onShare(post: Post) {
-                if (authViewModel.isAuthorized) {
-                    viewModel.shareById(post.id)
-                    val intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, post.content)
-                        type = "text/plain"
-                    }
-                    val shareIntent = Intent.createChooser(intent, getString(R.string.share_post))
-                    startActivity(shareIntent)
-                } else {
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.authorization_required),
-                        Snackbar.LENGTH_LONG
-                    )
-                        .setAction(R.string.login) { findNavController().navigate(R.id.authFragment) }
-                        .show()
-                }
-            }
-
-             */
 
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
@@ -194,47 +144,54 @@ class WallFragment : Fragment() {
 
 
             }
-        //}, observer)
         })
-        //RecyclerView.Adapter.StateRestorationPolicy.PREVENT
-        //adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 
         binding.list.adapter = adapter
 
-        viewModel.wallItem.observe(viewLifecycleOwner) {
-            ownerId = it.ownerId
-            type = it.type!!
-            viewModel.setData(PostsSource(ownerId,
-                when (type) {
-                    "WALL" -> SourceType.WALL
-                    "MYWALL" -> SourceType.MYWALL
-                    else -> SourceType.MYWALL
-                })
-            )
-            adapter.refresh()
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.data.collectLatest(adapter::submitData)
-                //viewModel.data.collect(adapter::submitData)
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                adapter.loadStateFlow.collectLatest { state ->
-                    binding.swiperefresh.isRefreshing =
-                        state.refresh is LoadState.Loading ||
-                                state.prepend is LoadState.Loading ||
-                                state.append is LoadState.Loading
+        viewModel.postSource.observe(viewLifecycleOwner) {
+            viewModel.clearPosts()
+            if (it.authorId != null && it.authorId !== 0L) {
+                //viewModel.clearPosts()
+                if (it.sourceType === SourceType.MYWALL) {
+                    viewModel.loadMyWallPosts()
+                } else {
+                    viewModel.loadWallPosts(it.authorId)
                 }
             }
         }
 
-        //viewModel.loadPosts()
+        viewModel.data.observe(viewLifecycleOwner) { state ->
+            adapter.submitList(state.posts)
+        }
 
-        binding.swiperefresh.setOnRefreshListener(adapter::refresh)
+        viewModel.dataState.observe(viewLifecycleOwner) { state ->
+            binding.swiperefresh.isRefreshing = state.refreshing
+            when (state.error) {
+                ErrorType.LOADING ->
+                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.retry_loading) {
+                            if (viewModel.postSource.value!!.sourceType == SourceType.MYWALL) {
+                                viewModel.loadMyWallPosts()
+                            } else {
+                                viewModel.loadWallPosts(viewModel.postSource.value!!.authorId!!)
+                            }
+                        }
+                        .show()
+                else -> Unit
+            }
+        }
+
+        val swipeRefresh = binding.swiperefresh
+        swipeRefresh.setOnRefreshListener {
+            swipeRefresh.isRefreshing = true
+            if (viewModel.postSource.value!!.sourceType == SourceType.MYWALL) {
+                viewModel.refreshMyWall()
+            } else {
+                viewModel.refreshWall(viewModel.postSource.value!!.authorId!!)
+            }
+            swipeRefresh.isRefreshing = false
+        }
+
 
         binding.add.setOnClickListener {
             if (authViewModel.isAuthorized) {
@@ -254,15 +211,10 @@ class WallFragment : Fragment() {
         return binding.root
     }
 
-
-    /*
     override fun onStop() {
         super.onStop()
-        //println("From ProfileFragment.onStop.clearJobs()")
-        viewModel.clearPosts()
+        //requireActivity().supportFragmentManager.beginTransaction().remove(this@WallFragment).commit()
     }
-     */
-
 
     companion object {
         //var Bundle.idArg: Long? by LongArg

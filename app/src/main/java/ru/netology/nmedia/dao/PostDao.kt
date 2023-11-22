@@ -38,6 +38,7 @@ interface PostDao {
     @Transaction
     suspend fun insertPostWithLists(post: PostWithLists) {
         insert(post.post)
+        clearPostLikeOwners(post.post.id)
         insertLikeOwners(post.likeOwners)
         insertMentions(post.mentions)
     }
@@ -80,6 +81,9 @@ interface PostDao {
 
     @Query("DELETE FROM LikeOwnerEntity")
     suspend fun clearLikeOwners()
+
+    @Query("DELETE FROM LikeOwnerEntity WHERE parentId = :parentId")
+    suspend fun clearPostLikeOwners(parentId: Long)
 
     @Query("DELETE FROM MentionEntity")
     suspend fun clearMentions()

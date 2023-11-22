@@ -74,13 +74,15 @@ class UserViewModel @Inject constructor(
     fun viewUser(user: User) {
         _currentUserId.postValue(user.id)
         _currentUser.postValue(user)
+        println("From UserViewModel.viewUser: ${user}")
     }
 
     fun getUserById(id: Long) = viewModelScope.launch {
         try {
+            println("From viewModel getUserById(): ${id}")
             val user = repository.getUser(id)
+            println("From viewModel getUserById(): ${user}")
             viewUser(user)
-            //println("From viewModel getUserById(): ${_currentUserId.value}, ${_currentUser.value}")
         } catch (e: Exception) {
             println(e.message)
         }

@@ -6,23 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import ru.netology.nmedia.ProfileFragment.Companion.type
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UsersAdapter
 import ru.netology.nmedia.databinding.FragmentUsersBinding
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.repository.PostsSource
+import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
+import ru.netology.nmedia.viewmodel.ProfileViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class UsersFragment : Fragment() {
     val viewModel: UserViewModel by activityViewModels()
+    val profileViewModel: ProfileViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,14 +37,16 @@ class UsersFragment : Fragment() {
 
         val adapter = UsersAdapter(object : OnUsersInteractionListener {
             override fun onViewUser(user: User) {
-                viewModel.viewUser(user)
-
+                //viewModel.viewUser(user)
+                profileViewModel.setPostSource(PostsSource(user.id, SourceType.WALL))
                 findNavController().navigate(
-                    R.id.action_usersFragment_to_profileFragment,
-                    Bundle().apply {
+                    R.id.action_usersFragment_to_profileFragment
+                    /*
+                    , Bundle().apply {
                         idArg = user.id
                         type = "WALL"
                     }
+                     */
                 )
 
             }

@@ -11,16 +11,11 @@ import kotlinx.coroutines.flow.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.ApiService
-import ru.netology.nmedia.dao.LikeOwnerDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.dao.WallDao
 import ru.netology.nmedia.dao.WallRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.*
-import ru.netology.nmedia.entity.JobEntity
-import ru.netology.nmedia.entity.LikeOwnerEntity
-import ru.netology.nmedia.entity.UserEntity
-import ru.netology.nmedia.entity.WallEntity
 import ru.netology.nmedia.entity.WallWithLists
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
@@ -29,20 +24,33 @@ import ru.netology.nmedia.model.PhotoModel
 import java.io.IOException
 import javax.inject.Inject
 
-class WallRepositoryImpl @Inject constructor(
+class WallRepositoryImpl_1 @Inject constructor(
     context: Application,
-    private val wallDao: WallDao,
-    private val likeOwnerDao: LikeOwnerDao,
+    private val postDao: WallDao,
     private val apiService: ApiService,
-    //private val postRemoteKeyDao: WallRemoteKeyDao,
+    private val postRemoteKeyDao: WallRemoteKeyDao,
     appDb: AppDb,
-) : WallRepository {
+) : WallRepository_1 {
     private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
     private val key = "newWallPostContent"
     private var newPostContentValue = MutableLiveData<String>()
 
-    override var data: Flow<List<Post>> =
-        wallDao.getAll().map { it.map(WallWithLists::toDto) }
+    @OptIn(ExperimentalPagingApi::class)
+    override var data: Flow<PagingData<FeedItem>> = Pager(
+        config = PagingConfig(pageSize = 300,
+            //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
+            enablePlaceholders = false),
+        pagingSourceFactory = { postDao.getPagingSource() },
+        remoteMediator = WallPostRemoteMediator(
+            apiService = apiService,
+            postDao = postDao,
+            postRemoteKeyDao = postRemoteKeyDao,
+            appDb = appDb,
+            PostsSource(null, SourceType.POSTS),
+        )
+    ).flow
+        .map { it.map(WallWithLists::toDto)
+    }
 
     override fun getNewer(id: Long): Flow<Int> = flow {
         while (true) {
@@ -53,7 +61,7 @@ class WallRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val posts = response.body().orEmpty()
-            wallDao.insertPostsWithLists(posts.map { WallWithLists.fromDto(it) })
+            postDao.insertPostsWithLists(posts.map { WallWithLists.fromDto(it) })
             emit(posts.size)
 
         }
@@ -66,21 +74,12 @@ class WallRepositoryImpl @Inject constructor(
             throw RuntimeException(response.message())
         }
         val posts = response.body() ?: throw RuntimeException("body is null")
-        wallDao.insertPostsWithLists(posts.map { WallWithLists.fromDto(it) })
-    }
-
-    override suspend fun getMyWallPosts() {
-        val response = apiService.getAllMyWallPosts()
-        if (!response.isSuccessful) {
-            throw RuntimeException(response.message())
-        }
-        val posts = response.body() ?: throw RuntimeException("body is null")
-        wallDao.insertPostsWithLists(posts.map { WallWithLists.fromDto(it) })
+        postDao.insertPostsWithLists(posts.map { WallWithLists.fromDto(it) })
     }
 
     override suspend fun likeById(id: Long) {
         try {
-            wallDao.likeById(id)
+            postDao.likeById(id)
             val response = apiService.likeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
@@ -94,7 +93,7 @@ class WallRepositoryImpl @Inject constructor(
 
     override suspend fun unlikeById(id: Long) {
         try {
-            wallDao.unlikeById(id)
+            postDao.unlikeById(id)
             val response = apiService.unlikeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
@@ -113,7 +112,7 @@ class WallRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            wallDao.insertPostWithLists(WallWithLists.fromDto(body))
+            postDao.insertPostWithLists(WallWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -138,7 +137,7 @@ class WallRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            wallDao.insertPostWithLists(WallWithLists.fromDto(body))
+            postDao.insertPostWithLists(WallWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -175,7 +174,7 @@ class WallRepositoryImpl @Inject constructor(
 
     override suspend fun removeById(id: Long) {
         try {
-            wallDao.removeById(id)
+            postDao.removeById(id)
             apiService.removeById(id)
         } catch (e: IOException) {
             throw NetworkError
@@ -187,24 +186,11 @@ class WallRepositoryImpl @Inject constructor(
     override suspend fun clearPosts() {
         try {
             //postDao.clearWithLists()
-            wallDao.clear()
+            postDao.clear()
             //postRemoteKeyDao.clear()
         } catch (e: Exception) {
             throw ru.netology.nmedia.error.UnknownError
         }
-    }
-
-    override suspend fun insertLikeOwner(postId: Long, user: User) {
-        likeOwnerDao.insert(LikeOwnerEntity.fromDto(UserItem(
-            id = user.id,
-            parentId = postId,
-            name = user.name,
-            avatar = user.avatar)
-        ))
-    }
-
-    override suspend fun removeLikeOwner(postId: Long, userId: Long) {
-        likeOwnerDao.removeById(userId, postId)
     }
 }
 

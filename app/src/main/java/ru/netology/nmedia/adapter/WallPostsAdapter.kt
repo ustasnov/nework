@@ -7,6 +7,7 @@ import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
@@ -19,6 +20,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.AndroidUtils.formatDate
 import java.util.Locale
 
+/*
 interface OnInteractionListener {
     fun onLike(post: Post) {}
     fun onEdit(post: Post) {}
@@ -30,9 +32,11 @@ interface OnInteractionListener {
     fun onViewMentions(post: Post) {}
 }
 
-class PostsAdapter(
+ */
+
+class WallPostsAdapter(
     private val onInteractionListener: OnInteractionListener
-) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(PostDiffCallback()) {
+) : ListAdapter<FeedItem, RecyclerView.ViewHolder>(WallDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int =
         when (getItem(position)) {
@@ -47,7 +51,7 @@ class PostsAdapter(
                 val binding =
                     CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 //PostViewHolder(binding, onInteractionListener, mediaLifecycleObserver)
-                PostViewHolder(binding, onInteractionListener)
+                WallViewHolder(binding, onInteractionListener)
             }
 
             R.layout.card_ad -> {
@@ -62,7 +66,8 @@ class PostsAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
             is Ad -> (holder as? AdViewHolder)?.bind(item)
-            is Post -> (holder as? PostViewHolder)?.bind(item)
+            //is Post -> (holder as? PostViewHolder)?.bind(item)
+            is Post -> (holder as? WallViewHolder)?.bind(item)
             else -> error("unknown view type")
             //null -> Unit
         }
@@ -70,22 +75,8 @@ class PostsAdapter(
 
 }
 
-class AdViewHolder(
-    private val binding: CardAdBinding,
-) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(ad: Ad) {
-        Glide.with(binding.image)
-            //.load("${BuildConfig.BASE_URL}media/${ad.image}")
-            .load(ad.image)
-            .placeholder(R.drawable.ic_loading_100dp)
-            .error(R.drawable.ic_error_100dp)
-            .timeout(10_000)
-            .into(binding.image)
-    }
-}
-
-class PostViewHolder(
+class WallViewHolder(
     private val binding: CardPostBinding,
     private val onInteractionListener: OnInteractionListener
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -95,8 +86,6 @@ class PostViewHolder(
             author.text = post.author
             published.text = formatDate(post.published)
             postText.text = post.content
-            //favorite.isChecked = post.likedByMe
-            //favorite.setChecked(post.likedByMe)
             if (post.likedByMe) {
                 favorite.setIconTintResource(R.color.red)
             } else {
@@ -208,7 +197,7 @@ class PostViewHolder(
     }
 }
 
-class PostDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
+class WallDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
     override fun areItemsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {
         return oldItem.id == newItem.id
     }
@@ -218,6 +207,7 @@ class PostDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
     }
 }
 
+/*
 fun formatValue(value: Double): String {
     if (value >= 1000000000.0) {
         return "\u221e"
@@ -249,3 +239,4 @@ fun formatValue(value: Double): String {
         else -> res.substring(0, dotPosition + 2) + suffix
     }
 }
+*/

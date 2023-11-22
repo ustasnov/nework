@@ -2,33 +2,34 @@ package ru.netology.nmedia
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.ContextMenu
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.netology.nmedia.NewPostFragment.Companion.isNewPost
 import ru.netology.nmedia.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.PostFragment.Companion.idArg
-import ru.netology.nmedia.ProfileFragment.Companion.type
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.ActivityAppBinding
+import ru.netology.nmedia.repository.PostsSource
+import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.ProfileViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
+import ru.netology.nmedia.viewmodel.WallViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -47,6 +48,8 @@ class AppActivity : AppCompatActivity() {
     private val viewModel: AuthViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
+    private val wallViewModel: WallViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,7 +149,8 @@ class AppActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.posts -> {
                     //Toast.makeText(this@AppActivity, "Posts", Toast.LENGTH_SHORT).show()
-                    findNavController(R.id.navigation).navigate(R.id.feedFragment
+                    findNavController(R.id.navigation).navigate(
+                        R.id.feedFragment
                         /*,
                         Bundle().apply {
                         idArg = 0
@@ -155,6 +159,7 @@ class AppActivity : AppCompatActivity() {
                     */
                     )
                 }
+
                 R.id.users -> {
                     //Toast.makeText(this@AppActivity, "Users", Toast.LENGTH_SHORT).show()
                     findNavController(R.id.navigation).navigate(R.id.usersFragment,
@@ -163,6 +168,7 @@ class AppActivity : AppCompatActivity() {
                             typeArg = "all"
                         })
                 }
+
                 R.id.events -> {
                     //Toast.makeText(this@AppActivity, "Events", Toast.LENGTH_SHORT).show()
                     findNavController(R.id.navigation).navigate(R.id.eventsFeedFragment)
@@ -170,19 +176,31 @@ class AppActivity : AppCompatActivity() {
 
                 R.id.profile -> {
                     if (viewModel.isAuthorized) {
-                        findNavController(R.id.navigation).navigate(R.id.profileFragment,
-                            Bundle().apply {
-                                idArg = viewModel.data.value?.id
-                                type = "MYWALL"
-                                userViewModel.getUserById(idArg!!)
-                            })
+                        //userViewModel.getUserById(viewModel.data.value!!.id)
+                        profileViewModel.setPostSource(PostsSource(viewModel.data.value!!.id, SourceType.MYWALL))
+                        findNavController(R.id.navigation).navigate(
+                            R.id.profileFragment
+                            /*,
+                        Bundle().apply {
+                            idArg = viewModel.data.value?.id
+                            type = "MYWALL"
+                            userViewModel.getUserById(idArg!!)
+                        }
+                        */
+                        )
+
+
                     } else {
                         Snackbar.make(
                             binding.root,
                             getString(R.string.authorization_required),
                             Snackbar.LENGTH_LONG
                         )
-                            .setAction(R.string.login) { findNavController(R.id.navigation).navigate(R.id.authFragment) }
+                            .setAction(R.string.login) {
+                                findNavController(R.id.navigation).navigate(
+                                    R.id.authFragment
+                                )
+                            }
                             .show()
                     }
                     //Toast.makeText(this@AppActivity, "Profile", Toast.LENGTH_SHORT).show()

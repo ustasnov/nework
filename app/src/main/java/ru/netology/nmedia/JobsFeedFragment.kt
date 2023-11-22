@@ -1,33 +1,26 @@
 package ru.netology.nmedia
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import ru.netology.nmedia.ProfileFragment.Companion.idArg
-import ru.netology.nmedia.ProfileFragment.Companion.type
 import ru.netology.nmedia.adapter.JobsAdapter
 import ru.netology.nmedia.adapter.OnJobsInteractionListener
-import ru.netology.nmedia.adapter.OnUsersInteractionListener
-import ru.netology.nmedia.adapter.UsersAdapter
 import ru.netology.nmedia.databinding.FragmentJobsFeedBinding
-import ru.netology.nmedia.databinding.FragmentUsersBinding
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Job
-import ru.netology.nmedia.dto.User
-import ru.netology.nmedia.utils.LongArg
-import ru.netology.nmedia.utils.StringArg
+import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.JobViewModel
-import ru.netology.nmedia.viewmodel.UserViewModel
+import ru.netology.nmedia.viewmodel.WallViewModel
 
 @AndroidEntryPoint
 class JobsFeedFragment : Fragment() {
     val viewModel: JobViewModel by activityViewModels()
+    val postViewModel: WallViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,37 +47,29 @@ class JobsFeedFragment : Fragment() {
 
         binding.list.adapter = adapter
 
-        val ownerId = requireArguments().idArg
-        val type = requireArguments().type
-
-        /*
-        if (requireArguments().type === "MY") {
-            viewModel.loadMyJobs()
-        } else {
-            viewModel.loadUserJobs(requireArguments().idArg!!)
+        //val ownerId = requireArguments().idArg
+        //val type = requireArguments().type
+        viewModel.postSource.observe(viewLifecycleOwner) {
+            if (it.authorId != null && it.authorId !== 0L) {
+                //viewModel.clearJobs()
+                if (it.sourceType === SourceType.MYWALL) {
+                    viewModel.loadMyJobs()
+                } else {
+                    viewModel.loadUserJobs(it.authorId)
+                }
+            }
         }
-        */
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.jobs)
         }
-
-
-        viewModel.clearJobs()
-        if (type === "MYWALL") {
-            viewModel.loadMyJobs()
-        } else {
-            viewModel.loadUserJobs(ownerId!!)
-        }
-
-        //loadJobs(viewModel)
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.swiperefresh.isRefreshing = state.refreshing
             when (state.error) {
                 ErrorType.LOADING ->
                     Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.retry_loading) { viewModel.loadUserJobs(requireArguments().idArg!!) }
+                        .setAction(R.string.retry_loading) { viewModel.loadUserJobs(postViewModel.postSource.value!!.authorId!!) }
                         .show()
                 else -> Unit
             }
@@ -93,10 +78,10 @@ class JobsFeedFragment : Fragment() {
         val swipeRefresh = binding.swiperefresh
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
-            if (type === "MYWALL") {
+            if (postViewModel.postSource.value!!.sourceType == SourceType.MYWALL) {
                 viewModel.refreshMyJobs()
             } else {
-                viewModel.refreshUserJobs(ownerId!!)
+                viewModel.refreshUserJobs(postViewModel.postSource.value!!.authorId!!)
             }
             swipeRefresh.isRefreshing = false
         }
@@ -104,21 +89,9 @@ class JobsFeedFragment : Fragment() {
         return binding.root
     }
 
-    /*
-    fun loadJobs(viewModel: JobViewModel) {
-        if (requireArguments().type === "MY") {
-            viewModel.loadMyJobs()
-        } else {
-            println("From JobsFeedFragment.loadJobs(): ${requireArguments().idArg}")
-            viewModel.loadUserJobs(requireArguments().idArg!!)
-        }
-    }
-
-     */
-
     companion object {
-        var Bundle.idArg: Long? by LongArg
-        var Bundle.type: String? by StringArg
+        //var Bundle.idArg: Long? by LongArg
+        //var Bundle.type: String? by StringArg
 
         @JvmStatic
         fun newInstance() = JobsFeedFragment()

@@ -21,8 +21,8 @@ interface LikeOwnerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(likeOwnerEntities: List<LikeOwnerEntity>)
 
-    @Query("DELETE FROM likeOwnerEntity WHERE id = :id")
-    suspend fun removeById(id: Long)
+    @Query("DELETE FROM likeOwnerEntity WHERE id = :id AND parentId = :parentId ")
+    suspend fun removeById(id: Long, parentId: Long)
 
     @Query("DELETE FROM likeOwnerEntity")
     suspend fun clear()

@@ -11,8 +11,10 @@ import kotlinx.coroutines.flow.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.ApiService
+import ru.netology.nmedia.dao.LikeOwnerDao
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
+import ru.netology.nmedia.dao.WallDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.*
 import ru.netology.nmedia.entity.PostWithLists
@@ -26,6 +28,8 @@ import javax.inject.Inject
 class PostRepositoryImpl @Inject constructor(
     context: Application,
     private val postDao: PostDao,
+    private val wallDao: WallDao,
+    private val likeOwnerDao: LikeOwnerDao,
     private val apiService: ApiService,
     postRemoteKeyDao: PostRemoteKeyDao,
     appDb: AppDb,
@@ -84,6 +88,9 @@ class PostRepositoryImpl @Inject constructor(
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            postDao.insertPostWithLists(PostWithLists.fromDto(body))
+            wallDao.likeById(id)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -98,6 +105,9 @@ class PostRepositoryImpl @Inject constructor(
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            postDao.insertPostWithLists(PostWithLists.fromDto(body))
+            wallDao.unlikeById(id)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

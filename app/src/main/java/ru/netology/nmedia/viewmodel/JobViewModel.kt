@@ -11,9 +11,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Job
+import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.JobModel
 import ru.netology.nmedia.repository.JobRepository
+import ru.netology.nmedia.repository.PostsSource
+import ru.netology.nmedia.repository.SourceType
 import javax.inject.Inject
 
 val emptyJob = Job(
@@ -46,6 +49,10 @@ class JobViewModel @Inject constructor(
     private val _currentUserId = MutableLiveData<Long>()
     val currentUserId: LiveData<Long>
         get() = _currentUserId
+
+    private val _postSource = MutableLiveData(emptyPostSource.copy())
+    val postSource: LiveData<PostsSource>
+        get() = _postSource
 
     init {
         //println("From JobViewModel.init.clearJobs()")
@@ -95,10 +102,11 @@ class JobViewModel @Inject constructor(
     fun loadUserJobs(userId: Long) = viewModelScope.launch {
         _dataState.value = FeedModelState(loading = true)
         //_currentUserId.postValue(userId)
-        _currentUserId.value = userId
+        //_currentUserId.value = userId
         try {
-            println("From viewModel.loadUserJobs: ${_currentUserId.value}")
-            repository.getAllUserJobs(_currentUserId.value!!)
+            println("From viewModel.loadUserJobs: ${userId}")
+            //repository.getAllUserJobs(_currentUserId.value!!)
+            repository.getAllUserJobs(userId)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
@@ -108,10 +116,11 @@ class JobViewModel @Inject constructor(
     fun refreshUserJobs(userId: Long) = viewModelScope.launch {
         _dataState.value = FeedModelState(refreshing = true)
         //_currentUserId.postValue(userId)
-        _currentUserId.value = userId
+        //_currentUserId.value = userId
         try {
-            println("From viewModel.refreshUserJobs: ${_currentUserId.value}")
-            repository.getAllUserJobs(_currentUserId.value!!)
+            println("From viewModel.refreshUserJobs: ${userId}")
+            //repository.getAllUserJobs(_currentUserId.value!!)
+            repository.getAllUserJobs(userId)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
@@ -122,6 +131,10 @@ class JobViewModel @Inject constructor(
         //println("From clearJobs()")
         repository.clearJobs()
         //repository.data.map(::JobModel).asLiveData(Dispatchers.Default)
+    }
+
+    fun setPostSource(authorId: Long, sourceType: SourceType) {
+        _postSource.postValue(PostsSource(authorId, sourceType))
     }
 
 }

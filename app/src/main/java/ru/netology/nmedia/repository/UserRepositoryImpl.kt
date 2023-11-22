@@ -34,6 +34,7 @@ class UserRepositoryImpl @Inject constructor(
             throw RuntimeException(response.message())
         }
         val user = response.body() ?: throw RuntimeException("body is null")
+        println("From UserRepositoryImpl.getUser(): ${user}")
         return user
     }
 
