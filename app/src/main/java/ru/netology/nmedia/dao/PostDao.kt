@@ -58,7 +58,7 @@ interface PostDao {
 
     @Query(
         """
-        UPDATE PostEntity SET likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
+        UPDATE PostEntity SET likedByMe = 1
         WHERE id = :id
         """
     )
@@ -66,12 +66,11 @@ interface PostDao {
 
     @Query(
         """
-        UPDATE PostEntity SET likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
+        UPDATE PostEntity SET likedByMe = 0
         WHERE id = :id
         """
     )
     suspend fun unlikeById(id: Long)
-
 
     @Query("DELETE FROM PostEntity WHERE id = :id")
     suspend fun removeById(id: Long)

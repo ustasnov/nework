@@ -95,18 +95,16 @@ class PostViewHolder(
             author.text = post.author
             published.text = formatDate(post.published)
             postText.text = post.content
-            //favorite.isChecked = post.likedByMe
-            //favorite.setChecked(post.likedByMe)
+
+            favorite.isChecked = post.likedByMe
+            /*
             if (post.likedByMe) {
                 favorite.setIconTintResource(R.color.red)
             } else {
                 favorite.setIconTintResource(R.color.ext_gray)
             }
-            favorite.isCheckable = post.ownedByMe
-            //postId.text = post.id.toString()
-            //favorite.text = formatValue(post.likes)
-            //share.text = formatValue(post.shared)
-            //views.text = formatValue(post.views)
+             */
+            //favorite.isCheckable = post.ownedByMe
             likesCount.text = formatValue(post.likeOwnerIds.size.toDouble())
             siteUrl.text = post.link
             if (post.link.isNullOrBlank()) {

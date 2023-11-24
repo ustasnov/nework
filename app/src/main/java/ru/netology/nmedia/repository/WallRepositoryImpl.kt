@@ -4,23 +4,25 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.dao.LikeOwnerDao
-import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.dao.WallDao
-import ru.netology.nmedia.dao.WallRemoteKeyDao
-import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.dto.*
-import ru.netology.nmedia.entity.JobEntity
+import ru.netology.nmedia.dto.Attachment
+import ru.netology.nmedia.dto.AttachmentType
+import ru.netology.nmedia.dto.Media
+import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.dto.UserItem
 import ru.netology.nmedia.entity.LikeOwnerEntity
-import ru.netology.nmedia.entity.UserEntity
-import ru.netology.nmedia.entity.WallEntity
 import ru.netology.nmedia.entity.WallWithLists
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
@@ -35,7 +37,7 @@ class WallRepositoryImpl @Inject constructor(
     private val likeOwnerDao: LikeOwnerDao,
     private val apiService: ApiService,
     //private val postRemoteKeyDao: WallRemoteKeyDao,
-    appDb: AppDb,
+    //appDb: AppDb,
 ) : WallRepository {
     private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
     private val key = "newWallPostContent"
@@ -128,7 +130,7 @@ class WallRepositoryImpl @Inject constructor(
             val response = apiService.save(
                 post.copy(
                     attachment = Attachment(
-                        media.id,
+                        media.url,
                         //"",§
                         AttachmentType.IMAGE
                     )

@@ -205,19 +205,15 @@ class FeedFragment : Fragment() {
                         })
                 }
 
-
             }
-        //}, observer)
         })
-        //RecyclerView.Adapter.StateRestorationPolicy.PREVENT
-        //adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+
 
         binding.list.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.data.collectLatest(adapter::submitData)
-                //viewModel.data.collect(adapter::submitData)
             }
         }
 
@@ -231,8 +227,6 @@ class FeedFragment : Fragment() {
                 }
             }
         }
-
-        //viewModel.loadPosts()
 
         binding.swiperefresh.setOnRefreshListener(adapter::refresh)
 
@@ -254,20 +248,4 @@ class FeedFragment : Fragment() {
         return binding.root
     }
 
-    /*
-    override fun onStop() {
-        super.onStop()
-        //println("From ProfileFragment.onStop.clearJobs()")
-        //viewModel.clearPosts()
-    }
-
-
-    companion object {
-        var Bundle.idArg: Long? by LongArg
-        var Bundle.type: String? by StringArg
-
-        fun newInstance() = FeedFragment()
-    }
-
-     */
 }

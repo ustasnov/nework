@@ -124,9 +124,8 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="attachment,postText,siteCaption,siteUrl" />
 
-    <com.google.android.material.button.MaterialButton
+    <CheckBox
         android:id="@+id/favorite"
-        style="@style/Widget.AppTheme.FavoriteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -135,7 +134,8 @@
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        app:icon="@drawable/ic_favorite"
+        android:button="@drawable/sl_favorite_24"
+        app:buttonTint="@color/color_favorite"
         app:layout_constraintEnd_toStartOf="@+id/ment"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 

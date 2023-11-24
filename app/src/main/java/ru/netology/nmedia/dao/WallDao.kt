@@ -56,7 +56,7 @@ interface WallDao {
 
     @Query(
         """
-        UPDATE WallEntity SET likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
+        UPDATE WallEntity SET likedByMe = 1
         WHERE id = :id
         """
     )
@@ -64,7 +64,7 @@ interface WallDao {
 
     @Query(
         """
-        UPDATE WallEntity SET likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
+        UPDATE WallEntity SET likedByMe = 0
         WHERE id = :id
         """
     )

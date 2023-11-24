@@ -75,7 +75,6 @@ class WallPostsAdapter(
 
 }
 
-
 class WallViewHolder(
     private val binding: CardPostBinding,
     private val onInteractionListener: OnInteractionListener
@@ -86,12 +85,15 @@ class WallViewHolder(
             author.text = post.author
             published.text = formatDate(post.published)
             postText.text = post.content
+            favorite.isChecked = post.likedByMe
+            /*
             if (post.likedByMe) {
                 favorite.setIconTintResource(R.color.red)
             } else {
                 favorite.setIconTintResource(R.color.ext_gray)
             }
-            favorite.isCheckable = post.ownedByMe
+             */
+            //favorite.isCheckable = post.ownedByMe
             //postId.text = post.id.toString()
             //favorite.text = formatValue(post.likes)
             //share.text = formatValue(post.shared)

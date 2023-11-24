@@ -150,7 +150,7 @@ class WallFragment : Fragment() {
 
         viewModel.postSource.observe(viewLifecycleOwner) {
             viewModel.clearPosts()
-            if (it.authorId != null && it.authorId !== 0L) {
+            if (it.authorId != null && it.authorId != 0L) {
                 //viewModel.clearPosts()
                 if (it.sourceType === SourceType.MYWALL) {
                     viewModel.loadMyWallPosts()

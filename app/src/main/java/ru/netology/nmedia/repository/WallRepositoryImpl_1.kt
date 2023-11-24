@@ -127,7 +127,7 @@ class WallRepositoryImpl_1 @Inject constructor(
             val response = apiService.save(
                 post.copy(
                     attachment = Attachment(
-                        media.id,
+                        media.url,
                         //"",§
                         AttachmentType.IMAGE
                     )

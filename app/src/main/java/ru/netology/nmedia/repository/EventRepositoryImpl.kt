@@ -149,7 +149,7 @@ class EventRepositoryImpl @Inject constructor(
             val response = apiService.saveEvent(
                 event.copy(
                     attachment = Attachment(
-                        media.id,
+                        media.url,
                         //"",§
                         AttachmentType.IMAGE
                     )

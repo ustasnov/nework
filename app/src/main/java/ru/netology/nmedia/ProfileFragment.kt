@@ -61,7 +61,7 @@ class ProfileFragment : Fragment() {
         })
 
         userViewModel.currentUser.observe(viewLifecycleOwner) {
-            if (it != null && it.id !== 0L) {
+            if (it != null && it.id != 0L) {
                 val type = profileViewModel.sourceType.value
                 viewHolder.bind(it)
                 requireActivity().setTitle(
@@ -73,12 +73,12 @@ class ProfileFragment : Fragment() {
                 )
                 postViewModel.setPostSource(it.id, type!!)
                 //postViewModel.setData(it)
-                jobViewModel.setPostSource(it.id, type!!)
+                jobViewModel.setPostSource(it.id, type)
             }
         }
 
         profileViewModel.postSource.observe(viewLifecycleOwner) {
-            if (it.authorId != null && it.authorId !== 0L) {
+            if (it.authorId != null && it.authorId != 0L) {
                 profileViewModel.setSourceType(it.sourceType!!)
                 userViewModel.getUserById(it.authorId)
             }

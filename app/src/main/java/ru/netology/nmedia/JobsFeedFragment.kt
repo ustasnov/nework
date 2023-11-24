@@ -50,7 +50,7 @@ class JobsFeedFragment : Fragment() {
         //val ownerId = requireArguments().idArg
         //val type = requireArguments().type
         viewModel.postSource.observe(viewLifecycleOwner) {
-            if (it.authorId != null && it.authorId !== 0L) {
+            if (it.authorId != null && it.authorId != 0L) {
                 //viewModel.clearJobs()
                 if (it.sourceType === SourceType.MYWALL) {
                     viewModel.loadMyJobs()
