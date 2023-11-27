@@ -1,11 +1,10 @@
 package ru.netology.nmedia
 
-import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -13,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -30,10 +28,7 @@ import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.repository.PostsSource
-import ru.netology.nmedia.repository.SourceType
-import ru.netology.nmedia.utils.LongArg
-import ru.netology.nmedia.utils.StringArg
+import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.empty
@@ -133,6 +128,11 @@ class FeedFragment : Fragment() {
 
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
+                if (post.attachment != null) {
+                    //if (post.attachment?.type === AttachmentType.IMAGE) {
+                        viewModel.setMedia(MediaModel(Uri.parse(post.attachment!!.url), null, post.attachment?.type))
+                    //}
+                }
                 findNavController().navigate(
                     R.id.action_feedFragment_to_newPostFragment,
                     Bundle().apply {

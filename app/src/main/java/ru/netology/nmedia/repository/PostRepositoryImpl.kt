@@ -21,7 +21,7 @@ import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.model.MediaModel
 import java.io.IOException
 import javax.inject.Inject
 
@@ -131,19 +131,29 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveWithAttachment(post: Post, photoModel: PhotoModel) {
+    override suspend fun saveWithAttachment(post: Post, mediaModel: MediaModel) {
         try {
-            val media = uploadMedia(photoModel)
+            var media = Media(url = mediaModel.uri.toString())
+            if (mediaModel.file != null) {
+                media = uploadMedia(mediaModel)
+            }
 
-            val response = apiService.save(
+            val curPost = if (mediaModel.file != null) post.copy(
+                attachment = Attachment(
+                    media.url,
+                    mediaModel.attachmentType!!
+                )
+            ) else post
+
+            val response = apiService.save(curPost)
+                /*
                 post.copy(
                     attachment = Attachment(
                         media.url,
-                        //"",§
-                        AttachmentType.IMAGE
+                        mediaModel.attachmentType!!
                     )
                 )
-            )
+                */
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -157,9 +167,9 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun uploadMedia(model: PhotoModel): Media {
+    override suspend fun uploadMedia(model: MediaModel): Media {
         val response = apiService.uploadMedia(
-            MultipartBody.Part.createFormData("file", "file", model.file.asRequestBody())
+            MultipartBody.Part.createFormData("file", "file", model.file!!.asRequestBody())
         )
 
         if (!response.isSuccessful) {

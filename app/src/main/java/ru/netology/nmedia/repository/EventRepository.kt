@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.dto.Event
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Media
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.model.MediaModel
 
 interface EventRepository {
     val data: Flow<PagingData<FeedItem>>
@@ -16,8 +16,8 @@ interface EventRepository {
     suspend fun unlikeById(id: Long)
     suspend fun removeById(id: Long)
     suspend fun save(event: Event)
-    suspend fun uploadMedia(model: PhotoModel): Media
-    suspend fun saveWithAttachment(event: Event, photoModel: PhotoModel)
+    suspend fun uploadMedia(model: MediaModel): Media
+    suspend fun saveWithAttachment(event: Event, mediaModel: MediaModel)
     fun saveNewEventContent(text: String)
     fun getNewEventContent(): LiveData<String>
 }

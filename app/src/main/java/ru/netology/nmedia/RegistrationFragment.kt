@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.databinding.FragmentRegistrationBinding
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.utils.AndroidUtils
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.RegisterViewModel
@@ -38,7 +38,7 @@ class RegistrationFragment : Fragment() {
 
                 Activity.RESULT_OK -> {
                     val uri = it.data?.data ?: return@registerForActivityResult
-                    viewModel.setPhoto(PhotoModel(uri, uri.toFile()))
+                    viewModel.setPhoto(MediaModel(uri, uri.toFile()))
                 }
             }
         }

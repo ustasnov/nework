@@ -14,7 +14,7 @@ import ru.netology.nmedia.dto.Event
 import ru.netology.nmedia.dto.EventType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.model.FeedModelState
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.EventRepository
 import ru.netology.nmedia.utils.SingleLiveEvent
 import javax.inject.Inject
@@ -68,8 +68,8 @@ class EventViewModel @Inject constructor(
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    private val _photo = MutableLiveData<PhotoModel?>()
-    val photo: LiveData<PhotoModel?>
+    private val _photo = MutableLiveData<MediaModel?>()
+    val photo: LiveData<MediaModel?>
         get() = _photo
 
     val edited = MutableLiveData(emptyEvent)
@@ -182,7 +182,7 @@ class EventViewModel @Inject constructor(
         _photo.value = null
     }
 
-    fun setPhoto(photoModel: PhotoModel) {
-        _photo.value = photoModel
+    fun setPhoto(mediaModel: MediaModel) {
+        _photo.value = mediaModel
     }
 }

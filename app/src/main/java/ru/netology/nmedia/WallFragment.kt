@@ -1,5 +1,6 @@
 package ru.netology.nmedia
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
@@ -70,6 +72,11 @@ class WallFragment : Fragment() {
 
             override fun onEdit(post: Post) {
                 postViewModel.edit(post)
+                if (post.attachment != null) {
+                    //if (post.attachment?.type === AttachmentType.IMAGE) {
+                    postViewModel.setMedia(MediaModel(Uri.parse(post.attachment!!.url), null, post.attachment?.type))
+                    //}
+                }
                 findNavController().navigate(
                     R.id.action_profileFragment_to_newPostFragment,
                     Bundle().apply {

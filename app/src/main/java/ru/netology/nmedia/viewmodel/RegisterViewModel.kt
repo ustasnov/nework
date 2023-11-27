@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import ru.netology.nmedia.api.AuthApi
@@ -16,9 +15,8 @@ import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dto.Token
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.model.AuthModel
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.PostRepository
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,8 +29,8 @@ class RegisterViewModel @Inject constructor(
     val dataState: LiveData<AuthModel>
         get() = _dataState
 
-    private val _photo = MutableLiveData<PhotoModel?>()
-    val photo: LiveData<PhotoModel?>
+    private val _photo = MutableLiveData<MediaModel?>()
+    val photo: LiveData<MediaModel?>
         get() = _photo
 
     private fun registerWithAvatar(login: String, pass: String, name: String)  = viewModelScope.launch {
@@ -92,7 +90,7 @@ class RegisterViewModel @Inject constructor(
         _photo.value = null
     }
 
-    fun setPhoto(photoModel: PhotoModel) {
-        _photo.value = photoModel
+    fun setPhoto(mediaModel: MediaModel) {
+        _photo.value = mediaModel
     }
 }

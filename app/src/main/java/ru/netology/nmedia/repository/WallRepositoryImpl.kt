@@ -27,7 +27,7 @@ import ru.netology.nmedia.entity.WallWithLists
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.model.MediaModel
 import java.io.IOException
 import javax.inject.Inject
 
@@ -123,9 +123,9 @@ class WallRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveWithAttachment(post: Post, photoModel: PhotoModel) {
+    override suspend fun saveWithAttachment(post: Post, mediaModel: MediaModel) {
         try {
-            val media = uploadMedia(photoModel)
+            val media = uploadMedia(mediaModel)
 
             val response = apiService.save(
                 post.copy(
@@ -148,9 +148,9 @@ class WallRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun uploadMedia(model: PhotoModel): Media {
+    override suspend fun uploadMedia(model: MediaModel): Media {
         val response = apiService.uploadMedia(
-            MultipartBody.Part.createFormData("file", "file", model.file.asRequestBody())
+            MultipartBody.Part.createFormData("file", "file", model.file!!.asRequestBody())
         )
 
         if (!response.isSuccessful) {

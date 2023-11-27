@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.model.MediaModel
 
 interface PostRepository {
     var data: Flow<PagingData<FeedItem>>
@@ -16,8 +16,8 @@ interface PostRepository {
     suspend fun unlikeById(id: Long)
     suspend fun removeById(id: Long)
     suspend fun save(post: Post)
-    suspend fun uploadMedia(model: PhotoModel): Media
-    suspend fun saveWithAttachment(post: Post, photoModel: PhotoModel)
+    suspend fun uploadMedia(model: MediaModel): Media
+    suspend fun saveWithAttachment(post: Post, mediaModel: MediaModel)
     fun saveNewPostContent(text: String)
     fun getNewPostContent(): LiveData<String>
     suspend fun clearPosts()

@@ -2,9 +2,6 @@ package ru.netology.nmedia.viewmodel
 
 import android.os.Parcelable
 import androidx.lifecycle.*
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
@@ -17,15 +14,13 @@ import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.model.FeedModelState
-import ru.netology.nmedia.model.PhotoModel
-import ru.netology.nmedia.repository.PostRemoteMediator
+import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.PostRepository
-import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.utils.SingleLiveEvent
 import javax.inject.Inject
 
@@ -81,9 +76,9 @@ class PostViewModel @Inject constructor(
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    private val _photo = MutableLiveData<PhotoModel?>()
-    val photo: LiveData<PhotoModel?>
-        get() = _photo
+    private val _media = MutableLiveData<MediaModel?>()
+    val media: LiveData<MediaModel?>
+        get() = _media
 
     val edited = MutableLiveData(empty)
     var isNewPost = false
@@ -101,6 +96,12 @@ class PostViewModel @Inject constructor(
 
     val currentPost: LiveData<Post>
         get() = _currentPost
+
+    private val _currentMediaType =
+        MutableLiveData(AttachmentType.IMAGE)
+
+    val currentMediaType: LiveData<AttachmentType>
+        get() = _currentMediaType
 
 
     init {
@@ -152,10 +153,23 @@ class PostViewModel @Inject constructor(
     fun save() = viewModelScope.launch {
         try {
             edited.value?.let {
-                when (val photo = _photo.value) {
-                    null -> repository.save(it.copy(ownedByMe = true))
-                    else -> repository.saveWithAttachment(it.copy(ownedByMe = true), photo)
+                val media = _media.value
+                if (media != null) {
+                    if ((it.attachment?.url != media.uri.toString())) {
+                        repository.saveWithAttachment(it.copy(ownedByMe = true), media)
+                    } else {
+                        repository.save(it.copy(ownedByMe = true))
+                    }
+                } else {
+                    repository.save(it.copy(ownedByMe = true))
                 }
+                /*
+                if (it.attachment.url != media.value.uri.toString()) {
+                    when (val media = _media.value) {
+                        null -> repository.save(it.copy(ownedByMe = true))
+                        else -> repository.saveWithAttachment(it.copy(ownedByMe = true), media)
+                    }
+                 */
             }
             edited.value = empty
             _postCreated.postValue(Unit)
@@ -175,6 +189,14 @@ class PostViewModel @Inject constructor(
             return
         }
         edited.value = edited.value?.copy(content = text)
+    }
+
+    fun changeLink(link: String) {
+        val text = link.trim()
+        if (edited.value?.link == text) {
+            return
+        }
+        edited.value = edited.value?.copy(link = text)
     }
 
     fun toggleNewPost(isNew: Boolean) {
@@ -219,16 +241,23 @@ class PostViewModel @Inject constructor(
         return repository.getNewPostContent()
     }
 
-    fun clearPhoto() {
-        _photo.value = null
+    fun clearMedia() {
+        _media.value = null
     }
 
-    fun setPhoto(photoModel: PhotoModel) {
-        _photo.value = photoModel
+    fun setMedia(mediaModel: MediaModel) {
+        _media.value = mediaModel
     }
 
     fun clearPosts() = viewModelScope.launch {
         repository.clearPosts()
+    }
+
+    fun clearMediaType() {
+        _currentMediaType.value = null
+    }
+    fun setMediaType(mediaType: AttachmentType) {
+        _currentMediaType.value = mediaType
     }
 
     /*

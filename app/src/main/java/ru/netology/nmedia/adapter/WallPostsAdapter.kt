@@ -183,6 +183,7 @@ class WallViewHolder(
                             }
 
                             R.id.edit -> {
+
                                 onInteractionListener.onEdit(post)
                                 true
                             }

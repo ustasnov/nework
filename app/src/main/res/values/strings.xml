@@ -85,4 +85,6 @@
     <string name="jobs">Jobs</string>
     <string name="user_profile">User profile</string>
     <string name="my_profile">My profile</string>
+    <string name="link_edit_text">Link</string>
+    <string name="media_pick_error">Media pick error</string>
 </resources>

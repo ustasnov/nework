@@ -27,13 +27,11 @@ import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Event
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Media
-import ru.netology.nmedia.entity.EventEntity
 import ru.netology.nmedia.entity.EventWithLists
-import ru.netology.nmedia.entity.toEntity
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.model.MediaModel
 import java.io.IOException
 import javax.inject.Inject
 
@@ -142,9 +140,9 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveWithAttachment(event: Event, photoModel: PhotoModel) {
+    override suspend fun saveWithAttachment(event: Event, mediaModel: MediaModel) {
         try {
-            val media = uploadMedia(photoModel)
+            val media = uploadMedia(mediaModel)
 
             val response = apiService.saveEvent(
                 event.copy(
@@ -167,9 +165,9 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun uploadMedia(model: PhotoModel): Media {
+    override suspend fun uploadMedia(model: MediaModel): Media {
         val response = apiService.uploadMedia(
-            MultipartBody.Part.createFormData("file", "file", model.file.asRequestBody())
+            MultipartBody.Part.createFormData("file", "file", model.file!!.asRequestBody())
         )
 
         if (!response.isSuccessful) {

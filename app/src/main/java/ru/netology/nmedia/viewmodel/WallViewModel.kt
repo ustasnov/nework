@@ -2,34 +2,22 @@ package ru.netology.nmedia.viewmodel
 
 import android.os.Parcelable
 import androidx.lifecycle.*
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.api.ApiService
-import ru.netology.nmedia.auth.AppAuth
-import ru.netology.nmedia.dao.WallDao
 import ru.netology.nmedia.dao.WallRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.ErrorType
-import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.dto.WallItem
-import ru.netology.nmedia.entity.WallWithLists
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.model.FeedModelState
-import ru.netology.nmedia.model.JobModel
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.repository.SourceType
-import ru.netology.nmedia.repository.WallPostRemoteMediator
 import ru.netology.nmedia.repository.WallRepository
 import ru.netology.nmedia.utils.SingleLiveEvent
 import javax.inject.Inject
@@ -80,9 +68,9 @@ class WallViewModel @Inject constructor(
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    private val _photo = MutableLiveData<PhotoModel?>()
-    val photo: LiveData<PhotoModel?>
-        get() = _photo
+    private val _media = MutableLiveData<MediaModel?>()
+    val media: LiveData<MediaModel?>
+        get() = _media
 
     val edited = MutableLiveData(empty)
     var isNewPost = false
@@ -108,6 +96,12 @@ class WallViewModel @Inject constructor(
     private val _postSource = MutableLiveData(emptyPostSource.copy())
     val postSource: LiveData<PostsSource>
         get() = _postSource
+
+    private val _currentMediaType =
+        MutableLiveData(AttachmentType.IMAGE)
+
+    val currentMediaType: LiveData<AttachmentType>
+        get() = _currentMediaType
 
     init {
         //clearPosts()
@@ -157,7 +151,7 @@ class WallViewModel @Inject constructor(
     fun save() = viewModelScope.launch {
         try {
             edited.value?.let {
-                when (val photo = _photo.value) {
+                when (val photo = _media.value) {
                     null -> repository.save(it.copy(ownedByMe = true))
                     else -> repository.saveWithAttachment(it.copy(ownedByMe = true), photo)
                 }
@@ -180,6 +174,14 @@ class WallViewModel @Inject constructor(
             return
         }
         edited.value = edited.value?.copy(content = text)
+    }
+
+    fun changeLink(link: String) {
+        val text = link.trim()
+        if (edited.value?.link == text) {
+            return
+        }
+        edited.value = edited.value?.copy(link = text)
     }
 
     fun toggleNewPost(isNew: Boolean) {
@@ -226,12 +228,12 @@ class WallViewModel @Inject constructor(
         return repository.getNewPostContent()
     }
 
-    fun clearPhoto() {
-        _photo.value = null
+    fun clearMedia() {
+        _media.value = null
     }
 
-    fun setPhoto(photoModel: PhotoModel) {
-        _photo.value = photoModel
+    fun setMedia(mediaModel: MediaModel) {
+        _media.value = mediaModel
     }
 
     fun clearPosts() = viewModelScope.launch {
@@ -251,6 +253,13 @@ class WallViewModel @Inject constructor(
 
     fun setPostSource(authorId: Long, sourceType: SourceType) {
         _postSource.setValue(PostsSource(authorId, sourceType))
+    }
+
+    fun clearMediaType() {
+        _currentMediaType.value = null
+    }
+    fun setMediaType(mediaType: AttachmentType) {
+        _currentMediaType.value = mediaType
     }
 }
 

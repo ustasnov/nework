@@ -1,6 +1,7 @@
 package ru.netology.nmedia
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -18,35 +19,40 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
-import ru.netology.nmedia.model.PhotoModel
+import ru.netology.nmedia.dto.AttachmentType
+import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.utils.AndroidUtils
 import ru.netology.nmedia.utils.BooleanArg
 import ru.netology.nmedia.utils.StringArg
+import ru.netology.nmedia.utils.fileFromContentUri
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.WallViewModel
 
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
     private val viewModel: PostViewModel by activityViewModels()
+    private val wallViewModel: WallViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
-    private val photoPickerContract =
+    private val mediaPickerContract =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            when (it.resultCode) {
-                ImagePicker.RESULT_ERROR -> Toast.makeText(
+            if (it.resultCode === Activity.RESULT_OK) {
+                val uri = it.data?.data ?: return@registerForActivityResult
+                val file = if (viewModel.currentMediaType.value === AttachmentType.IMAGE)
+                    uri.toFile() else fileFromContentUri(requireContext(), uri)
+                viewModel.setMedia(MediaModel(uri, file, viewModel.currentMediaType.value))
+            } else {
+                Toast.makeText(
                     requireContext(),
-                    "Photo pick error",
+                    getString(R.string.media_pick_error),
                     Toast.LENGTH_SHORT
                 ).show()
-
-                Activity.RESULT_OK -> {
-                    val uri = it.data?.data ?: return@registerForActivityResult
-                    viewModel.setPhoto(PhotoModel(uri, uri.toFile()))
-                }
             }
         }
 
@@ -59,8 +65,11 @@ class NewPostFragment : Fragment() {
 
         arguments?.isNewPost.let {
             if (it == null || it) {
-                viewModel.clearPhoto()
+                viewModel.clearMedia()
                 viewModel.toggleNewPost(true)
+
+                wallViewModel.clearMedia()
+                wallViewModel.toggleNewPost(true)
             }
         }
 
@@ -72,6 +81,7 @@ class NewPostFragment : Fragment() {
                 binding.content.setText(it)
             }
         }
+        binding.link.setText(viewModel.edited.value?.link.toString())
         binding.content.requestFocus()
 
         requireActivity().addMenuProvider(object : MenuProvider {
@@ -84,10 +94,18 @@ class NewPostFragment : Fragment() {
                     R.id.save -> {
                         if (authViewModel.isAuthorized) {
                             val text = binding.content.text.toString()
-                            if (text.isNotBlank()) {
+                            val linkText = binding.link.text.toString()
+
+                            if (text.isNotBlank() || linkText.isNotBlank()) {
                                 viewModel.changeContent(text)
+                                viewModel.changeLink(linkText)
                                 viewModel.save()
                                 viewModel.saveNewPostContent("")
+
+                                //wallViewModel.changeContent(text)
+                                //wallViewModel.changeLink(linkText)
+                                //wallViewModel.save()
+                                //wallViewModel.saveNewPostContent("")
                             } else {
                                 Toast.makeText(
                                     requireContext(),
@@ -118,31 +136,56 @@ class NewPostFragment : Fragment() {
         }
 
         binding.clear.setOnClickListener {
-            viewModel.clearPhoto()
+            viewModel.clearMedia()
         }
 
         binding.pickPhoto.setOnClickListener {
+            viewModel.setMediaType(AttachmentType.IMAGE)
             ImagePicker.with(this)
                 .galleryOnly()
                 .crop()
-                .createIntent(photoPickerContract::launch)
+                .createIntent(mediaPickerContract::launch)
         }
 
         binding.takePhoto.setOnClickListener {
+            viewModel.setMediaType(AttachmentType.IMAGE)
             ImagePicker.with(this)
                 .cameraOnly()
                 .crop()
-                .createIntent(photoPickerContract::launch)
+                .createIntent(mediaPickerContract::launch)
         }
 
-        viewModel.photo.observe(viewLifecycleOwner) { photo ->
-            if (photo == null) {
+        binding.pickAudio.setOnClickListener {
+            viewModel.setMediaType(AttachmentType.AUDIO)
+            val intent = Intent()
+                .setType("audio/*")
+                .setAction(Intent.ACTION_GET_CONTENT)
+            mediaPickerContract.launch(intent)
+        }
+
+        binding.pickVideo.setOnClickListener {
+            viewModel.setMediaType(AttachmentType.VIDEO)
+            val intent = Intent()
+                .setType("video/*")
+                .setAction(Intent.ACTION_GET_CONTENT)
+            mediaPickerContract.launch(intent)
+        }
+
+        viewModel.media.observe(viewLifecycleOwner) { mediaModel ->
+            if (mediaModel == null) {
                 binding.previewContainer.isGone = true
                 return@observe
             }
-
             binding.previewContainer.isVisible = true
-            binding.preview.setImageURI(photo.uri)
+            if (mediaModel.attachmentType != AttachmentType.AUDIO) {
+                Glide.with(binding.preview).load("${mediaModel.uri}")
+                    .placeholder(R.drawable.ic_loading_100dp)
+                    .error(R.drawable.ic_error_100dp)
+                    .timeout(10_000)
+                    .into(binding.preview)
+            } else {
+                binding.preview.setImageResource(R.drawable.audio)
+            }
         }
 
         val callback: OnBackPressedCallback =
