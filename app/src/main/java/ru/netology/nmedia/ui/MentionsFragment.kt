@@ -1,4 +1,4 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,16 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.netology.nmedia.adapter.OnUserItemInteractionListener
+import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.UserItemAdapter
+import ru.netology.nmedia.adapter.OnUserItemInteractionListener
 import ru.netology.nmedia.databinding.FragmentUsersItemsBinding
 import ru.netology.nmedia.dto.UserItem
 import ru.netology.nmedia.utils.LongArg
-import ru.netology.nmedia.viewmodel.ParticipantsViewModel
+import ru.netology.nmedia.viewmodel.MentionViewModel
 
 @AndroidEntryPoint
-class ParticipantsFragment : Fragment() {
-    val viewModel: ParticipantsViewModel by activityViewModels()
+class MentionsFragment : Fragment() {
+    val viewModel: MentionViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +29,7 @@ class ParticipantsFragment : Fragment() {
 
         val binding = FragmentUsersItemsBinding.inflate(inflater, container, false)
 
-        binding.topAppBar.title = getString(R.string.participants)
+        binding.topAppBar.title = getString(R.string.mentors)
 
         val activity = requireActivity() as AppCompatActivity
         activity.supportActionBar?.hide()

@@ -1,4 +1,4 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.ui
 
 import android.net.Uri
 import android.os.Bundle
@@ -10,12 +10,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import ru.netology.nmedia.NewPostFragment.Companion.textArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.autorArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
-import ru.netology.nmedia.PostFragment.Companion.idArg
+import ru.netology.nmedia.R
+import ru.netology.nmedia.ui.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.urlArg
+import ru.netology.nmedia.ui.PostFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.WallPostsAdapter
 import ru.netology.nmedia.auth.AppAuth
@@ -27,12 +28,10 @@ import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
-import ru.netology.nmedia.viewmodel.ProfileViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
 import ru.netology.nmedia.viewmodel.WallViewModel
 import ru.netology.nmedia.viewmodel.empty
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class WallFragment : Fragment() {
@@ -85,24 +84,6 @@ class WallFragment : Fragment() {
                 )
             }
 
-            /*
-            override fun onPlayAudio(post: Post) {
-                MediaPlayer.create(this,).apply {
-                    start()
-
-                }
-            }
-
-            override fun onPlayVideo(post: Post) {
-                viewModel.toggleNewPost(false)
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
-                if (intent.resolveActivity(context!!.packageManager) != null) {
-                    startActivity(intent)
-                }
-            }
-
-            */
-
             override fun onViewAttachment(post: Post) {
                 findNavController().navigate(
                     R.id.action_profileFragment_to_postAttachmentFragment,
@@ -133,7 +114,8 @@ class WallFragment : Fragment() {
             override fun onViewLikeOwners(post: Post) {
 
                 if (post.likeOwnerIds.size > 0) {
-                    findNavController().navigate(R.id.action_profileFragment_to_likeOwnersFragment,
+                    findNavController().navigate(
+                        R.id.action_profileFragment_to_likeOwnersFragment,
                         Bundle().apply {
                             idArg = post.id
                         })
@@ -143,7 +125,8 @@ class WallFragment : Fragment() {
             override fun onViewMentions(post: Post) {
 
                 if (post.mentionIds.size > 0) {
-                    findNavController().navigate(R.id.action_profileFragment_to_mentionsFragment,
+                    findNavController().navigate(
+                        R.id.action_profileFragment_to_mentionsFragment,
                         Bundle().apply {
                             idArg = post.id
                         })
@@ -218,15 +201,8 @@ class WallFragment : Fragment() {
         return binding.root
     }
 
-    override fun onStop() {
-        super.onStop()
-        //requireActivity().supportFragmentManager.beginTransaction().remove(this@WallFragment).commit()
-    }
 
     companion object {
-        //var Bundle.idArg: Long? by LongArg
-        //var Bundle.type: String? by StringArg
-
         @JvmStatic
         fun newInstance() = WallFragment()
     }

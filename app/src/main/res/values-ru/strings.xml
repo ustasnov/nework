@@ -78,6 +78,7 @@
     <string name="jobs">Места работы</string>
     <string name="user_profile">Профиль пользователя</string>
     <string name="my_profile">Мой профиль</string>
-    <string name="link_edit_text">Ссылка</string>
+    <string name="link_edit_text">введите адрес страницы сайта</string>
     <string name="media_pick_error">Ошибка выбора медиа файла</string>
+    <string name="post_title">Сообщение</string>
 </resources>

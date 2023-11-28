@@ -151,16 +151,18 @@ class WallViewModel @Inject constructor(
     fun save() = viewModelScope.launch {
         try {
             edited.value?.let {
-                when (val photo = _media.value) {
-                    null -> repository.save(it.copy(ownedByMe = true))
-                    else -> repository.saveWithAttachment(it.copy(ownedByMe = true), photo)
+                val media = _media.value
+                if (media != null) {
+                    repository.saveWithAttachment(it.copy(ownedByMe = true), media)
+                } else {
+                    repository.save(it.copy(ownedByMe = true))
                 }
             }
             edited.value = empty
             _postCreated.postValue(Unit)
         } catch (e: Exception) {
-            _dataState.value = FeedModelState(error = ErrorType.SAVE)
-        }
+        _dataState.value = FeedModelState(error = ErrorType.SAVE)
+    }
     }
 
     fun edit(post: Post) {

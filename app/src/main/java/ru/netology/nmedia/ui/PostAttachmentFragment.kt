@@ -1,6 +1,5 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.ui
 
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -9,11 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
-import android.widget.VideoView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostAttachmentBinding
 import ru.netology.nmedia.media.MediaLifecycleObserver
 import ru.netology.nmedia.utils.AndroidUtils.formatDate

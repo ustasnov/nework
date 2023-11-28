@@ -1,5 +1,6 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,43 +16,50 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.PostAttachmentFragment.Companion.autorArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
-import ru.netology.nmedia.PostFragment.Companion.idArg
-import ru.netology.nmedia.adapter.OnInteractionEventListener
-import ru.netology.nmedia.adapter.EventsAdapter
+import ru.netology.nmedia.ui.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.urlArg
+import ru.netology.nmedia.ui.PostFragment.Companion.idArg
+import ru.netology.nmedia.R
+import ru.netology.nmedia.adapter.OnInteractionListener
+import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
-import ru.netology.nmedia.databinding.FragmentEventsFeedBinding
+import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.AttachmentType
-import ru.netology.nmedia.dto.Event
+import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.viewmodel.AuthViewModel
-import ru.netology.nmedia.viewmodel.EventViewModel
-import ru.netology.nmedia.viewmodel.emptyEvent
+import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.empty
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class EventsFeedFragment : Fragment() {
-    val viewModel: EventViewModel by activityViewModels()
+class FeedFragment : Fragment() {
+    val viewModel: PostViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     @Inject
     lateinit var appAuth: AppAuth
+    //private val observer = MediaLifecycleObserver()
+
+    //val binding = FragmentFeedBinding.inflate(inflater, container, false)
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         saveInstanceState: Bundle?
     ): View {
-        val binding = FragmentEventsFeedBinding.inflate(inflater, container, false)
+        val binding = FragmentFeedBinding.inflate(inflater, container, false)
 
-        requireActivity().setTitle(getString(R.string.events))
+        requireActivity().setTitle(getString(R.string.postsTitle))
 
-        val adapter = EventsAdapter(object : OnInteractionEventListener {
-            override fun onLike(event: Event) {
+        val adapter = PostsAdapter(object : OnInteractionListener {
+            override fun onLike(post: Post) {
                 if (authViewModel.isAuthorized) {
-                    viewModel.likeById(event)
+                    viewModel.likeById(post)
                 } else {
                     Snackbar.make(
                         binding.root,
@@ -86,22 +94,24 @@ class EventsFeedFragment : Fragment() {
             }
              */
 
-            override fun onRemove(event: Event) {
-                viewModel.removeById(event.id)
+            override fun onRemove(post: Post) {
+                viewModel.removeById(post.id)
             }
 
-            /*
-            override fun onEdit(event: Event) {
-                viewModel.edit(event)
+            override fun onEdit(post: Post) {
+                viewModel.edit(post)
+                if (post.attachment != null) {
+                    //if (post.attachment?.type === AttachmentType.IMAGE) {
+                        viewModel.setMedia(MediaModel(Uri.parse(post.attachment!!.url), null, post.attachment?.type))
+                    //}
+                }
                 findNavController().navigate(
                     R.id.action_feedFragment_to_newPostFragment,
                     Bundle().apply {
-                        textArg = event.content
+                        textArg = post.content
                     }
                 )
             }
-
-             */
 
             /*
             override fun onPlayAudio(post: Post) {
@@ -121,72 +131,62 @@ class EventsFeedFragment : Fragment() {
 
             */
 
-            override fun onViewAttachment(event: Event) {
+            override fun onViewAttachment(post: Post) {
                 findNavController().navigate(
-                    R.id.action_eventsFeedFragment_to_postAttachmentFragment,
+                    R.id.action_feedFragment_to_postAttachmentFragment,
                     Bundle().apply {
                         //textArg = "${BuildConfig.BASE_URL}media/${post.attachment!!.url}"
-                        urlArg = "${event.attachment!!.url}"
-                        typeArg = when (event.attachment?.type) {
+                        urlArg = "${post.attachment!!.url}"
+                        typeArg = when (post.attachment?.type) {
                             AttachmentType.IMAGE -> "image"
                             AttachmentType.AUDIO -> "audio"
                             AttachmentType.VIDEO -> "video"
                             else -> ""
                         }
-                        autorArg = "${event.author}"
-                        publishedArg = "${event.published}"
+                        autorArg = "${post.author}"
+                        publishedArg = "${post.published}"
                     })
             }
 
-            /*
-            override fun onViewPost(event: Event) {
-                viewModel.viewById(event)
+            override fun onViewPost(post: Post) {
+                viewModel.viewById(post)
                 findNavController().navigate(
                     R.id.action_feedFragment_to_postFragment,
                     Bundle().apply {
-                        idArg = event.id
+                        idArg = post.id
                     }
                 )
             }
 
-             */
+            override fun onViewLikeOwners(post: Post) {
 
-            override fun onViewLikeOwners(event: Event) {
-
-                if (event.likeOwnerIds.size > 0) {
-                    findNavController().navigate(R.id.action_eventsFeedFragment_to_likeOwnersFragment,
+                if (post.likeOwnerIds.size > 0) {
+                    findNavController().navigate(
+                        R.id.action_feedFragment_to_likeOwnersFragment,
                         Bundle().apply {
-                            idArg = event.id
+                            idArg = post.id
                         })
                 }
             }
 
-            override fun onViewParticipants(event: Event) {
-                if (event.participantsIds.size > 0) {
-                    findNavController().navigate(R.id.action_eventsFeedFragment_to_participantsFragment,
-                        Bundle().apply {
-                            idArg = event.id
-                        })
-                }
-            }
+            override fun onViewMentions(post: Post) {
 
-            override fun onViewSpeakers(event: Event) {
-                if (event.speakerIds.size > 0) {
-                    findNavController().navigate(R.id.action_eventsFeedFragment_to_speakersFragment,
+                if (post.mentionIds.size > 0) {
+                    findNavController().navigate(
+                        R.id.action_feedFragment_to_mentionsFragment,
                         Bundle().apply {
-                            idArg = event.id
+                            idArg = post.id
                         })
                 }
+
             }
-            //}, observer)
-        }, this.requireContext())
+        })
 
         binding.list.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                //viewModel.data.collectLatest(adapter::submitData)
-                viewModel.data.collect(adapter::submitData)
+                viewModel.data.collectLatest(adapter::submitData)
             }
         }
 
@@ -205,7 +205,7 @@ class EventsFeedFragment : Fragment() {
 
         binding.add.setOnClickListener {
             if (authViewModel.isAuthorized) {
-                viewModel.edit(emptyEvent)
+                viewModel.edit(empty)
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
             } else {
                 Snackbar.make(
@@ -220,4 +220,5 @@ class EventsFeedFragment : Fragment() {
 
         return binding.root
     }
+
 }

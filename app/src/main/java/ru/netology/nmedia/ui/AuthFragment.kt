@@ -1,4 +1,4 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,6 @@ import ru.netology.nmedia.databinding.FragmentAuthBinding
 import ru.netology.nmedia.utils.AndroidUtils
 import ru.netology.nmedia.viewmodel.AuthSignViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
-import ru.netology.nmedia.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class AuthFragment : Fragment() {

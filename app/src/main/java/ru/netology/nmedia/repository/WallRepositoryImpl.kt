@@ -15,6 +15,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.dao.LikeOwnerDao
+import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.WallDao
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.AttachmentType
@@ -23,6 +24,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.dto.UserItem
 import ru.netology.nmedia.entity.LikeOwnerEntity
+import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.entity.WallWithLists
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
@@ -34,6 +36,7 @@ import javax.inject.Inject
 class WallRepositoryImpl @Inject constructor(
     context: Application,
     private val wallDao: WallDao,
+    private val postDao: PostDao,
     private val likeOwnerDao: LikeOwnerDao,
     private val apiService: ApiService,
     //private val postRemoteKeyDao: WallRemoteKeyDao,
@@ -125,22 +128,26 @@ class WallRepositoryImpl @Inject constructor(
 
     override suspend fun saveWithAttachment(post: Post, mediaModel: MediaModel) {
         try {
-            val media = uploadMedia(mediaModel)
+            var media = Media(url = mediaModel.uri.toString())
+            if (mediaModel.file != null) {
+                media = uploadMedia(mediaModel)
+            }
 
-            val response = apiService.save(
-                post.copy(
-                    attachment = Attachment(
-                        media.url,
-                        //"",§
-                        AttachmentType.IMAGE
-                    )
+            val curPost = if (mediaModel.file != null) post.copy(
+                attachment = Attachment(
+                    media.url,
+                    mediaModel.attachmentType!!
                 )
-            )
+            ) else post
+
+            val response = apiService.save(curPost)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
+            //postDao.insert(PostEntity.fromDto(body))
             wallDao.insertPostWithLists(WallWithLists.fromDto(body))
+            postDao.insertPostWithLists(PostWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

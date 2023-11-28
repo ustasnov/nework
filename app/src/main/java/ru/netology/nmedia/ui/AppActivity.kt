@@ -1,4 +1,4 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,18 +9,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import ru.netology.nmedia.NewPostFragment.Companion.isNewPost
-import ru.netology.nmedia.NewPostFragment.Companion.textArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
-import ru.netology.nmedia.PostFragment.Companion.idArg
+import ru.netology.nmedia.ui.NewPostFragment.Companion.isNewPost
+import ru.netology.nmedia.ui.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
+import ru.netology.nmedia.ui.PostFragment.Companion.idArg
+import ru.netology.nmedia.R
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.ActivityAppBinding
 import ru.netology.nmedia.repository.PostsSource
@@ -162,7 +158,8 @@ class AppActivity : AppCompatActivity() {
 
                 R.id.users -> {
                     //Toast.makeText(this@AppActivity, "Users", Toast.LENGTH_SHORT).show()
-                    findNavController(R.id.navigation).navigate(R.id.usersFragment,
+                    findNavController(R.id.navigation).navigate(
+                        R.id.usersFragment,
                         Bundle().apply {
                             idArg = -1
                             typeArg = "all"

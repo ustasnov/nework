@@ -1,4 +1,4 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.ui
 
 import android.app.Activity
 import android.content.Intent
@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.model.MediaModel
@@ -63,6 +64,8 @@ class NewPostFragment : Fragment() {
     ): View {
         val binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
+        requireActivity().title = getString(R.string.post_title)
+
         arguments?.isNewPost.let {
             if (it == null || it) {
                 viewModel.clearMedia()
@@ -81,7 +84,9 @@ class NewPostFragment : Fragment() {
                 binding.content.setText(it)
             }
         }
-        binding.link.setText(viewModel.edited.value?.link.toString())
+        binding.link.setText(
+            viewModel.edited.value?.link?.toString()
+        )
         binding.content.requestFocus()
 
         requireActivity().addMenuProvider(object : MenuProvider {
@@ -96,16 +101,11 @@ class NewPostFragment : Fragment() {
                             val text = binding.content.text.toString()
                             val linkText = binding.link.text.toString()
 
-                            if (text.isNotBlank() || linkText.isNotBlank()) {
+                            if (text.isNotBlank()) {
                                 viewModel.changeContent(text)
                                 viewModel.changeLink(linkText)
                                 viewModel.save()
                                 viewModel.saveNewPostContent("")
-
-                                //wallViewModel.changeContent(text)
-                                //wallViewModel.changeLink(linkText)
-                                //wallViewModel.save()
-                                //wallViewModel.saveNewPostContent("")
                             } else {
                                 Toast.makeText(
                                     requireContext(),

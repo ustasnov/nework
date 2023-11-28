@@ -1,7 +1,5 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.ui
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +10,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import ru.netology.nmedia.NewPostFragment.Companion.textArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.autorArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.publishedArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.typeArg
-import ru.netology.nmedia.PostAttachmentFragment.Companion.urlArg
-import ru.netology.nmedia.UsersFragment.Companion.idArg
-import ru.netology.nmedia.UsersFragment.Companion.listType
+import ru.netology.nmedia.R
+import ru.netology.nmedia.ui.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.urlArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostViewHolder
 import ru.netology.nmedia.databinding.FragmentPostBinding

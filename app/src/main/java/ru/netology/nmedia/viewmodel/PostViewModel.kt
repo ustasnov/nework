@@ -109,27 +109,6 @@ class PostViewModel @Inject constructor(
         //loadPosts()
     }
 
-
-    /*
-    fun setData(postSource: PostsSource) {
-        @OptIn(ExperimentalPagingApi::class)
-        repository.data = Pager(
-            config = PagingConfig(pageSize = 300,
-                //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
-                enablePlaceholders = false),
-            pagingSourceFactory = { postDao.getPagingSource() },
-            remoteMediator = PostRemoteMediator(
-                apiService = apiService,
-                postDao = postDao,
-                postRemoteKeyDao = postRemoteKeyDao,
-                appDb = appDb
-            )
-        ).flow
-            .map { it.map(PostWithLists::toDto) }
-    }
-
-     */
-
     fun loadPosts() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
@@ -155,11 +134,7 @@ class PostViewModel @Inject constructor(
             edited.value?.let {
                 val media = _media.value
                 if (media != null) {
-                    if ((it.attachment?.url != media.uri.toString())) {
-                        repository.saveWithAttachment(it.copy(ownedByMe = true), media)
-                    } else {
-                        repository.save(it.copy(ownedByMe = true))
-                    }
+                    repository.saveWithAttachment(it.copy(ownedByMe = true), media)
                 } else {
                     repository.save(it.copy(ownedByMe = true))
                 }
@@ -192,8 +167,8 @@ class PostViewModel @Inject constructor(
     }
 
     fun changeLink(link: String) {
-        val text = link.trim()
-        if (edited.value?.link == text) {
+        val text: String? = link.ifBlank { null }
+        if (text != null && edited.value?.link == text) {
             return
         }
         edited.value = edited.value?.copy(link = text)

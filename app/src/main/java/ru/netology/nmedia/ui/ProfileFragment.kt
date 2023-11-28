@@ -1,4 +1,4 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,24 +7,18 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UserViewHolder
 import ru.netology.nmedia.adapter.WallAdapter
 import ru.netology.nmedia.databinding.FragmentProfileBinding
 import ru.netology.nmedia.dto.User
-import ru.netology.nmedia.dto.WallItem
-import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.repository.SourceType
-import ru.netology.nmedia.utils.LongArg
-import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.JobViewModel
-import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.ProfileViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
 import ru.netology.nmedia.viewmodel.WallViewModel
@@ -115,7 +109,7 @@ class ProfileFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        jobViewModel.clearJobs()
-        postViewModel.clearPosts()
+        //jobViewModel.clearJobs()
+        //postViewModel.clearPosts()
     }
 }
