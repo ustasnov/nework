@@ -91,9 +91,6 @@ class JobsFeedFragment : Fragment() {
     }
 
     companion object {
-        //var Bundle.idArg: Long? by LongArg
-        //var Bundle.type: String? by StringArg
-
         @JvmStatic
         fun newInstance() = JobsFeedFragment()
     }

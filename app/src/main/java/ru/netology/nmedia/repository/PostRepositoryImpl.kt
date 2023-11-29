@@ -40,8 +40,8 @@ class PostRepositoryImpl @Inject constructor(
     private var newPostContentValue = MutableLiveData<String>()
 
     @OptIn(ExperimentalPagingApi::class)
-    override var data: Flow<PagingData<FeedItem>> = Pager(
-        config = PagingConfig(pageSize = 300,
+    override var data: Flow<PagingData<Post>> = Pager(
+        config = PagingConfig(pageSize = 5, initialLoadSize = 5,
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
             enablePlaceholders = false),
         pagingSourceFactory = { postDao.getPagingSource() },

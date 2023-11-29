@@ -53,19 +53,11 @@ class WallPostsAdapter(
                 //PostViewHolder(binding, onInteractionListener, mediaLifecycleObserver)
                 WallViewHolder(binding, onInteractionListener)
             }
-
-            R.layout.card_ad -> {
-                val binding =
-                    CardAdBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                AdViewHolder(binding)
-            }
-
             else -> error("unknown view type: $viewType")
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
-            is Ad -> (holder as? AdViewHolder)?.bind(item)
             //is Post -> (holder as? PostViewHolder)?.bind(item)
             is Post -> (holder as? WallViewHolder)?.bind(item)
             else -> error("unknown view type")

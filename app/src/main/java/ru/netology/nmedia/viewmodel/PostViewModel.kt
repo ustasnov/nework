@@ -57,18 +57,14 @@ class PostViewModel @Inject constructor(
         .data
         .cachedIn(viewModelScope)
 
-    val data: Flow<PagingData<FeedItem>> = appAuth.data
+    val data: Flow<PagingData<Post>> = appAuth.data
         .flatMapLatest { token ->
             repository.data.map { posts ->
                 posts.map { post ->
-                    if (post is Post) {
-                        post.copy(ownedByMe = post.authorId == token?.id)
-                    } else {
-                        post
-                    }
+                    post.copy(ownedByMe = post.authorId == token?.id)
                 }
             }
-    }.flowOn(Dispatchers.Default)
+        }.flowOn(Dispatchers.Default)
 
     private lateinit var state: Parcelable
 
@@ -231,6 +227,7 @@ class PostViewModel @Inject constructor(
     fun clearMediaType() {
         _currentMediaType.value = null
     }
+
     fun setMediaType(mediaType: AttachmentType) {
         _currentMediaType.value = mediaType
     }

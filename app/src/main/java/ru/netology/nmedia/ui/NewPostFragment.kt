@@ -43,7 +43,7 @@ class NewPostFragment : Fragment() {
 
     private val mediaPickerContract =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode === Activity.RESULT_OK) {
+            if (it.resultCode == Activity.RESULT_OK) {
                 val uri = it.data?.data ?: return@registerForActivityResult
                 val file = if (viewModel.currentMediaType.value === AttachmentType.IMAGE)
                     uri.toFile() else fileFromContentUri(requireContext(), uri)
