@@ -88,4 +88,5 @@
     <string name="link_edit_text">enter the website page address</string>
     <string name="media_pick_error">Media pick error</string>
     <string name="post_title">Post</string>
+    <string name="job">Job</string>
 </resources>

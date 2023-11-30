@@ -6,22 +6,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.JobsAdapter
 import ru.netology.nmedia.adapter.OnJobsInteractionListener
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentJobsFeedBinding
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Job
 import ru.netology.nmedia.repository.SourceType
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.JobViewModel
 import ru.netology.nmedia.viewmodel.WallViewModel
+import ru.netology.nmedia.viewmodel.empty
+import ru.netology.nmedia.viewmodel.emptyJob
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class JobsFeedFragment : Fragment() {
     val viewModel: JobViewModel by activityViewModels()
     val postViewModel: WallViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
+    @Inject
+    lateinit var appAuth: AppAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,6 +94,21 @@ class JobsFeedFragment : Fragment() {
                 viewModel.refreshUserJobs(postViewModel.postSource.value!!.authorId!!)
             }
             swipeRefresh.isRefreshing = false
+        }
+
+        binding.add.setOnClickListener {
+            if (authViewModel.isAuthorized) {
+                viewModel.edit(emptyJob)
+                findNavController().navigate(R.id.action_profileFragment_to_jobFragment)
+            } else {
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.authorization_required),
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.login) { findNavController().navigate(R.id.authFragment) }
+                    .show()
+            }
         }
 
         return binding.root

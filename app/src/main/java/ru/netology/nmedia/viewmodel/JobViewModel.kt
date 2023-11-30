@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Job
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.JobModel
@@ -53,6 +54,9 @@ class JobViewModel @Inject constructor(
     private val _postSource = MutableLiveData(emptyPostSource.copy())
     val postSource: LiveData<PostsSource>
         get() = _postSource
+
+    val edited = MutableLiveData(emptyJob)
+    var isNewJob = false
 
     init {
         //println("From JobViewModel.init.clearJobs()")
@@ -135,6 +139,11 @@ class JobViewModel @Inject constructor(
 
     fun setPostSource(authorId: Long, sourceType: SourceType) {
         _postSource.postValue(PostsSource(authorId, sourceType))
+    }
+
+    fun edit(job: Job) {
+        //toggleNewPost(false)
+        edited.value = job
     }
 
 }
