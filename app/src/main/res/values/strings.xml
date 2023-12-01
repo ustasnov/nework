@@ -90,4 +90,5 @@
     <string name="post_title">Post</string>
     <string name="job">Job</string>
     <string name="new_job">New Job</string>
+    <string name="dd_mm_yyyy">dd.mm.yyyy</string>
 </resources>

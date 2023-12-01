@@ -19,7 +19,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TableRow>
-
             <TextView
                 android:id="@+id/company_title"
                 android:layout_width="wrap_content"
@@ -35,12 +34,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:inputType="textMultiLine"
-                android:lines="2"
                 android:textSize="14sp" />
         </TableRow>
 
         <TableRow>
-
             <TextView
                 android:id="@+id/position_title"
                 android:layout_width="wrap_content"
@@ -56,12 +53,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:inputType="textMultiLine"
-                android:lines="2"
                 android:textSize="14sp" />
         </TableRow>
 
         <TableRow>
-
             <TextView
                 android:id="@+id/start_title"
                 android:layout_width="wrap_content"
@@ -76,12 +71,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:inputType="datetime|date"
+                android:contentDescription="@string/start_date"
+                android:cursorVisible="false"
                 android:textSize="14sp" />
+
         </TableRow>
 
         <TableRow>
-
             <TextView
                 android:id="@+id/finish_title"
                 android:layout_width="wrap_content"
@@ -97,12 +93,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:inputType="datetime|date"
+                android:hint="@string/dd_mm_yyyy"
+                android:inputType="date"
                 android:textSize="14sp" />
         </TableRow>
 
         <TableRow>
-
             <TextView
                 android:id="@+id/link_title"
                 android:layout_width="wrap_content"

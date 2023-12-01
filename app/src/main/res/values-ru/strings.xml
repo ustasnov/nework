@@ -83,4 +83,5 @@
     <string name="post_title">Сообщение</string>
     <string name="job">Место работы</string>
     <string name="new_job">Новое место работы</string>
+    <string name="dd_mm_yyyy">дд.мм.гггг</string>
 </resources>

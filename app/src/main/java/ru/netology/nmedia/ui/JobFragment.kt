@@ -1,5 +1,6 @@
 package ru.netology.nmedia.ui
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +12,12 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentJobBinding
-import ru.netology.nmedia.dto.Job
 import ru.netology.nmedia.utils.AndroidUtils
+import ru.netology.nmedia.utils.AndroidUtils.showCalendar
 import ru.netology.nmedia.viewmodel.JobViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @AndroidEntryPoint
 class JobFragment : Fragment() {
@@ -42,6 +46,26 @@ class JobFragment : Fragment() {
             }
         }
 
+        var cal = Calendar.getInstance()
+
+        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            cal.set(Calendar.YEAR, year)
+            cal.set(Calendar.MONTH, monthOfYear)
+            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            val myFormat = "dd.MM.yyyy"
+            val sdf = SimpleDateFormat(myFormat, Locale.US)
+            binding.startDate.setText(sdf.format(cal.time))
+        }
+
+        binding.startDate.setOnFocusChangeListener { _, hasFocus ->
+            showCalendar(requireContext(), cal, binding.startDate, hasFocus, dateSetListener)
+        }
+
+        binding.startDate.setOnClickListener() {
+            showCalendar(requireContext(), cal, it, it.hasFocus(), dateSetListener)
+        }
+
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -56,5 +80,7 @@ class JobFragment : Fragment() {
 
         return binding.root
     }
+
+
 
 }
