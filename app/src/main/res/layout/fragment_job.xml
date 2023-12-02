@@ -19,13 +19,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TableRow>
+
             <TextView
                 android:id="@+id/company_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.5"
+                android:labelFor="@+id/company"
                 android:text="@string/company"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <EditText
@@ -33,18 +36,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
+                android:hint="@string/name_of_company"
                 android:inputType="textMultiLine"
-                android:textSize="14sp" />
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:id="@+id/position_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.5"
+                android:labelFor="@+id/position"
                 android:text="@string/position"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <EditText
@@ -52,18 +59,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
+                android:hint="@string/name_of_position"
                 android:inputType="textMultiLine"
-                android:textSize="14sp" />
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:id="@+id/start_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.5"
+                android:labelFor="@+id/start_date"
                 android:text="@string/start_date"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <EditText
@@ -71,13 +82,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:contentDescription="@string/start_date"
                 android:cursorVisible="false"
-                android:textSize="14sp" />
+                android:hint="@string/enter_start_date"
+                android:textSize="20sp" />
 
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:id="@+id/finish_title"
                 android:layout_width="wrap_content"
@@ -85,7 +97,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.5"
                 android:gravity="bottom"
+                android:labelFor="@+id/enter_finish_date"
                 android:text="@string/end_date"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <EditText
@@ -93,12 +107,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:hint="@string/dd_mm_yyyy"
-                android:inputType="date"
-                android:textSize="14sp" />
+                android:hint="@string/enter_finish_date"
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:id="@+id/link_title"
                 android:layout_width="wrap_content"
@@ -106,7 +120,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.5"
                 android:gravity="bottom"
+                android:labelFor="@+id/link"
                 android:text="@string/site_caption"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <EditText
@@ -115,7 +131,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
                 android:ellipsize="end"
-                android:textSize="14sp" />
+                android:hint="@string/enter_site_address"
+                android:textSize="20sp" />
         </TableRow>
     </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

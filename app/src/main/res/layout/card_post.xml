@@ -110,7 +110,6 @@
         android:layout_width="@dimen/size_80dp"
         android:layout_height="@dimen/size_80dp"
         android:contentDescription="@string/view_move_description"
-        app:tint="@color/material_dynamic_secondary70"
         app:layout_constraintBottom_toBottomOf="@id/attachment"
         app:layout_constraintEnd_toEndOf="@id/attachment"
         app:layout_constraintStart_toStartOf="@id/attachment"

@@ -91,4 +91,10 @@
     <string name="job">Job</string>
     <string name="new_job">New Job</string>
     <string name="dd_mm_yyyy">dd.mm.yyyy</string>
+    <string name="name_of_company">Enter name of company</string>
+    <string name="name_of_position">Enter name of position</string>
+    <string name="enter_start_date">Enter start date</string>
+    <string name="enter_finish_date">Enter finish date</string>
+    <string name="enter_site_address">Enter site address</string>
+    <string name="required_fields_cannot_be_empty">Required fields cannot be empty</string>
 </resources>

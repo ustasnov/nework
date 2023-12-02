@@ -18,6 +18,7 @@ import ru.netology.nmedia.model.JobModel
 import ru.netology.nmedia.repository.JobRepository
 import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.repository.SourceType
+import ru.netology.nmedia.utils.SingleLiveEvent
 import javax.inject.Inject
 
 val emptyJob = Job(
@@ -42,6 +43,10 @@ class JobViewModel @Inject constructor(
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
+
+    private val _jobCreated = SingleLiveEvent<Unit>()
+    val jobCreated: LiveData<Unit>
+        get() = _jobCreated
 
     private val _currentJob = MutableLiveData(emptyJob.copy())
     val currentJob: LiveData<Job>
@@ -84,10 +89,10 @@ class JobViewModel @Inject constructor(
     }
 
     fun saveMyJob(job: Job) = viewModelScope.launch {
-        _currentJob.postValue(job)
         try {
-            repository.saveMyJob(_currentJob.value!!)
-            _currentJob.postValue(emptyJob)
+           repository.saveMyJob(job)
+           edited.value = emptyJob
+            _jobCreated.postValue(Unit)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
         }

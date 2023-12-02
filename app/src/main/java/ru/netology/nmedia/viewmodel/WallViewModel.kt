@@ -161,8 +161,8 @@ class WallViewModel @Inject constructor(
             edited.value = empty
             _postCreated.postValue(Unit)
         } catch (e: Exception) {
-        _dataState.value = FeedModelState(error = ErrorType.SAVE)
-    }
+            _dataState.value = FeedModelState(error = ErrorType.SAVE)
+        }
     }
 
     fun edit(post: Post) {
@@ -260,6 +260,7 @@ class WallViewModel @Inject constructor(
     fun clearMediaType() {
         _currentMediaType.value = null
     }
+
     fun setMediaType(mediaType: AttachmentType) {
         _currentMediaType.value = mediaType
     }

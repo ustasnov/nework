@@ -84,4 +84,10 @@
     <string name="job">Место работы</string>
     <string name="new_job">Новое место работы</string>
     <string name="dd_mm_yyyy">дд.мм.гггг</string>
+    <string name="name_of_company">Введите наименование компании</string>
+    <string name="name_of_position">Введите наименование должности</string>
+    <string name="enter_start_date">Введите дату начала работы</string>
+    <string name="enter_finish_date">Введите дату окончания работы</string>
+    <string name="enter_site_address">Введите адрес сайта</string>
+    <string name="required_fields_cannot_be_empty">Обязательные для заполнения поля не могут быть пустыми</string>
 </resources>

@@ -103,8 +103,7 @@
         app:layout_constraintEnd_toEndOf="@id/attachment"
         app:layout_constraintStart_toStartOf="@id/attachment"
         app:layout_constraintTop_toTopOf="@id/attachment"
-        app:srcCompat="@drawable/ic_play_80"
-        app:tint="@color/material_dynamic_secondary70" />
+        app:srcCompat="@drawable/ic_play_80" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier1"
