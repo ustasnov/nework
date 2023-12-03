@@ -144,8 +144,10 @@ class WallFragment : Fragment() {
                 //viewModel.clearPosts()
                 if (it.sourceType === SourceType.MYWALL) {
                     viewModel.loadMyWallPosts()
+                    binding.add.visibility = View.VISIBLE
                 } else {
                     viewModel.loadWallPosts(it.authorId)
+                    binding.add.visibility = View.GONE
                 }
             }
         }
@@ -186,7 +188,7 @@ class WallFragment : Fragment() {
         binding.add.setOnClickListener {
             if (authViewModel.isAuthorized) {
                 viewModel.edit(empty)
-                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+                findNavController().navigate(R.id.action_profileFragment_to_newPostFragment)
             } else {
                 Snackbar.make(
                     binding.root,

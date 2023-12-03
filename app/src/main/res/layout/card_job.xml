@@ -10,6 +10,18 @@
     android:paddingEnd="@dimen/common_spacing"
     android:paddingBottom="@dimen/size_4dp">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/job_menu"
+        style="@style/Widget.AppTheme.MenuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/description_post_menu"
+        android:minWidth="@dimen/avatar_size"
+        android:minHeight="@dimen/avatar_size"
+        android:paddingLeft="@dimen/size_12dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/companyLabel"
         android:layout_width="0dp"
@@ -75,7 +87,7 @@
         android:layout_marginStart="8dp"
         android:text="TextView"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/job_menu"
         app:layout_constraintStart_toEndOf="@+id/companyLabel"
         app:layout_constraintTop_toTopOf="@+id/companyLabel" />
 
@@ -87,7 +99,7 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/job_menu"
         app:layout_constraintStart_toEndOf="@+id/positionLabel"
         app:layout_constraintTop_toBottomOf="@+id/company" />
 

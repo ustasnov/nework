@@ -22,6 +22,7 @@ import ru.netology.nmedia.databinding.ActivityAppBinding
 import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import ru.netology.nmedia.viewmodel.EventViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.ProfileViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
@@ -45,6 +46,7 @@ class AppActivity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
     private val wallViewModel: WallViewModel by viewModels()
+    private val eventViewModel: EventViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,6 +131,8 @@ class AppActivity : AppCompatActivity() {
                         R.id.logout -> {
                             appAuth.clearAuth()
                             postViewModel.refresh()
+                            eventViewModel.refresh()
+                            findNavController(R.id.navigation).navigate(R.id.feedFragment)
                             true
                         }
 

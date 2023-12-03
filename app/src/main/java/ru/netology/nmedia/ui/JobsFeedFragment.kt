@@ -38,25 +38,12 @@ class JobsFeedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        var editEnabled: Boolean = false
+
         val binding = FragmentJobsFeedBinding.inflate(inflater, container, false)
 
-        val adapter = JobsAdapter(object : OnJobsInteractionListener {
-            override fun onViewJob(job: Job) {
-                //viewModel.viewById(user.id)
-                /*
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_postFragment,
-                    Bundle().apply {
-                        idArg = post.id
-                    }
-                )
-                 */
-            }
-            //}, observer)
-        })
 
-        binding.list.adapter = adapter
-
+        editEnabled = viewModel.postSource.value!!.sourceType == SourceType.MYWALL
         //val ownerId = requireArguments().idArg
         //val type = requireArguments().type
         viewModel.postSource.observe(viewLifecycleOwner) {
@@ -64,15 +51,49 @@ class JobsFeedFragment : Fragment() {
                 //viewModel.clearJobs()
                 if (it.sourceType === SourceType.MYWALL) {
                     viewModel.loadMyJobs()
+                    binding.add.visibility = View.VISIBLE
+                    editEnabled = true
                 } else {
                     viewModel.loadUserJobs(it.authorId)
+                    binding.add.visibility = View.GONE
+                    editEnabled = false
+                }
+                val adapter = JobsAdapter(object : OnJobsInteractionListener {
+                    override fun onRemove(job: Job) {
+                        viewModel.removeMyJob(job)
+                    }
+
+                    override fun onEdit(job: Job) {
+                        viewModel.edit(job)
+                        findNavController().navigate(R.id.action_profileFragment_to_jobFragment)
+                    }
+                }, editEnabled)
+                binding.list.adapter = adapter
+                viewModel.data.observe(viewLifecycleOwner) { state ->
+                    adapter.submitList(state.jobs)
                 }
             }
         }
 
-        viewModel.data.observe(viewLifecycleOwner) { state ->
-            adapter.submitList(state.jobs)
-        }
+        /*
+        val adapter = JobsAdapter(object : OnJobsInteractionListener {
+            override fun onRemove(job: Job) {
+                viewModel.removeMyJob(job)
+            }
+
+            override fun onEdit(job: Job) {
+                viewModel.edit(job)
+                findNavController().navigate(R.id.action_profileFragment_to_jobFragment)
+            }
+        }, editEnabled)
+
+         */
+
+        //binding.list.adapter = adapter
+
+        //viewModel.data.observe(viewLifecycleOwner) { state ->
+        //    adapter.submitList(state.jobs)
+        //}
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.swiperefresh.isRefreshing = state.refreshing

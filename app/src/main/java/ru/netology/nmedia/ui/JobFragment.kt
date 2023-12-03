@@ -48,9 +48,9 @@ class JobFragment : Fragment() {
             if (!isNewJob) {
                 company.setText(job.name)
                 position.setText(job.position)
-                startDate.setText(AndroidUtils.formatDate(job.start, "dd MMM yyyy"))
+                startDate.setText(AndroidUtils.formatDate(job.start, "dd.MM.yyyy"))
                 if (!job.finish.isNullOrBlank()) {
-                    finishDate.setText(AndroidUtils.formatDate(job.finish, "dd MMM yyyy"))
+                    finishDate.setText(AndroidUtils.formatDate(job.finish, "dd.MM.yyyy"))
                 }
                 if (!job.link.isNullOrBlank()) {
                     link.setText(job.link)

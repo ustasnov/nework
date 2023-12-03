@@ -3,36 +3,41 @@ package ru.netology.nmedia.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardJobBinding
 import ru.netology.nmedia.dto.Job
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.AndroidUtils.formatDate
 
 interface OnJobsInteractionListener {
-    fun onViewJob(job: Job) {}
+    fun onEdit(job: Job) {}
+    fun onRemove(job: Job) {}
 }
 
 class JobsAdapter(
-    private val onJobsInteractionListener: OnJobsInteractionListener
+    private val onJobsInteractionListener: OnJobsInteractionListener,
+    private val editEnabled: Boolean
 ) : ListAdapter<Job, JobViewHolder>(JobDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JobViewHolder {
         val binding = CardJobBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return JobViewHolder(binding, onJobsInteractionListener)
+        return JobViewHolder(binding, onJobsInteractionListener, editEnabled)
     }
 
     override fun onBindViewHolder(holder: JobViewHolder, position: Int) {
         val job = getItem(position)
         holder.bind(job)
     }
-
 }
 
 class JobViewHolder(
     private val binding: CardJobBinding,
-    private val onJobsInteractionListener: OnJobsInteractionListener
+    private val onJobsInteractionListener: OnJobsInteractionListener,
+    private val editEnabled: Boolean
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(job: Job) {
@@ -55,8 +60,26 @@ class JobViewHolder(
                 link.text = job.link
             }
 
-            root.setOnClickListener {
-                onJobsInteractionListener.onViewJob(job)
+            jobMenu.visibility = if (editEnabled) View.VISIBLE else View.GONE
+            jobMenu.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.options_post)
+                    setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.remove -> {
+                                onJobsInteractionListener.onRemove(job)
+                                true
+                            }
+
+                            R.id.edit -> {
+                                onJobsInteractionListener.onEdit(job)
+                                true
+                            }
+
+                            else -> false
+                        }
+                    }
+                }.show()
             }
         }
     }
