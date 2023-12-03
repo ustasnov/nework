@@ -41,7 +41,7 @@ class PostRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override var data: Flow<PagingData<Post>> = Pager(
-        config = PagingConfig(pageSize = 5, initialLoadSize = 5,
+        config = PagingConfig(pageSize = 300,
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
             enablePlaceholders = false),
         pagingSourceFactory = { postDao.getPagingSource() },

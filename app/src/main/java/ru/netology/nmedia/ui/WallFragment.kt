@@ -150,6 +150,8 @@ class WallFragment : Fragment() {
                     binding.add.visibility = View.GONE
                 }
             }
+
+
         }
 
         viewModel.data.observe(viewLifecycleOwner) { state ->

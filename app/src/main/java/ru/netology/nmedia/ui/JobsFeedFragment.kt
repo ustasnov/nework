@@ -41,7 +41,18 @@ class JobsFeedFragment : Fragment() {
         var editEnabled: Boolean = false
 
         val binding = FragmentJobsFeedBinding.inflate(inflater, container, false)
+        val swipeRefresh = binding.swiperefresh
 
+        viewModel.dataState.observe(viewLifecycleOwner) { state ->
+            swipeRefresh.isRefreshing = state.refreshing
+            when (state.error) {
+                ErrorType.LOADING ->
+                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.retry_loading) { viewModel.loadUserJobs(postViewModel.postSource.value!!.authorId!!) }
+                        .show()
+                else -> Unit
+            }
+        }
 
         editEnabled = viewModel.postSource.value!!.sourceType == SourceType.MYWALL
         //val ownerId = requireArguments().idArg
@@ -68,7 +79,9 @@ class JobsFeedFragment : Fragment() {
                         findNavController().navigate(R.id.action_profileFragment_to_jobFragment)
                     }
                 }, editEnabled)
+
                 binding.list.adapter = adapter
+
                 viewModel.data.observe(viewLifecycleOwner) { state ->
                     adapter.submitList(state.jobs)
                 }
@@ -95,18 +108,6 @@ class JobsFeedFragment : Fragment() {
         //    adapter.submitList(state.jobs)
         //}
 
-        viewModel.dataState.observe(viewLifecycleOwner) { state ->
-            binding.swiperefresh.isRefreshing = state.refreshing
-            when (state.error) {
-                ErrorType.LOADING ->
-                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.retry_loading) { viewModel.loadUserJobs(postViewModel.postSource.value!!.authorId!!) }
-                        .show()
-                else -> Unit
-            }
-        }
-
-        val swipeRefresh = binding.swiperefresh
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
             if (postViewModel.postSource.value!!.sourceType == SourceType.MYWALL) {
