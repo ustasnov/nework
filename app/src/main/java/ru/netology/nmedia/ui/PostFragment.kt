@@ -143,7 +143,7 @@ class PostFragment : Fragment() {
 
                  */
             }
-        })
+        }, authViewModel.isAuthorized )
 
         //val postId = requireArguments().idArg
         viewModel.currentPost.observe(viewLifecycleOwner) {

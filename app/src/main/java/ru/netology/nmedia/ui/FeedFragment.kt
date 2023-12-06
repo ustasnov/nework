@@ -180,7 +180,7 @@ class FeedFragment : Fragment() {
                 }
 
             }
-        })
+        }, authViewModel.isAuthorized)
 
         binding.list.adapter = adapter
 

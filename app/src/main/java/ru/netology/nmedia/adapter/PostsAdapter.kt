@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.AndroidUtils.formatDate
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import java.util.Locale
 
 interface OnInteractionListener {
@@ -31,7 +33,8 @@ interface OnInteractionListener {
 }
 
 class PostsAdapter(
-    private val onInteractionListener: OnInteractionListener
+    private val onInteractionListener: OnInteractionListener,
+    private val isAuthorized: Boolean
 ) : PagingDataAdapter<Post, RecyclerView.ViewHolder>(PostDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int =
@@ -39,7 +42,7 @@ class PostsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onInteractionListener)
+        return PostViewHolder(binding, onInteractionListener, isAuthorized)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -51,7 +54,8 @@ class PostsAdapter(
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val onInteractionListener: OnInteractionListener
+    private val onInteractionListener: OnInteractionListener,
+    private val isAuthorized: Boolean
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
@@ -60,7 +64,14 @@ class PostViewHolder(
             published.text = formatDate(post.published)
             postText.text = post.content
 
-            favorite.isChecked = post.likedByMe
+            if (isAuthorized) {
+                favorite.isEnabled = true
+                favorite.isChecked = post.likedByMe
+            } else {
+                favorite.isEnabled = false
+                favorite.isChecked = false
+            }
+
             /*
             if (post.likedByMe) {
                 favorite.setIconTintResource(R.color.red)
@@ -131,7 +142,7 @@ class PostViewHolder(
             }
 
             favorite.setOnClickListener {
-                onInteractionListener.onLike(post)
+                //onInteractionListener.onLike(post)
             }
 
             likeCaption.setOnClickListener {

@@ -38,7 +38,7 @@ class JobsFeedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        var editEnabled: Boolean = false
+        var editEnabled: Boolean
 
         val binding = FragmentJobsFeedBinding.inflate(inflater, container, false)
         val swipeRefresh = binding.swiperefresh
