@@ -1,6 +1,7 @@
 package ru.netology.nmedia.entity
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.User
 
@@ -11,12 +12,14 @@ data class UserEntity(
     val login: String,
     val name: String,
     val avatar: String?,
+    val checked: Boolean,
 ) {
     fun toDto() = User(
         id = id,
         login = login,
         name = name,
         avatar = avatar,
+        checked = checked
     )
 
     companion object {
@@ -26,6 +29,7 @@ data class UserEntity(
                 login = dto.login,
                 name = dto.name,
                 avatar = dto.avatar,
+                checked = dto.checked
             )
     }
 }

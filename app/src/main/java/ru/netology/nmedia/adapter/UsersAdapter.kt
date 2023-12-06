@@ -17,13 +17,20 @@ interface OnUsersInteractionListener {
 }
 
 class UsersAdapter(
-    private val onUsersInteractionListener: OnUsersInteractionListener
+    private val onUsersInteractionListener: OnUsersInteractionListener,
+    //var mList: List<User>
 ) : ListAdapter<User, UserViewHolder>(UserDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding = CardUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return UserViewHolder(binding, onUsersInteractionListener)
     }
+
+    /*
+    fun setFilteredList(mList: List<User>) {
+        this.mList = mList
+    }
+     */
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = getItem(position)
@@ -40,6 +47,7 @@ class UserViewHolder(
     fun bind(user: User) {
         binding.apply {
             userName.text = user.name
+            checkImage.visibility = if (user.checked) View.VISIBLE else View.GONE
 
             userAvatar.isVisible = !user.avatar.isNullOrBlank()
             if (userAvatar.isVisible) {

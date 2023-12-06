@@ -14,6 +14,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.UserModel
+import ru.netology.nmedia.model.UsersSelectModel
 import ru.netology.nmedia.repository.UserRepository
 import javax.inject.Inject
 
@@ -44,6 +45,10 @@ class UserViewModel @Inject constructor(
     private val _currentUser = MutableLiveData(emptyUser.copy())
     val currentUser: LiveData<User>
         get() = _currentUser
+
+    private val _forSelection = MutableLiveData<UsersSelectModel>()
+    val forSelection: LiveData<UsersSelectModel>
+        get() = _forSelection
 
     /*
     init {
@@ -86,6 +91,18 @@ class UserViewModel @Inject constructor(
         } catch (e: Exception) {
             println(e.message)
         }
+    }
+
+    fun setForSelection(title: String, choice: Boolean) {
+        _forSelection.value = UsersSelectModel(title, choice)
+    }
+
+    fun setChecked(id: Long, choice: Boolean) = viewModelScope.launch {
+        repository.setChecked(id, choice)
+    }
+
+    fun clearAllChecks()  = viewModelScope.launch {
+        repository.clearAllChecks()
     }
 
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -21,43 +22,59 @@ import ru.netology.nmedia.utils.LongArg
 import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.viewmodel.ProfileViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
+import java.util.ArrayList
+import java.util.Locale
 
 @AndroidEntryPoint
 class UsersFragment : Fragment() {
     val viewModel: UserViewModel by activityViewModels()
     val profileViewModel: ProfileViewModel by activityViewModels()
+    var enableSelection = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        var filterQuery: String? = null
 
         val binding = FragmentUsersBinding.inflate(inflater, container, false)
-        requireActivity().title = getString(R.string.users)
+
+
+        viewModel.forSelection.observe(viewLifecycleOwner) {
+            requireActivity().title = it.title
+            enableSelection = it.choice
+        }
 
         val adapter = UsersAdapter(object : OnUsersInteractionListener {
             override fun onViewUser(user: User) {
-                //viewModel.viewUser(user)
-                profileViewModel.setPostSource(PostsSource(user.id, SourceType.WALL))
-                findNavController().navigate(
-                    R.id.action_usersFragment_to_profileFragment
-                    /*
-                    , Bundle().apply {
-                        idArg = user.id
-                        type = "WALL"
-                    }
-                     */
-                )
-
+                if (enableSelection) {
+                    viewModel.setChecked(user.id, !user.checked)
+                } else {
+                    profileViewModel.setPostSource(PostsSource(user.id, SourceType.WALL))
+                    findNavController().navigate(
+                        R.id.action_usersFragment_to_profileFragment
+                    )
+                }
             }
-            //}, observer)
+        })
+
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterQuery = newText
+                adapter.submitList(filterList(viewModel.data.value!!.users, filterQuery))
+                return true
+            }
         })
 
         binding.list.adapter = adapter
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
-            adapter.submitList(state.users)
+            adapter.submitList(filterList(state.users, filterQuery))
         }
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
@@ -67,6 +84,7 @@ class UsersFragment : Fragment() {
                     Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
                         .setAction(R.string.retry_loading) { viewModel.loadUsers() }
                         .show()
+
                 else -> Unit
             }
         }
@@ -83,8 +101,25 @@ class UsersFragment : Fragment() {
         return binding.root
     }
 
-    companion object {
-        var Bundle.idArg: Long? by LongArg
-        var Bundle.listType: String? by StringArg
+    private fun filterList(userList: List<User>, query: String?): List<User> {
+        if (query != null) {
+            val filteredList = ArrayList<User>()
+
+            for (i in userList) {
+                if (i.name.lowercase(Locale.ROOT).contains(query)) {
+                    filteredList.add(i)
+                }
+            }
+            if (filteredList.isNotEmpty())  {
+                return filteredList.toList()
+            }
+            return emptyList<User>()
+        }
+        return userList
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.clearAllChecks()
     }
 }

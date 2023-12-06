@@ -19,6 +19,7 @@ import ru.netology.nmedia.ui.PostFragment.Companion.idArg
 import ru.netology.nmedia.R
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.ActivityAppBinding
+import ru.netology.nmedia.model.UsersSelectModel
 import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.AuthViewModel
@@ -161,13 +162,16 @@ class AppActivity : AppCompatActivity() {
                 }
 
                 R.id.users -> {
-                    //Toast.makeText(this@AppActivity, "Users", Toast.LENGTH_SHORT).show()
+                    userViewModel.setForSelection(getString(R.string.users), false)
                     findNavController(R.id.navigation).navigate(
-                        R.id.usersFragment,
+                        R.id.usersFragment
+                        /*,
                         Bundle().apply {
                             idArg = -1
                             typeArg = "all"
-                        })
+                        }
+                         */
+                        )
                 }
 
                 R.id.events -> {
@@ -177,19 +181,10 @@ class AppActivity : AppCompatActivity() {
 
                 R.id.profile -> {
                     if (viewModel.isAuthorized) {
-                        //userViewModel.getUserById(viewModel.data.value!!.id)
                         profileViewModel.setPostSource(PostsSource(viewModel.data.value!!.id, SourceType.MYWALL))
                         findNavController(R.id.navigation).navigate(
                             R.id.profileFragment
-                            /*,
-                        Bundle().apply {
-                            idArg = viewModel.data.value?.id
-                            type = "MYWALL"
-                            userViewModel.getUserById(idArg!!)
-                        }
-                        */
                         )
-
 
                     } else {
                         Snackbar.make(
@@ -204,7 +199,6 @@ class AppActivity : AppCompatActivity() {
                             }
                             .show()
                     }
-                    //Toast.makeText(this@AppActivity, "Profile", Toast.LENGTH_SHORT).show()
                 }
             }
             binding.drawer.closeDrawer(GravityCompat.START)

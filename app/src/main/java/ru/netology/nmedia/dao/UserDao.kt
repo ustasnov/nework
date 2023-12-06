@@ -31,4 +31,28 @@ interface UserDao {
 
     @Query("SELECT COUNT(*) FROM UserEntity")
     suspend fun countUsers(): Int
+
+    @Query(
+        """
+        UPDATE UserEntity SET checked = 1
+        WHERE id = :id
+        """
+    )
+    suspend fun setChecked(id: Long)
+
+    @Query(
+        """
+        UPDATE UserEntity SET checked = 0
+        WHERE id = :id
+        """
+    )
+    suspend fun setUnChecked(id: Long)
+
+    @Query(
+        """
+        UPDATE UserEntity SET checked = 0
+        WHERE checked = 1
+        """
+    )
+    suspend fun clearAllChecks()
 }

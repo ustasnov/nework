@@ -97,4 +97,6 @@
     <string name="enter_finish_date">Enter finish date</string>
     <string name="enter_site_address">Enter site address</string>
     <string name="required_fields_cannot_be_empty">Required fields cannot be empty</string>
+    <string name="search_hint">Search here ...</string>
+    <string name="check_lable">Check lable</string>
 </resources>

@@ -38,4 +38,16 @@ class UserRepositoryImpl @Inject constructor(
         return user
     }
 
+    override suspend fun setChecked(id: Long, choice: Boolean) {
+        if (choice) {
+            userDao.setChecked(id)
+        } else {
+            userDao.setUnChecked(id)
+        }
+    }
+
+    override suspend fun clearAllChecks() {
+        userDao.clearAllChecks()
+    }
+
 }

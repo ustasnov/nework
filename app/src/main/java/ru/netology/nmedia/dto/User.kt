@@ -5,6 +5,7 @@ data class User (
     val login: String,
     val name: String,
     val avatar: String?,
+    var checked: Boolean = false,
 ) : FeedItem
 
 data class UserPreview(
