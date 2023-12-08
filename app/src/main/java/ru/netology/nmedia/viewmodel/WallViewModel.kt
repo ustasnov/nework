@@ -148,6 +148,15 @@ class WallViewModel @Inject constructor(
         }
     }
 
+    fun refresh() = viewModelScope.launch {
+        if (postSource.value!!.sourceType == SourceType.MYWALL) {
+            refreshMyWall()
+        } else {
+            refreshWall(postSource.value!!.authorId!!)
+        }
+    }
+
+    /*
     fun save() = viewModelScope.launch {
         try {
             edited.value?.let {
@@ -164,6 +173,7 @@ class WallViewModel @Inject constructor(
             _dataState.value = FeedModelState(error = ErrorType.SAVE)
         }
     }
+     */
 
     fun edit(post: Post) {
         //toggleNewPost(false)
@@ -214,9 +224,9 @@ class WallViewModel @Inject constructor(
     }
 
     fun removeById(id: Long) = viewModelScope.launch {
-        _currentPostId.setValue(id)
+        //_currentPostId.setValue(id)
         try {
-            repository.removeById(_currentPostId.value!!)
+            repository.removeById(id)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.REMOVE)
         }

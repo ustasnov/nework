@@ -24,15 +24,17 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
+import ru.netology.nmedia.adapter.OnUsersInteractionListener
+import ru.netology.nmedia.adapter.UsersAdapter
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.dto.AttachmentType
+import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.utils.AndroidUtils
-import ru.netology.nmedia.utils.BooleanArg
-import ru.netology.nmedia.utils.StringArg
 import ru.netology.nmedia.utils.fileFromContentUri
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.UserViewModel
 import ru.netology.nmedia.viewmodel.WallViewModel
 
 @AndroidEntryPoint
@@ -40,6 +42,7 @@ class NewPostFragment : Fragment() {
     private val viewModel: PostViewModel by activityViewModels()
     private val wallViewModel: WallViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     private val mediaPickerContract =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -64,30 +67,82 @@ class NewPostFragment : Fragment() {
     ): View {
         val binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
-        requireActivity().title = getString(R.string.post_title)
+        val adapter = UsersAdapter(object : OnUsersInteractionListener {
+            override fun onViewUser(user: User) {
+                /*
+                if (enableSelection) {
+                    viewModel.setChecked(user.id, !user.checked)
+                } else {
+                    profileViewModel.setPostSource(PostsSource(user.id, SourceType.WALL))
+                    findNavController().navigate(
+                        R.id.action_usersFragment_to_profileFragment
+                    )
+                }
+                 */
+            }
+        })
 
-        arguments?.isNewPost.let {
-            if (it == null || it) {
+        viewModel.edited.observe(viewLifecycleOwner) {
+
+            //val isNewPost = viewModel.edited.value!!.id == 0L
+
+            val isNewPost = it.id == 0L
+
+            requireActivity().title = getString(R.string.post_title)
+
+            if (isNewPost) {
                 viewModel.clearMedia()
-                viewModel.toggleNewPost(true)
-
+                //viewModel.toggleNewPost(true)
                 wallViewModel.clearMedia()
-                wallViewModel.toggleNewPost(true)
+                //wallViewModel.toggleNewPost(true)
+                val text = viewModel.getNewPostCont().value ?: ""
+                binding.content.editText?.setText(text)
+                binding.mentionsMaterialCardView.visibility = View.GONE
+            } else {
+                binding.content.editText?.setText(it.content)
+                binding.link.editText?.setText(it.link ?: "")
+                if (userViewModel.checkList.value == null) {
+                    val mentionsList: MutableList<User> = mutableListOf()
+                    it.mentionIds.forEach() { id ->
+                        val mention = it.users[id.toString()]
+                        mentionsList.add(
+                            User(
+                                id = id,
+                                name = mention!!.name,
+                                login = "",
+                                avatar = mention.avatar,
+                                checked = true
+                            )
+                        )
+                    }
+                    adapter.submitList(mentionsList.toList())
+                    binding.mentionsMaterialCardView.visibility =
+                        if (mentionsList.isEmpty()) View.GONE else View.VISIBLE
+                }
+                //userViewModel.setCheckList(mentionsList.toList())
             }
+
+            val callback: OnBackPressedCallback =
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        if (isNewPost) {
+                            viewModel.saveNewPostContent(binding.content.editText?.text.toString())
+                        }
+                        findNavController().navigateUp()
+                    }
+                }
+
+            requireActivity().onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner,
+                callback
+            )
         }
 
-        arguments?.textArg.let {
-            if (viewModel.isNewPost) {
-                val text = viewModel.getNewPostCont().value
-                binding.content.setText(text)
-            } else {
-                binding.content.setText(it)
-            }
-        }
-        binding.link.setText(
-            viewModel.edited.value?.link?.toString()
-        )
         binding.content.requestFocus()
+
+
+
+        binding.mentionsList.adapter = adapter
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -98,12 +153,22 @@ class NewPostFragment : Fragment() {
                 when (menuItem.itemId) {
                     R.id.save -> {
                         if (authViewModel.isAuthorized) {
-                            val text = binding.content.text.toString()
-                            val linkText = binding.link.text.toString()
+                            val text = binding.content.editText?.text.toString().trim()
+                            val linkText = binding.link.editText?.text.toString()
+
+                            val mentionsIds: MutableList<Long> = mutableListOf()
+                            userViewModel.checkList.value?.forEach {
+                                mentionsIds.add(it.id)
+                            }
 
                             if (text.isNotBlank()) {
-                                viewModel.changeContent(text)
-                                viewModel.changeLink(linkText)
+                                viewModel.edit(
+                                    viewModel.edited.value!!.copy(
+                                        content = text,
+                                        link = if (linkText.isNullOrBlank()) null else linkText,
+                                        mentionIds = mentionsIds.toList()
+                                    )
+                                )
                                 viewModel.save()
                                 viewModel.saveNewPostContent("")
                             } else {
@@ -133,6 +198,14 @@ class NewPostFragment : Fragment() {
         viewModel.postCreated.observe(viewLifecycleOwner) {
             viewModel.loadPosts()
             findNavController().navigateUp()
+        }
+
+        userViewModel.checkList.observe(viewLifecycleOwner) {
+            if (userViewModel.checkList.value !== null) {
+                adapter.submitList(userViewModel.checkList.value)
+                binding.mentionsMaterialCardView.visibility =
+                    if (userViewModel.checkList.value!!.isEmpty()) View.GONE else View.VISIBLE
+            }
         }
 
         binding.clear.setOnClickListener {
@@ -171,6 +244,11 @@ class NewPostFragment : Fragment() {
             mediaPickerContract.launch(intent)
         }
 
+        binding.pickMentions.setOnClickListener {
+            userViewModel.setForSelection(getString(R.string.select_users_to_mention), true)
+            findNavController().navigate(R.id.usersFragment)
+        }
+
         viewModel.media.observe(viewLifecycleOwner) { mediaModel ->
             if (mediaModel == null) {
                 binding.previewContainer.isGone = true
@@ -188,26 +266,12 @@ class NewPostFragment : Fragment() {
             }
         }
 
-        val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (viewModel.isNewPost) {
-                        viewModel.saveNewPostContent(binding.content.text.toString())
-                    }
-                    findNavController().navigateUp()
-                }
-            }
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            callback
-        )
-
         return binding.root
     }
 
-    companion object {
-        var Bundle.textArg: String? by StringArg
-        var Bundle.isNewPost: Boolean? by BooleanArg
+    override fun onStop() {
+        super.onStop()
+        userViewModel.setCheckList(null)
     }
+
 }

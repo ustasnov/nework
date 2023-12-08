@@ -197,8 +197,8 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun removeById(id: Long) {
         try {
-            postDao.removeById(id)
             apiService.removeById(id)
+            postDao.removeById(id)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

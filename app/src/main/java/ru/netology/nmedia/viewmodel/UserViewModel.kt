@@ -50,6 +50,10 @@ class UserViewModel @Inject constructor(
     val forSelection: LiveData<UsersSelectModel>
         get() = _forSelection
 
+    private val _checkList =  MutableLiveData<List<User>?>()
+    val checkList: LiveData<List<User>?>
+        get() = _checkList
+
     /*
     init {
         loadUsers()
@@ -103,6 +107,10 @@ class UserViewModel @Inject constructor(
 
     fun clearAllChecks()  = viewModelScope.launch {
         repository.clearAllChecks()
+    }
+
+    fun setCheckList(list: List<User>?) {
+        _checkList.value = list
     }
 
 }

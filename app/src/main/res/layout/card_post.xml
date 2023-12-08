@@ -145,11 +145,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        android:contentDescription="@string/share_post"
+        android:contentDescription="@string/view_mentions"
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        app:icon="@drawable/ic_mentors_24"
+        app:icon="@drawable/ic_mentions_24"
         app:layout_constraintEnd_toStartOf="@+id/geo"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 

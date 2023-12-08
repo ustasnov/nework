@@ -76,8 +76,11 @@ class PostViewModel @Inject constructor(
     val media: LiveData<MediaModel?>
         get() = _media
 
-    val edited = MutableLiveData(empty)
-    var isNewPost = false
+    private val _edited = MutableLiveData<Post>()
+    val edited: LiveData<Post>
+        get() = _edited
+
+    //var isNewPost = false
 
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
@@ -127,7 +130,7 @@ class PostViewModel @Inject constructor(
 
     fun save() = viewModelScope.launch {
         try {
-            edited.value?.let {
+            _edited.value?.let {
                 val media = _media.value
                 if (media != null) {
                     repository.saveWithAttachment(it.copy(ownedByMe = true), media)
@@ -142,7 +145,7 @@ class PostViewModel @Inject constructor(
                     }
                  */
             }
-            edited.value = empty
+            _edited.value = empty
             _postCreated.postValue(Unit)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.SAVE)
@@ -151,28 +154,30 @@ class PostViewModel @Inject constructor(
 
     fun edit(post: Post) {
         //toggleNewPost(false)
-        edited.value = post
+        _edited.value = post
     }
 
     fun changeContent(content: String) {
         val text = content.trim()
-        if (edited.value?.content == text) {
+        if (_edited.value?.content == text) {
             return
         }
-        edited.value = edited.value?.copy(content = text)
+        _edited.value = edited.value?.copy(content = text)
     }
 
     fun changeLink(link: String) {
         val text: String? = link.ifBlank { null }
-        if (text != null && edited.value?.link == text) {
+        if (text != null && _edited.value?.link == text) {
             return
         }
-        edited.value = edited.value?.copy(link = text)
+        _edited.value = _edited.value?.copy(link = text)
     }
 
+    /*
     fun toggleNewPost(isNew: Boolean) {
         isNewPost = isNew
     }
+     */
 
     fun likeById(post: Post) = viewModelScope.launch {
         //_currentPost.setValue(post)
@@ -191,14 +196,14 @@ class PostViewModel @Inject constructor(
     }
 
     fun viewById(post: Post) {
-        toggleNewPost(false)
+        //toggleNewPost(false)
         _currentPost.setValue(post)
     }
 
     fun removeById(id: Long) = viewModelScope.launch {
-        _currentPostId.setValue(id)
+        //_currentPostId.setValue(id)
         try {
-            repository.removeById(_currentPostId.value!!)
+            repository.removeById(id)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.REMOVE)
         }

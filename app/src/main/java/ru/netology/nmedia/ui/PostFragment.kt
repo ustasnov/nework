@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
-import ru.netology.nmedia.ui.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
@@ -79,10 +78,12 @@ class PostFragment : Fragment() {
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
                 findNavController().navigate(
-                    R.id.action_postFragment_to_newPostFragment,
+                    R.id.action_postFragment_to_newPostFragment
+                    /*,
                     Bundle().apply {
                         textArg = post.content
                     }
+                     */
                 )
             }
 

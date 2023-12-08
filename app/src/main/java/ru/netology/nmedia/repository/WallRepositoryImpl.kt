@@ -71,6 +71,7 @@ class WallRepositoryImpl @Inject constructor(
             throw RuntimeException(response.message())
         }
         val posts = response.body() ?: throw RuntimeException("body is null")
+        //wallDao.clear()
         wallDao.insertPostsWithLists(posts.map { WallWithLists.fromDto(it) })
     }
 
@@ -80,6 +81,7 @@ class WallRepositoryImpl @Inject constructor(
             throw RuntimeException(response.message())
         }
         val posts = response.body() ?: throw RuntimeException("body is null")
+        //wallDao.clear()
         wallDao.insertPostsWithLists(posts.map { WallWithLists.fromDto(it) })
     }
 
@@ -184,8 +186,9 @@ class WallRepositoryImpl @Inject constructor(
 
     override suspend fun removeById(id: Long) {
         try {
-            wallDao.removeById(id)
-            apiService.removeById(id)
+            //apiService.removeById(id)
+            wallDao.removeByIdWithLists(id)
+            //postDao.removeById(id)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

@@ -58,7 +58,7 @@
     <string name="events">Мероприятия</string>
     <string name="profile">Профиль</string>
     <string name="like_caption">Нравится:</string>
-    <string name="mentors">Для пользователей</string>
+    <string name="mentors">Упоминания</string>
     <string name="like_title">Нравится</string>
     <string name="participants">Участники</string>
     <string name="speakers">Докладчики</string>
@@ -78,7 +78,7 @@
     <string name="jobs">Места работы</string>
     <string name="user_profile">Профиль пользователя</string>
     <string name="my_profile">Мой профиль</string>
-    <string name="link_edit_text">введите адрес страницы сайта</string>
+    <string name="link_edit_text">Aдрес страницы сайта</string>
     <string name="media_pick_error">Ошибка выбора медиа файла</string>
     <string name="post_title">Сообщение</string>
     <string name="job">Место работы</string>
@@ -92,4 +92,8 @@
     <string name="required_fields_cannot_be_empty">Обязательные для заполнения поля не могут быть пустыми</string>
     <string name="search_hint">Поиск ...</string>
     <string name="check_lable">Метка</string>
+    <string name="mentions">Упоминания:</string>
+    <string name="view_mentions">Покажи упоминания</string>
+    <string name="post_text_hint">Содержание сообщения</string>
+    <string name="select_users_to_mention">Упомянуть</string>
 </resources>

@@ -1,6 +1,5 @@
 package ru.netology.nmedia.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,14 +11,9 @@ import androidx.core.view.MenuProvider
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import ru.netology.nmedia.ui.NewPostFragment.Companion.isNewPost
-import ru.netology.nmedia.ui.NewPostFragment.Companion.textArg
-import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
-import ru.netology.nmedia.ui.PostFragment.Companion.idArg
 import ru.netology.nmedia.R
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.ActivityAppBinding
-import ru.netology.nmedia.model.UsersSelectModel
 import ru.netology.nmedia.repository.PostsSource
 import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.AuthViewModel
@@ -60,6 +54,7 @@ class AppActivity : AppCompatActivity() {
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        /*
         intent?.let {
             if (it.action != Intent.ACTION_SEND) {
                 return@let
@@ -79,13 +74,11 @@ class AppActivity : AppCompatActivity() {
                 return@let
             }
             findNavController(R.id.navigation).navigate(
-                R.id.action_feedFragment_to_newPostFragment,
-                Bundle().apply {
-                    textArg = text
-                    isNewPost = true
-                }
+                R.id.action_feedFragment_to_newPostFragment
             )
         }
+         */
+
         /*
         checkGoogleApiAvailability()
 

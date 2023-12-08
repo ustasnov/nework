@@ -85,7 +85,7 @@
     <string name="jobs">Jobs</string>
     <string name="user_profile">User profile</string>
     <string name="my_profile">My profile</string>
-    <string name="link_edit_text">enter the website page address</string>
+    <string name="link_edit_text">Website page address</string>
     <string name="media_pick_error">Media pick error</string>
     <string name="post_title">Post</string>
     <string name="job">Job</string>
@@ -99,4 +99,8 @@
     <string name="required_fields_cannot_be_empty">Required fields cannot be empty</string>
     <string name="search_hint">Search here ...</string>
     <string name="check_lable">Check lable</string>
+    <string name="mentions">Mentions:</string>
+    <string name="view_mentions">View mentions</string>
+    <string name="post_text_hint">Post text</string>
+    <string name="select_users_to_mention">Users to mention</string>
 </resources>

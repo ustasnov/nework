@@ -28,11 +28,11 @@ data class WallWithLists(
     fun getWallUsers(): Map<String, UserPreview> {
         val result: MutableMap<String, UserPreview> = mutableMapOf()
         likeOwners.forEach {
-            val key = it.parentId.toString()
+            val key = it.id.toString()
             result.put(key, UserPreview(it.name, it.avatar))
         }
         mentions.forEach {
-            val key = it.parentId.toString()
+            val key = it.id.toString()
             if (!result.containsKey(key)) {
                 result.put(key, UserPreview(it.name, it.avatar))
             }

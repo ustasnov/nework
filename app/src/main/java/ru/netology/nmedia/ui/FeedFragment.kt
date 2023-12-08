@@ -16,7 +16,6 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.ui.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
@@ -106,10 +105,12 @@ class FeedFragment : Fragment() {
                     //}
                 }
                 findNavController().navigate(
-                    R.id.action_feedFragment_to_newPostFragment,
+                    R.id.action_feedFragment_to_newPostFragment
+                    /*,
                     Bundle().apply {
                         textArg = post.content
                     }
+                     */
                 )
             }
 

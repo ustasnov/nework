@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
-import ru.netology.nmedia.ui.NewPostFragment.Companion.textArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
@@ -27,6 +26,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.AuthViewModel
+import ru.netology.nmedia.viewmodel.MentionViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
 import ru.netology.nmedia.viewmodel.WallViewModel
@@ -66,7 +66,9 @@ class WallFragment : Fragment() {
             }
 
             override fun onRemove(post: Post) {
+                postViewModel.removeById(post.id)
                 viewModel.removeById(post.id)
+                //viewModel.refresh()
             }
 
             override fun onEdit(post: Post) {
@@ -76,11 +78,15 @@ class WallFragment : Fragment() {
                     postViewModel.setMedia(MediaModel(Uri.parse(post.attachment!!.url), null, post.attachment?.type))
                     //}
                 }
+                //userViewModel.setCheckList()
                 findNavController().navigate(
-                    R.id.action_profileFragment_to_newPostFragment,
+                    R.id.action_profileFragment_to_newPostFragment
+                    /*
+                    ,
                     Bundle().apply {
                         textArg = post.content
                     }
+                     */
                 )
             }
 
@@ -178,18 +184,22 @@ class WallFragment : Fragment() {
         val swipeRefresh = binding.swiperefresh
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
+            viewModel.refresh()
+            /*
             if (viewModel.postSource.value!!.sourceType == SourceType.MYWALL) {
                 viewModel.refreshMyWall()
             } else {
                 viewModel.refreshWall(viewModel.postSource.value!!.authorId!!)
             }
+             */
             swipeRefresh.isRefreshing = false
         }
 
 
         binding.add.setOnClickListener {
             if (authViewModel.isAuthorized) {
-                viewModel.edit(empty)
+                postViewModel.edit(empty)
+                //viewModel.edit(empty)
                 findNavController().navigate(R.id.action_profileFragment_to_newPostFragment)
             } else {
                 Snackbar.make(

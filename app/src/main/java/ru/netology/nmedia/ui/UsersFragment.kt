@@ -4,8 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.marginLeft
+import androidx.core.view.marginTop
+import androidx.core.view.setMargins
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -40,10 +46,39 @@ class UsersFragment : Fragment() {
 
         val binding = FragmentUsersBinding.inflate(inflater, container, false)
 
-
         viewModel.forSelection.observe(viewLifecycleOwner) {
             requireActivity().title = it.title
             enableSelection = it.choice
+
+            if (enableSelection) {
+                binding.topAppBar.title = it.title
+                val activity = requireActivity() as AppCompatActivity
+                activity.supportActionBar?.hide()
+
+                binding.topAppBar.setNavigationOnClickListener {
+                    findNavController().navigateUp()
+                }
+
+                binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.save -> {
+                            viewModel.setCheckList(viewModel.data.value!!.users.filter {
+                                it.checked
+                            })
+                            findNavController().navigateUp()
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            } else {
+                binding.topAppBar.visibility = View.GONE
+                val params: CoordinatorLayout.LayoutParams = CoordinatorLayout.LayoutParams(
+                    CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                    CoordinatorLayout.LayoutParams.MATCH_PARENT)
+                params.setMargins(0, 0,0,0)
+                binding.listContainer.layoutParams = params
+            }
         }
 
         val adapter = UsersAdapter(object : OnUsersInteractionListener {
@@ -121,5 +156,7 @@ class UsersFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         viewModel.clearAllChecks()
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.show()
     }
 }
