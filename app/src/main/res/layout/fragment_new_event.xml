@@ -16,7 +16,7 @@
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/new_post_menu"
             app:navigationIcon="@drawable/ic_back_24"
-            app:title="@string/post_title" />
+            app:title="@string/new_event" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
@@ -37,23 +37,35 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_spacing">
 
-                <!--<EditText
-                    android:id="@+id/content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/eventType"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/post_edit_text"
-                    android:inputType="textMultiLine"
+                    android:backgroundTint="@color/ic_field_transparent"
+                    app:helperTextEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="@tools:sample/lorem[150]" /> -->
+                    app:layout_constraintVertical_chainStyle="packed" >
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="none"
+                        android:text="@string/offline"
+                        android:hint="@string/event_type" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/content"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/size_80dp"
                     android:backgroundTint="@color/ic_field_transparent"
                     app:helperText="@string/required"
                     app:helperTextEnabled="true"
@@ -66,7 +78,51 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:hint="@string/post_text_hint" />
+                        android:hint="@string/event_text_hint" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/eventDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_field_transparent"
+                    app:helperText="@string/required"
+                    app:helperTextEnabled="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/content"
+                    app:layout_constraintVertical_chainStyle="packed">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:hint="@string/event_date_hint" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/eventTime"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/ic_field_transparent"
+                    app:helperText="@string/required"
+                    app:helperTextEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/eventDate"
+                    app:layout_constraintTop_toBottomOf="@+id/content"
+                    app:layout_constraintVertical_chainStyle="packed">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:hint="@string/event_time_hint" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,7 +136,7 @@
                     app:helperTextEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/content"
+                    app:layout_constraintTop_toBottomOf="@+id/eventDate"
                     app:layout_constraintVertical_chainStyle="packed">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -92,10 +148,10 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/mentionsMaterialCardView"
+                    android:id="@+id/speakersMaterialCardView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:tooltipText="@string/mentors"
+                    android:tooltipText="@string/speakers"
                     app:cardCornerRadius="@dimen/size_8dp"
                     app:cardUseCompatPadding="true"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -112,7 +168,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/mentors"
+                            android:text="@string/speakers"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -127,31 +183,6 @@
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
-
-                <!--<EditText
-                    android:id="@+id/linkLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/size_8dp"
-                    android:background="@android:color/transparent"
-                    android:inputType="textUri"
-                    android:text="@string/site_caption"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/content" />
-
-                <EditText
-                    android:id="@+id/link"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/size_8dp"
-                    android:layout_marginTop="@dimen/size_8dp"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/link_edit_text"
-                    android:inputType="textUri"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/linkLabel"
-                    app:layout_constraintTop_toBottomOf="@+id/content" />-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -224,12 +255,12 @@
             app:srcCompat="@drawable/ic_video_24" />
 
         <ImageView
-            android:id="@+id/pickMentions"
+            android:id="@+id/pickSpeakers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
             android:padding="@dimen/common_spacing"
-            app:srcCompat="@drawable/ic_mentions_24" />
+            app:srcCompat="@drawable/ic_speakers_24" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

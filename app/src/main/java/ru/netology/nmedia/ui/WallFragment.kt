@@ -118,29 +118,27 @@ class WallFragment : Fragment() {
             }
 
             override fun onViewLikeOwners(post: Post) {
-
                 if (post.likeOwnerIds.size > 0) {
+                    userViewModel.getLikeOwners(post.id)
+                    userViewModel.setForSelection(getString(R.string.like_title), false, "LikeOwners")
                     findNavController().navigate(
-                        R.id.action_profileFragment_to_likeOwnersFragment,
-                        Bundle().apply {
-                            idArg = post.id
-                        })
+                        R.id.usersFragment
+                    )
                 }
             }
 
             override fun onViewMentions(post: Post) {
-
                 if (post.mentionIds.size > 0) {
+                    userViewModel.getMentions(post.id)
+                    userViewModel.setForSelection(getString(R.string.mentors), false, "Mentions")
                     findNavController().navigate(
-                        R.id.action_profileFragment_to_mentionsFragment,
-                        Bundle().apply {
-                            idArg = post.id
-                        })
+                        R.id.usersFragment
+                    )
                 }
 
 
             }
-        })
+        }, authViewModel.isAuthorized)
 
         binding.list.adapter = adapter
 
@@ -156,8 +154,6 @@ class WallFragment : Fragment() {
                     binding.add.visibility = View.GONE
                 }
             }
-
-
         }
 
         viewModel.data.observe(viewLifecycleOwner) { state ->

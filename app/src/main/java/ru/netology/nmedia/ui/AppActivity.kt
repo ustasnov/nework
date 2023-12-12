@@ -155,7 +155,7 @@ class AppActivity : AppCompatActivity() {
                 }
 
                 R.id.users -> {
-                    userViewModel.setForSelection(getString(R.string.users), false)
+                    userViewModel.setForSelection(getString(R.string.users), false, "Users")
                     findNavController(R.id.navigation).navigate(
                         R.id.usersFragment
                         /*,

@@ -41,9 +41,11 @@ class PostRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override var data: Flow<PagingData<Post>> = Pager(
-        config = PagingConfig(pageSize = 300,
+        config = PagingConfig(
+            pageSize = 300,
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
-            enablePlaceholders = false),
+            enablePlaceholders = false
+        ),
         pagingSourceFactory = { postDao.getPagingSource() },
         remoteMediator = PostRemoteMediator(
             apiService = apiService,
@@ -52,8 +54,9 @@ class PostRepositoryImpl @Inject constructor(
             appDb = appDb
         )
     ).flow
-        .map { it.map(PostWithLists::toDto)
-    }
+        .map {
+            it.map(PostWithLists::toDto)
+        }
 
     override fun getNewer(id: Long): Flow<Int> = flow {
         while (true) {
@@ -123,7 +126,6 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            //postDao.insert(PostEntity.fromDto(body))
             postDao.insertPostWithLists(PostWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
@@ -147,19 +149,18 @@ class PostRepositoryImpl @Inject constructor(
             ) else post
 
             val response = apiService.save(curPost)
-                /*
-                post.copy(
-                    attachment = Attachment(
-                        media.url,
-                        mediaModel.attachmentType!!
-                    )
+            /*
+            post.copy(
+                attachment = Attachment(
+                    media.url,
+                    mediaModel.attachmentType!!
                 )
-                */
+            )
+            */
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            //postDao.insert(PostEntity.fromDto(body))
             postDao.insertPostWithLists(PostWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError

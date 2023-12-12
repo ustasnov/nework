@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
@@ -31,6 +32,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
+import ru.netology.nmedia.viewmodel.UserViewModel
 import ru.netology.nmedia.viewmodel.empty
 import javax.inject.Inject
 
@@ -38,6 +40,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class FeedFragment : Fragment() {
     val viewModel: PostViewModel by activityViewModels()
+    val userViewModel: UserViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
     @Inject
     lateinit var appAuth: AppAuth
@@ -160,24 +163,22 @@ class FeedFragment : Fragment() {
             }
 
             override fun onViewLikeOwners(post: Post) {
-
                 if (post.likeOwnerIds.size > 0) {
+                    userViewModel.getLikeOwners(post.id)
+                    userViewModel.setForSelection(getString(R.string.like_title), false, "LikeOwners")
                     findNavController().navigate(
-                        R.id.action_feedFragment_to_likeOwnersFragment,
-                        Bundle().apply {
-                            idArg = post.id
-                        })
+                        R.id.usersFragment
+                    )
                 }
             }
 
             override fun onViewMentions(post: Post) {
-
                 if (post.mentionIds.size > 0) {
+                    userViewModel.getMentions(post.id)
+                    userViewModel.setForSelection(getString(R.string.mentors), false, "Mentions")
                     findNavController().navigate(
-                        R.id.action_feedFragment_to_mentionsFragment,
-                        Bundle().apply {
-                            idArg = post.id
-                        })
+                        R.id.usersFragment
+                    )
                 }
 
             }

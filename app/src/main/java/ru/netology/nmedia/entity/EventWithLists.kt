@@ -12,7 +12,7 @@ data class EventWithLists(
         parentColumn = "id",
         entityColumn = "parentId"
     )
-    val likeOwners: List<LikeOwnerEntity>,
+    val likeOwners: List<EventLikeOwnerEntity>,
     @Relation(
         parentColumn = "id",
         entityColumn = "parentId"
@@ -34,17 +34,17 @@ data class EventWithLists(
     fun getEventUsers(): Map<String, UserPreview> {
         val result: MutableMap<String, UserPreview> = mutableMapOf()
         likeOwners.forEach {
-            val key = it.parentId.toString()
+            val key = it.id.toString()
             result.put(key, UserPreview(it.name, it.avatar))
         }
         participants.forEach {
-            val key = it.parentId.toString()
+            val key = it.id.toString()
             if (!result.containsKey(key)) {
                 result.put(key, UserPreview(it.name, it.avatar))
             }
         }
         speakers.forEach {
-            val key = it.parentId.toString()
+            val key = it.id.toString()
             if (!result.containsKey(key)) {
                 result.put(key, UserPreview(it.name, it.avatar))
             }
@@ -53,14 +53,14 @@ data class EventWithLists(
     }
 
     companion object {
-        fun fillLikeOwnersList(event: Event): List<LikeOwnerEntity> {
-            val result: MutableList<LikeOwnerEntity> = mutableListOf()
+        fun fillLikeOwnersList(event: Event): List<EventLikeOwnerEntity> {
+            val result: MutableList<EventLikeOwnerEntity> = mutableListOf()
             event.likeOwnerIds.forEach {
                 val key = it.toString()
                 if (event.users.containsKey(key)) {
                     val userPreview = event.users[key]
                     val userItem = UserItem(it, event.id, userPreview!!.name, userPreview.avatar)
-                    result.add(LikeOwnerEntity.fromDto(userItem))
+                    result.add(EventLikeOwnerEntity.fromDto(userItem))
                 }
             }
             return result.toList()

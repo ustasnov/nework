@@ -17,4 +17,7 @@ class AuthViewModel @Inject constructor(
 
     val isAuthorized: Boolean
         get() = appAuth.data.value != null
+
+    val currentUserId: Long?
+        get() = appAuth.data.value?.id
 }

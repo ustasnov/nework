@@ -25,9 +25,9 @@ import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Event
-import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.entity.EventWithLists
+import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
@@ -47,10 +47,12 @@ class EventRepositoryImpl @Inject constructor(
     private var newEventContentValue = MutableLiveData<String>()
 
     @OptIn(ExperimentalPagingApi::class)
-    override val data: Flow<PagingData<FeedItem>> = Pager(
-        config = PagingConfig(pageSize = 300,
+    override val data: Flow<PagingData<Event>> = Pager(
+        config = PagingConfig(
+            pageSize = 300,
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
-            enablePlaceholders = false),
+            enablePlaceholders = false
+        ),
         pagingSourceFactory = { eventDao.getPagingSource() },
         remoteMediator = EventRemoteMediator(
             apiService = apiService,
@@ -59,17 +61,8 @@ class EventRepositoryImpl @Inject constructor(
             appDb = appDb
         )
     ).flow
-        //.map { it.map(PostEntity::toDto)
-        .map { it.map(EventWithLists::toDto)
-            /*
-            .insertSeparators { previous, _ ->
-                if (previous?.id?.rem(5) == 0L) {
-                    Ad(Random.nextLong(), "figma.jpg")
-                } else {
-                    null
-                }
-            }
-            */
+        .map {
+            it.map(EventWithLists::toDto)
         }
 
     override fun getNewer(id: Long): Flow<Int> = flow {
@@ -104,6 +97,8 @@ class EventRepositoryImpl @Inject constructor(
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            eventDao.insertEventWithLists(EventWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -118,6 +113,39 @@ class EventRepositoryImpl @Inject constructor(
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            eventDao.insertEventWithLists(EventWithLists.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw ru.netology.nmedia.error.UnknownError
+        }
+    }
+
+    override suspend fun participantById(id: Long) {
+        try {
+            eventDao.participantById(id)
+            val response = apiService.participantById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            eventDao.insertEventWithLists(EventWithLists.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw ru.netology.nmedia.error.UnknownError
+        }
+    }
+    override suspend fun unParticipantById(id: Long) {
+        try {
+            eventDao.unParticipantById(id)
+            val response = apiService.unParticipantById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            eventDao.insertEventWithLists(EventWithLists.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -142,17 +170,20 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun saveWithAttachment(event: Event, mediaModel: MediaModel) {
         try {
-            val media = uploadMedia(mediaModel)
+            var media = Media(url = mediaModel.uri.toString())
+            if (mediaModel.file != null) {
+                media = uploadMedia(mediaModel)
+            }
 
-            val response = apiService.saveEvent(
-                event.copy(
-                    attachment = Attachment(
-                        media.url,
-                        //"",§
-                        AttachmentType.IMAGE
-                    )
+            val curEvent = if (mediaModel.file != null) event.copy(
+                attachment = Attachment(
+                    media.url,
+                    mediaModel.attachmentType!!
                 )
-            )
+            ) else event
+
+            val response = apiService.saveEvent(curEvent)
+
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -194,10 +225,19 @@ class EventRepositoryImpl @Inject constructor(
 
     override suspend fun removeById(id: Long) {
         try {
-            eventDao.removeById(id)
             apiService.removeEventById(id)
+            eventDao.removeById(id)
         } catch (e: IOException) {
             throw NetworkError
+        } catch (e: Exception) {
+            throw ru.netology.nmedia.error.UnknownError
+        }
+    }
+
+    override suspend fun clearEvents() {
+        try {
+            //postDao.clearWithLists()
+            eventDao.clear()
         } catch (e: Exception) {
             throw ru.netology.nmedia.error.UnknownError
         }

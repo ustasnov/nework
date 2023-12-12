@@ -9,9 +9,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
@@ -67,6 +69,15 @@ class NewPostFragment : Fragment() {
     ): View {
         val binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
+        //binding.topAppBar.title = getString(R.string.mentors)
+
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.hide()
+
+        binding.topAppBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+
         val adapter = UsersAdapter(object : OnUsersInteractionListener {
             override fun onViewUser(user: User) {
                 /*
@@ -78,17 +89,17 @@ class NewPostFragment : Fragment() {
                         R.id.action_usersFragment_to_profileFragment
                     )
                 }
-                 */
+                */
             }
         })
 
         viewModel.edited.observe(viewLifecycleOwner) {
-
-            //val isNewPost = viewModel.edited.value!!.id == 0L
-
             val isNewPost = it.id == 0L
 
-            requireActivity().title = getString(R.string.post_title)
+            //requireActivity().title = getString(R.string.post_title)
+            binding.topAppBar.title = getString(
+                if (isNewPost) R.string.new_post else R.string.edit_post
+            )
 
             if (isNewPost) {
                 viewModel.clearMedia()
@@ -111,7 +122,7 @@ class NewPostFragment : Fragment() {
                                 name = mention!!.name,
                                 login = "",
                                 avatar = mention.avatar,
-                                checked = true
+                                checked = false
                             )
                         )
                     }
@@ -119,7 +130,6 @@ class NewPostFragment : Fragment() {
                     binding.mentionsMaterialCardView.visibility =
                         if (mentionsList.isEmpty()) View.GONE else View.VISIBLE
                 }
-                //userViewModel.setCheckList(mentionsList.toList())
             }
 
             val callback: OnBackPressedCallback =
@@ -139,17 +149,16 @@ class NewPostFragment : Fragment() {
         }
 
         binding.content.requestFocus()
-
-
-
         binding.mentionsList.adapter = adapter
 
+        /*
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.new_post_menu, menu)
             }
-
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+         */
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.save -> {
                         if (authViewModel.isAuthorized) {
@@ -193,7 +202,8 @@ class NewPostFragment : Fragment() {
 
                     else -> false
                 }
-        }, viewLifecycleOwner)
+        }
+        //, viewLifecycleOwner)
 
         viewModel.postCreated.observe(viewLifecycleOwner) {
             viewModel.loadPosts()
@@ -202,7 +212,9 @@ class NewPostFragment : Fragment() {
 
         userViewModel.checkList.observe(viewLifecycleOwner) {
             if (userViewModel.checkList.value !== null) {
-                adapter.submitList(userViewModel.checkList.value)
+                adapter.submitList(userViewModel.checkList.value!!.map { user ->
+                    user.checked = false
+                    return@map user})
                 binding.mentionsMaterialCardView.visibility =
                     if (userViewModel.checkList.value!!.isEmpty()) View.GONE else View.VISIBLE
             }
@@ -245,7 +257,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.pickMentions.setOnClickListener {
-            userViewModel.setForSelection(getString(R.string.select_users_to_mention), true)
+            userViewModel.setForSelection(getString(R.string.select_users_to_mention), true, "Users")
             findNavController().navigate(R.id.usersFragment)
         }
 
@@ -272,6 +284,8 @@ class NewPostFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         userViewModel.setCheckList(null)
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.show()
     }
 
 }

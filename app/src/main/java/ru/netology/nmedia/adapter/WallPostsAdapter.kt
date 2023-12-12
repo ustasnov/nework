@@ -5,71 +5,37 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
-import ru.netology.nmedia.databinding.CardAdBinding
 import ru.netology.nmedia.databinding.CardPostBinding
-import ru.netology.nmedia.dto.Ad
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.AndroidUtils.formatDate
-import java.util.Locale
-
-/*
-interface OnInteractionListener {
-    fun onLike(post: Post) {}
-    fun onEdit(post: Post) {}
-    fun onRemove(post: Post) {}
-    fun onPlayVideo(post: Post) {}
-    fun onViewPost(post: Post) {}
-    fun onViewAttachment(post: Post) {}
-    fun onViewLikeOwners(post: Post) {}
-    fun onViewMentions(post: Post) {}
-}
-
- */
 
 class WallPostsAdapter(
-    private val onInteractionListener: OnInteractionListener
-) : ListAdapter<FeedItem, RecyclerView.ViewHolder>(WallDiffCallback()) {
+    private val onInteractionListener: OnInteractionListener,
+    private val isAuthorized: Boolean
+) : ListAdapter<FeedItem, WallViewHolder>(WallDiffCallback()) {
 
-    override fun getItemViewType(position: Int): Int =
-        when (getItem(position)) {
-            is Ad -> R.layout.card_ad
-            is Post -> R.layout.card_post
-            else -> error("unknown view type")
-        }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        when (viewType) {
-            R.layout.card_post -> {
-                val binding =
-                    CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                //PostViewHolder(binding, onInteractionListener, mediaLifecycleObserver)
-                WallViewHolder(binding, onInteractionListener)
-            }
-            else -> error("unknown view type: $viewType")
-        }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = getItem(position)) {
-            //is Post -> (holder as? PostViewHolder)?.bind(item)
-            is Post -> (holder as? WallViewHolder)?.bind(item)
-            else -> error("unknown view type")
-            //null -> Unit
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WallViewHolder {
+        val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return WallViewHolder(binding, onInteractionListener, isAuthorized)
     }
 
+    override fun onBindViewHolder(holder: WallViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.bind(item as Post)
+    }
 }
 
 class WallViewHolder(
     private val binding: CardPostBinding,
-    private val onInteractionListener: OnInteractionListener
+    private val onInteractionListener: OnInteractionListener,
+    private val isAuthorized: Boolean
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
@@ -77,19 +43,16 @@ class WallViewHolder(
             author.text = post.author
             published.text = formatDate(post.published)
             postText.text = post.content
-            favorite.isChecked = post.likedByMe
-            /*
-            if (post.likedByMe) {
-                favorite.setIconTintResource(R.color.red)
+            //favorite.isChecked = post.likedByMe
+
+            if (isAuthorized) {
+                favorite.isEnabled = true
+                favorite.isChecked = post.likedByMe
             } else {
-                favorite.setIconTintResource(R.color.ext_gray)
+                favorite.isEnabled = false
+                favorite.isChecked = false
             }
-             */
-            //favorite.isCheckable = post.ownedByMe
-            //postId.text = post.id.toString()
-            //favorite.text = formatValue(post.likes)
-            //share.text = formatValue(post.shared)
-            //views.text = formatValue(post.views)
+
             likesCount.text = formatValue(post.likeOwnerIds.size.toDouble())
             siteUrl.text = post.link
             if (post.link.isNullOrBlank()) {
@@ -99,12 +62,17 @@ class WallViewHolder(
             }
 
             if (post.mentionIds.size > 0) {
-                ment.setIconTintResource(R.color.teal_700)
+                if (post.mentionedMe) {
+                    ment.setIconTintResource(R.color.red)
+                } else {
+                    ment.setIconTintResource(R.color.teal_700)
+                }
                 ment.text = formatValue(post.mentionIds.size.toDouble())
             } else {
                 ment.setIconTintResource(R.color.ext_gray)
                 ment.text = ""
             }
+
             if (post.coords != null) {
                 geo.setIconTintResource(R.color.teal_700)
             } else {
@@ -175,10 +143,10 @@ class WallViewHolder(
                             }
 
                             R.id.edit -> {
-
                                 onInteractionListener.onEdit(post)
                                 true
                             }
+
                             else -> false
                         }
                     }
@@ -201,37 +169,3 @@ class WallDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
         return oldItem == newItem
     }
 }
-
-/*
-fun formatValue(value: Double): String {
-    if (value >= 1000000000.0) {
-        return "\u221e"
-    }
-    val suffix: String
-    val res = when {
-        value >= 1000000.0 -> {
-            suffix = "M"
-            String.format(Locale.ROOT, "%f", value / 1000000.0)
-        }
-
-        value >= 1000.0 -> {
-            suffix = "K"
-            String.format(Locale.ROOT, "%f", value / 1000.0)
-        }
-
-        else -> {
-            suffix = ""
-            String.format(Locale.ROOT, "%f", value)
-        }
-    }
-
-    val dotPosition = res.indexOf(".")
-
-    return when {
-        (value >= 10000.0 && value < 1000000.0) || value < 1000 || res[dotPosition + 1] == '0' ->
-            res.substring(0, dotPosition) + suffix
-
-        else -> res.substring(0, dotPosition + 2) + suffix
-    }
-}
-*/

@@ -137,13 +137,6 @@ class PostViewModel @Inject constructor(
                 } else {
                     repository.save(it.copy(ownedByMe = true))
                 }
-                /*
-                if (it.attachment.url != media.value.uri.toString()) {
-                    when (val media = _media.value) {
-                        null -> repository.save(it.copy(ownedByMe = true))
-                        else -> repository.saveWithAttachment(it.copy(ownedByMe = true), media)
-                    }
-                 */
             }
             _edited.value = empty
             _postCreated.postValue(Unit)
@@ -173,21 +166,11 @@ class PostViewModel @Inject constructor(
         _edited.value = _edited.value?.copy(link = text)
     }
 
-    /*
-    fun toggleNewPost(isNew: Boolean) {
-        isNewPost = isNew
-    }
-     */
-
     fun likeById(post: Post) = viewModelScope.launch {
-        //_currentPost.setValue(post)
         try {
-            //if (_currentPost.value?.likedByMe == false) {
             if (!post.likedByMe) {
-                //repository.likeById(_currentPost.value!!.id)
                 repository.likeById(post.id)
             } else {
-                //repository.unlikeById(_currentPost.value!!.id)
                 repository.unlikeById(post.id)
             }
         } catch (e: Exception) {
@@ -201,7 +184,6 @@ class PostViewModel @Inject constructor(
     }
 
     fun removeById(id: Long) = viewModelScope.launch {
-        //_currentPostId.setValue(id)
         try {
             repository.removeById(id)
         } catch (e: Exception) {
@@ -236,12 +218,5 @@ class PostViewModel @Inject constructor(
     fun setMediaType(mediaType: AttachmentType) {
         _currentMediaType.value = mediaType
     }
-
-    /*
-    fun saveRecyclerViewState(parcelable: Parcelable) { state = parcelable }
-    fun restoreRecyclerViewState() : Parcelable = state
-    fun stateInitialized() : Boolean = ::state.isInitialized
-
-     */
 }
 

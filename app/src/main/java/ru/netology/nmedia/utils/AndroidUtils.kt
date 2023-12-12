@@ -6,6 +6,7 @@ import android.text.TextUtils.split
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -36,8 +37,8 @@ object AndroidUtils {
         return nativeDate.format(formatter)
     }
 
-    fun formatDateForDB(date: String, pattern: String = "yyyy-MM-dd'T'HH:mm:ss.000'Z'"): String {
-        val dateStr = date.split(".").reversed().joinToString("-") + "T00:00:00"
+    fun formatDateForDB(date: String, time: String = "T00:00:00", pattern: String = "yyyy-MM-dd'T'HH:mm:ss.000'Z'"): String {
+        val dateStr = date.split(".").reversed().joinToString("-") + time
         return LocalDateTime.parse(dateStr).format(DateTimeFormatter.ofPattern( pattern))
     }
 
@@ -61,7 +62,7 @@ object AndroidUtils {
 
             val myFormat = "dd.MM.yyyy"
             val sdf = SimpleDateFormat(myFormat, Locale.US)
-            (control as EditText).setText(sdf.format(cal.time))
+            (control as TextInputEditText).setText(sdf.format(cal.time))
         }
     }
 }

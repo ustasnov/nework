@@ -9,10 +9,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Event
+import ru.netology.nmedia.dto.EventCash
 import ru.netology.nmedia.dto.EventType
 import ru.netology.nmedia.dto.FeedItem
+import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.EventRepository
@@ -41,6 +44,8 @@ val emptyEvent = Event(
     users = mutableMapOf(),
 )
 
+
+
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class EventViewModel @Inject constructor(
@@ -51,15 +56,11 @@ class EventViewModel @Inject constructor(
         .data
         .cachedIn(viewModelScope)
 
-    val data: Flow<PagingData<FeedItem>> = appAuth.data
+    val data: Flow<PagingData<Event>> = appAuth.data
         .flatMapLatest { token ->
             repository.data.map { events ->
                 events.map { event ->
-                    if (event is Event) {
-                        event.copy(ownedByMe = event.authorId == token?.id)
-                    } else {
-                        event
-                    }
+                    event.copy(ownedByMe = event.authorId == token?.id)
                 }
             }
         }.flowOn(Dispatchers.Default)
@@ -68,12 +69,13 @@ class EventViewModel @Inject constructor(
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    private val _photo = MutableLiveData<MediaModel?>()
-    val photo: LiveData<MediaModel?>
-        get() = _photo
+    private val _media = MutableLiveData<MediaModel?>()
+    val media: LiveData<MediaModel?>
+        get() = _media
 
-    val edited = MutableLiveData(emptyEvent)
-    var isNewEvent = false
+    private val _edited = MutableLiveData<Event>()
+    val edited: LiveData<Event>
+        get() = _edited
 
     private val _eventCreated = SingleLiveEvent<Unit>()
     val eventCreated: LiveData<Unit>
@@ -89,8 +91,16 @@ class EventViewModel @Inject constructor(
     val currentEvent: LiveData<Event>
         get() = _currentEvent
 
+    var newEventCash: EventCash? = null
+
+    private val _currentMediaType =
+        MutableLiveData(AttachmentType.IMAGE)
+
+    val currentMediaType: LiveData<AttachmentType>
+        get() = _currentMediaType
+
     init {
-        loadEvents()
+        //loadEvents()
     }
 
     fun loadEvents() = viewModelScope.launch {
@@ -113,13 +123,15 @@ class EventViewModel @Inject constructor(
 
     fun save() = viewModelScope.launch {
         try {
-            edited.value?.let {
-                when (val photo = _photo.value) {
-                    null -> repository.save(it.copy(ownedByMe = true))
-                    else -> repository.saveWithAttachment(it.copy(ownedByMe = true), photo)
+            _edited.value?.let {
+                val media = _media.value
+                if (media != null) {
+                    repository.saveWithAttachment(it.copy(ownedByMe = true), media)
+                } else {
+                    repository.save(it.copy(ownedByMe = true))
                 }
             }
-            edited.value = emptyEvent
+            _edited.value = emptyEvent
             _eventCreated.postValue(Unit)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.SAVE)
@@ -127,29 +139,36 @@ class EventViewModel @Inject constructor(
     }
 
     fun edit(event: Event) {
-        toggleNewEvent(false)
-        edited.value = event
+        //toggleNewEvent(false)
+        _edited.value = event
     }
 
     fun changeContent(content: String) {
         val text = content.trim()
-        if (edited.value?.content == text) {
+        if (_edited.value?.content == text) {
             return
         }
-        edited.value = edited.value?.copy(content = text)
-    }
-
-    fun toggleNewEvent(isNew: Boolean) {
-        isNewEvent = isNew
+        _edited.value = edited.value?.copy(content = text)
     }
 
     fun likeById(event: Event) = viewModelScope.launch {
-        _currentEvent.setValue(event)
         try {
-            if (_currentEvent.value?.likedByMe == false) {
-                repository.likeById(_currentEvent.value!!.id)
+            if (!event.likedByMe) {
+                repository.likeById(event.id)
             } else {
-                repository.unlikeById(_currentEvent.value!!.id)
+                repository.unlikeById(event.id)
+            }
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = ErrorType.LIKE)
+        }
+    }
+
+    fun participantById(event: Event) = viewModelScope.launch {
+        try {
+            if (!event.participatedByMe) {
+                repository.participantById(event.id)
+            } else {
+                repository.unParticipantById(event.id)
             }
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LIKE)
@@ -157,32 +176,35 @@ class EventViewModel @Inject constructor(
     }
 
     fun viewById(event: Event) {
-        toggleNewEvent(false)
+        //toggleNewEvent(false)
         _currentEvent.setValue(event)
     }
 
     fun removeById(id: Long) = viewModelScope.launch {
-        _currentEventId.setValue(id)
         try {
-            repository.removeById(_currentEventId.value!!)
+            repository.removeById(id)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.REMOVE)
         }
     }
 
-    fun saveNewPostContent(text: String) {
+    fun saveNewEventContent(text: String) {
         repository.saveNewEventContent(text)
     }
 
-    fun getNewPostCont(): LiveData<String> {
+    fun getNewEventCont(): LiveData<String> {
         return repository.getNewEventContent()
     }
 
-    fun clearPhoto() {
-        _photo.value = null
+    fun setMediaType(mediaType: AttachmentType) {
+        _currentMediaType.value = mediaType
     }
 
-    fun setPhoto(mediaModel: MediaModel) {
-        _photo.value = mediaModel
+    fun clearMedia() {
+        _media.value = null
+    }
+
+    fun setMedia(mediaModel: MediaModel) {
+        _media.value = mediaModel
     }
 }

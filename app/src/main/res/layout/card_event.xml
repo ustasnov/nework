@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/common_spacing">
+    android:padding="@dimen/size_8dp">
 
     <ImageView
         android:id="@+id/avatar"
@@ -112,18 +112,17 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="attachment,postText" />
 
-    <com.google.android.material.button.MaterialButton
+    <CheckBox
         android:id="@+id/favorite"
-        style="@style/Widget.AppTheme.FavoriteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:checkable="true"
         android:contentDescription="@string/press_if_like"
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
+        android:button="@drawable/sl_favorite_24"
+        app:buttonTint="@color/color_favorite"
         app:layout_constraintEnd_toStartOf="@id/participants"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
@@ -133,12 +132,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
         android:contentDescription="@string/participants"
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
         app:icon="@drawable/ic_parcticipants_24"
+        app:layout_constraintEnd_toStartOf="@id/participantMe"
+        app:layout_constraintTop_toBottomOf="@id/barrier1" />
+
+    <CheckBox
+        android:id="@+id/participantMe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:contentDescription="@string/press_if_like"
+        android:minWidth="@dimen/avatar_size"
+        android:minHeight="@dimen/avatar_size"
+        android:paddingLeft="@dimen/size_12dp"
+        android:button="@drawable/sl_participant_24"
+        app:buttonTint="@color/ext_gray"
         app:layout_constraintEnd_toStartOf="@id/speakers"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
@@ -194,12 +206,13 @@
 
     <TextView
         android:id="@+id/likesCount"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="TextView"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/likeCaption"
+        app:layout_constraintEnd_toStartOf="@+id/favorite"
         app:layout_constraintStart_toEndOf="@+id/likeCaption"
         app:layout_constraintTop_toTopOf="@+id/likeCaption" />
 

@@ -12,7 +12,9 @@ import kotlinx.coroutines.launch
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
+import ru.netology.nmedia.dto.UserItem
 import ru.netology.nmedia.model.FeedModelState
+import ru.netology.nmedia.model.UserItemModel
 import ru.netology.nmedia.model.UserModel
 import ru.netology.nmedia.model.UsersSelectModel
 import ru.netology.nmedia.repository.UserRepository
@@ -33,6 +35,21 @@ class UserViewModel @Inject constructor(
 
     var data: LiveData<UserModel> =
         repository.data.map(::UserModel).asLiveData(Dispatchers.Default)
+
+    var mentionsData: LiveData<UserItemModel> =
+        repository.mentionsData.map(::UserItemModel).asLiveData(Dispatchers.Default)
+
+    var likeOwnersData: LiveData<UserItemModel> =
+        repository.likeOwnersData.map(::UserItemModel).asLiveData(Dispatchers.Default)
+
+    var eventLikeOwnersData: LiveData<UserItemModel> =
+        repository.eventLikeOwnersData.map(::UserItemModel).asLiveData(Dispatchers.Default)
+
+    var participantsData: LiveData<UserItemModel> =
+        repository.participantsData.map(::UserItemModel).asLiveData(Dispatchers.Default)
+
+    var speakersData: LiveData<UserItemModel> =
+        repository.speakersData.map(::UserItemModel).asLiveData(Dispatchers.Default)
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
@@ -60,6 +77,26 @@ class UserViewModel @Inject constructor(
     }
      */
 
+    fun getMentions(id: Long) {
+        mentionsData = repository.getMentions(id).map(::UserItemModel).asLiveData(Dispatchers.Default)
+    }
+
+    fun getLikeOwners(id: Long) {
+        likeOwnersData = repository.getLikeOwners(id).map(::UserItemModel).asLiveData(Dispatchers.Default)
+    }
+
+    fun getEventLikeOwners(id: Long) {
+        eventLikeOwnersData = repository.getEventLikeOwners(id).map(::UserItemModel).asLiveData(Dispatchers.Default)
+    }
+
+    fun getParticipants(id: Long) {
+        participantsData = repository.getParticipants(id).map(::UserItemModel).asLiveData(Dispatchers.Default)
+    }
+
+    fun getSpeakers(id: Long) {
+        speakersData = repository.getSpeakers(id).map(::UserItemModel).asLiveData(Dispatchers.Default)
+    }
+
     fun loadUsers() = viewModelScope.launch {
         _dataState.value = FeedModelState(loading = true)
         try {
@@ -83,22 +120,22 @@ class UserViewModel @Inject constructor(
     fun viewUser(user: User) {
         _currentUserId.postValue(user.id)
         _currentUser.postValue(user)
-        println("From UserViewModel.viewUser: ${user}")
+        //println("From UserViewModel.viewUser: ${user}")
     }
 
     fun getUserById(id: Long) = viewModelScope.launch {
         try {
-            println("From viewModel getUserById(): ${id}")
+            //println("From viewModel getUserById(): ${id}")
             val user = repository.getUser(id)
-            println("From viewModel getUserById(): ${user}")
+            //println("From viewModel getUserById(): ${user}")
             viewUser(user)
         } catch (e: Exception) {
             println(e.message)
         }
     }
 
-    fun setForSelection(title: String, choice: Boolean) {
-        _forSelection.value = UsersSelectModel(title, choice)
+    fun setForSelection(title: String, choice: Boolean, type: String) {
+        _forSelection.value = UsersSelectModel(title, choice, type)
     }
 
     fun setChecked(id: Long, choice: Boolean) = viewModelScope.launch {

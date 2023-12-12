@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ru.netology.nmedia.dao.Converters
 import ru.netology.nmedia.dao.EventDao
+import ru.netology.nmedia.dao.EventLikeOwnerDao
 import ru.netology.nmedia.dao.EventRemoteKeyDao
 import ru.netology.nmedia.dao.JobDao
 import ru.netology.nmedia.dao.LikeOwnerDao
@@ -17,6 +18,7 @@ import ru.netology.nmedia.dao.UserDao
 import ru.netology.nmedia.dao.WallDao
 import ru.netology.nmedia.dao.WallRemoteKeyDao
 import ru.netology.nmedia.entity.EventEntity
+import ru.netology.nmedia.entity.EventLikeOwnerEntity
 import ru.netology.nmedia.entity.EventRemoteKeyEntity
 import ru.netology.nmedia.entity.JobEntity
 import ru.netology.nmedia.entity.LikeOwnerEntity
@@ -33,6 +35,7 @@ import ru.netology.nmedia.entity.WallRemoteKeyEntity
     PostRemoteKeyEntity::class,
     UserEntity::class,
     LikeOwnerEntity::class,
+    EventLikeOwnerEntity::class,
     MentionEntity::class,
     ParticipantEntity::class,
     SpeakerEntity::class,
@@ -48,6 +51,7 @@ abstract class AppDb : RoomDatabase() {
     abstract  fun userDao(): UserDao
     abstract  fun mentionDao(): MentionDao
     abstract  fun likeOwnersDao(): LikeOwnerDao
+    abstract  fun eventLikeOwnersDao(): EventLikeOwnerDao
     abstract  fun participantDao(): ParticipantDao
     abstract  fun speakerDao(): SpeakerDao
     abstract fun eventRemoteKeyDao(): EventRemoteKeyDao

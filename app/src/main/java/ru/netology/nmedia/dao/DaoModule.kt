@@ -25,6 +25,9 @@ object DaoModule {
     fun provideLikeOwnersDao(db: AppDb): LikeOwnerDao = db.likeOwnersDao()
 
     @Provides
+    fun provideEventLikeOwnersDao(db: AppDb): EventLikeOwnerDao = db.eventLikeOwnersDao()
+
+    @Provides
     fun provideParticipantDao(db: AppDb): ParticipantDao = db.participantDao()
 
     @Provides

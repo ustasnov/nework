@@ -1,5 +1,6 @@
 package ru.netology.nmedia.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,27 +16,31 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
-import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
-import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
-import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.urlArg
-import ru.netology.nmedia.ui.PostFragment.Companion.idArg
 import ru.netology.nmedia.R
-import ru.netology.nmedia.adapter.OnInteractionEventListener
 import ru.netology.nmedia.adapter.EventsAdapter
+import ru.netology.nmedia.adapter.OnInteractionEventListener
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentEventsFeedBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Event
+import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.model.MediaModel
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
+import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.urlArg
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.EventViewModel
+import ru.netology.nmedia.viewmodel.UserViewModel
 import ru.netology.nmedia.viewmodel.emptyEvent
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class EventsFeedFragment : Fragment() {
     val viewModel: EventViewModel by activityViewModels()
+    val userViewModel: UserViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
+
     @Inject
     lateinit var appAuth: AppAuth
 
@@ -52,6 +57,20 @@ class EventsFeedFragment : Fragment() {
             override fun onLike(event: Event) {
                 if (authViewModel.isAuthorized) {
                     viewModel.likeById(event)
+                } else {
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.authorization_required),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(R.string.login) { findNavController().navigate(R.id.authFragment) }
+                        .show()
+                }
+            }
+
+            override fun onParticipant(event: Event) {
+                if (authViewModel.isAuthorized) {
+                    viewModel.participantById(event)
                 } else {
                     Snackbar.make(
                         binding.root,
@@ -90,42 +109,20 @@ class EventsFeedFragment : Fragment() {
                 viewModel.removeById(event.id)
             }
 
-            /*
             override fun onEdit(event: Event) {
                 viewModel.edit(event)
+                if (event.attachment != null) {
+                    viewModel.setMedia(MediaModel(Uri.parse(event.attachment!!.url), null, event.attachment?.type))
+                }
                 findNavController().navigate(
-                    R.id.action_feedFragment_to_newPostFragment,
-                    Bundle().apply {
-                        textArg = event.content
-                    }
+                    R.id.action_eventsFeedFragment_to_newEventFragment
                 )
             }
-
-             */
-
-            /*
-            override fun onPlayAudio(post: Post) {
-                MediaPlayer.create(this,).apply {
-                    start()
-
-                }
-            }
-
-            override fun onPlayVideo(post: Post) {
-                viewModel.toggleNewPost(false)
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.video))
-                if (intent.resolveActivity(context!!.packageManager) != null) {
-                    startActivity(intent)
-                }
-            }
-
-            */
 
             override fun onViewAttachment(event: Event) {
                 findNavController().navigate(
                     R.id.action_eventsFeedFragment_to_postAttachmentFragment,
                     Bundle().apply {
-                        //textArg = "${BuildConfig.BASE_URL}media/${post.attachment!!.url}"
                         urlArg = "${event.attachment!!.url}"
                         typeArg = when (event.attachment?.type) {
                             AttachmentType.IMAGE -> "image"
@@ -152,37 +149,44 @@ class EventsFeedFragment : Fragment() {
              */
 
             override fun onViewLikeOwners(event: Event) {
-
                 if (event.likeOwnerIds.size > 0) {
+                    userViewModel.getEventLikeOwners(event.id)
+                    userViewModel.setForSelection(
+                        getString(R.string.like_title),
+                        false,
+                        "EventLikeOwners"
+                    )
                     findNavController().navigate(
-                        R.id.action_eventsFeedFragment_to_likeOwnersFragment,
-                        Bundle().apply {
-                            idArg = event.id
-                        })
+                        R.id.usersFragment
+                    )
                 }
             }
 
             override fun onViewParticipants(event: Event) {
                 if (event.participantsIds.size > 0) {
+                    userViewModel.getParticipants(event.id)
+                    userViewModel.setForSelection(
+                        getString(R.string.participants),
+                        false,
+                        "Participants"
+                    )
                     findNavController().navigate(
-                        R.id.action_eventsFeedFragment_to_participantsFragment,
-                        Bundle().apply {
-                            idArg = event.id
-                        })
+                        R.id.usersFragment
+                    )
                 }
             }
 
             override fun onViewSpeakers(event: Event) {
                 if (event.speakerIds.size > 0) {
+                    userViewModel.getSpeakers(event.id)
+                    userViewModel.setForSelection(getString(R.string.speakers), false, "Speakers")
                     findNavController().navigate(
-                        R.id.action_eventsFeedFragment_to_speakersFragment,
-                        Bundle().apply {
-                            idArg = event.id
-                        })
+                        R.id.usersFragment
+                    )
                 }
             }
             //}, observer)
-        }, this.requireContext())
+        }, authViewModel.isAuthorized, this.requireContext())
 
         binding.list.adapter = adapter
 
@@ -209,7 +213,7 @@ class EventsFeedFragment : Fragment() {
         binding.add.setOnClickListener {
             if (authViewModel.isAuthorized) {
                 viewModel.edit(emptyEvent)
-                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+                findNavController().navigate(R.id.action_eventsFeedFragment_to_newEventFragment)
             } else {
                 Snackbar.make(
                     binding.root,

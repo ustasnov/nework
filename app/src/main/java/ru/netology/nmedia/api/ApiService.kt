@@ -80,6 +80,12 @@ interface ApiService {
     @DELETE("events/{id}/likes")
     suspend fun unlikeEventById(@Path("id") id: Long): Response<Event>
 
+    @POST("events/{id}/participants")
+    suspend fun participantById(@Path("id") id: Long): Response<Event>
+
+    @DELETE("events/{id}/participants")
+    suspend fun unParticipantById(@Path("id") id: Long): Response<Event>
+
     @GET("events/{id}/newer")
     suspend fun getNewerEvents(@Path("id") id: Long): Response<List<Event>>
 

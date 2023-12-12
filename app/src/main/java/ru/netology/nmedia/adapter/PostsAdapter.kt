@@ -5,20 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.netology.nmedia.R
-import ru.netology.nmedia.databinding.CardAdBinding
 import ru.netology.nmedia.databinding.CardPostBinding
-import ru.netology.nmedia.dto.Ad
 import ru.netology.nmedia.dto.AttachmentType
-import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.AndroidUtils.formatDate
-import ru.netology.nmedia.viewmodel.AuthViewModel
 import java.util.Locale
 
 interface OnInteractionListener {
@@ -35,21 +30,17 @@ interface OnInteractionListener {
 class PostsAdapter(
     private val onInteractionListener: OnInteractionListener,
     private val isAuthorized: Boolean
-) : PagingDataAdapter<Post, RecyclerView.ViewHolder>(PostDiffCallback()) {
+) : PagingDataAdapter<Post, PostViewHolder>(PostDiffCallback()) {
 
-    override fun getItemViewType(position: Int): Int =
-        R.layout.card_post
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding, onInteractionListener, isAuthorized)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val item = getItem(position)
-        (holder as PostViewHolder).bind(item!!)
+        holder.bind(item!!)
     }
-
 }
 
 class PostViewHolder(
@@ -72,14 +63,6 @@ class PostViewHolder(
                 favorite.isChecked = false
             }
 
-            /*
-            if (post.likedByMe) {
-                favorite.setIconTintResource(R.color.red)
-            } else {
-                favorite.setIconTintResource(R.color.ext_gray)
-            }
-             */
-            //favorite.isCheckable = post.ownedByMe
             likesCount.text = formatValue(post.likeOwnerIds.size.toDouble())
             siteUrl.text = post.link
             if (post.link.isNullOrBlank()) {
@@ -89,7 +72,11 @@ class PostViewHolder(
             }
 
             if (post.mentionIds.size > 0) {
-                ment.setIconTintResource(R.color.teal_700)
+                if (post.mentionedMe) {
+                    ment.setIconTintResource(R.color.red)
+                } else {
+                    ment.setIconTintResource(R.color.teal_700)
+                }
                 ment.text = formatValue(post.mentionIds.size.toDouble())
             } else {
                 ment.setIconTintResource(R.color.ext_gray)

@@ -96,4 +96,16 @@
     <string name="view_mentions">Покажи упоминания</string>
     <string name="post_text_hint">Содержание сообщения</string>
     <string name="select_users_to_mention">Упомянуть</string>
+    <string name="new_post">Создать сообщение</string>
+    <string name="edit_post">Изменить сообщение</string>
+    <string name="new_event">Создать мероприятие</string>
+    <string name="edit_event">Изменить мероприятие</string>
+    <string name="event_text_hint">Описание мероприятия</string>
+    <string name="event_date_hint">Дата проведения</string>
+    <string name="select_users_to_speakers">Выберите докладчиков</string>
+    <string name="event_time_hint">Время проведения</string>
+    <string name="select_event_time">Выберите время мероприятия</string>
+    <string name="event_type">Формат проведения</string>
+    <string name="online">В сети</string>
+    <string name="offline">Автономно</string>
 </resources>

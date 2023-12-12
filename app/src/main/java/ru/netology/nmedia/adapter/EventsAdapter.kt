@@ -23,38 +23,27 @@ interface OnInteractionEventListener {
     fun onEdit(event: Event) {}
     fun onRemove(event: Event) {}
     fun onPlayVideo(event: Event) {}
-    fun onViewPost(event: Event) {}
+    //fun onViewPost(event: Event) {}
     fun onViewAttachment(event: Event) {}
     fun onViewLikeOwners(event: Event) {}
     fun onViewParticipants(event: Event) {}
     fun onViewSpeakers(event: Event) {}
+    fun onParticipant(event: Event) {}
 }
 
 class EventsAdapter(
     private val onInteractionEventListener: OnInteractionEventListener,
+    private val isAuthorized: Boolean,
     private val context: Context
-) : PagingDataAdapter<FeedItem, RecyclerView.ViewHolder>(EventDiffCallback()) {
-    override fun getItemViewType(position: Int): Int =
-        when (getItem(position)) {
-            is Event -> R.layout.card_event
-            else -> error("unknown view type")
-        }
+) : PagingDataAdapter<Event, EventViewHolder>(EventDiffCallback()) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        val binding = CardEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return EventViewHolder(binding, onInteractionEventListener, context, isAuthorized)
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        when (viewType) {
-            R.layout.card_event -> {
-                val binding =
-                    CardEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                EventViewHolder(binding, onInteractionEventListener, context)
-            }
-            else -> error("unknown view type: $viewType")
-        }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = getItem(position)) {
-            is Event -> (holder as? EventViewHolder)?.bind(item)
-            else -> error("unknown view type")
-        }
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.bind(item!!)
     }
 
 }
@@ -62,7 +51,8 @@ class EventsAdapter(
 class EventViewHolder(
     private val binding: CardEventBinding,
     private val onInteractionEventListener: OnInteractionEventListener,
-    private val context: Context
+    private val context: Context,
+    private val isAuthorized: Boolean,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(event: Event) {
@@ -70,22 +60,42 @@ class EventViewHolder(
             author.text = event.author
             published.text = AndroidUtils.formatDate(event.published)
             postText.text = event.content
-            favorite.isChecked = event.likedByMe
-            favorite.isCheckable = event.ownedByMe
+
+            if (isAuthorized) {
+                favorite.isEnabled = true
+                favorite.isChecked = event.likedByMe
+
+                participantMe.isEnabled = true
+                participantMe.isChecked = event.participatedByMe
+            } else {
+                favorite.isEnabled = false
+                favorite.isChecked = false
+
+                participantMe.isEnabled = false
+                participantMe.isChecked = false
+            }
+
             likesCount.text = formatValue(event.likeOwnerIds.size.toDouble())
+
             if (event.type === EventType.ONLINE) {
                 eventType.text = context.getString(R.string.type_online)
             } else {
                 eventType.text = context.getString(R.string.type_offline)
             }
             eventDatetime.text= AndroidUtils.formatDate(event.datetime)
+
             if (event.participantsIds.size > 0) {
-                participants.setIconTintResource(R.color.teal_700)
+                if (participantMe.isChecked) {
+                    participants.setIconTintResource(R.color.red)
+                } else {
+                    participants.setIconTintResource(R.color.teal_700)
+                }
                 participants.text = formatValue(event.participantsIds.size.toDouble())
             } else {
                 participants.setIconTintResource(R.color.ext_gray)
                 participants.text = ""
             }
+
             if (event.speakerIds.size > 0) {
                 speakers.setIconTintResource(R.color.teal_700)
                 speakers.text = formatValue(event.speakerIds.size.toDouble())
@@ -156,6 +166,10 @@ class EventViewHolder(
                 onInteractionEventListener.onViewParticipants(event)
             }
 
+            participantMe.setOnClickListener {
+                onInteractionEventListener.onParticipant(event)
+            }
+
             speakers.setOnClickListener {
                 onInteractionEventListener.onViewSpeakers(event)
             }
@@ -181,19 +195,21 @@ class EventViewHolder(
                 }.show()
             }
 
+            /*
             root.setOnClickListener {
                 onInteractionEventListener.onViewPost(event)
             }
+             */
         }
     }
 }
 
-class EventDiffCallback : DiffUtil.ItemCallback<FeedItem>() {
-    override fun areItemsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {
+class EventDiffCallback : DiffUtil.ItemCallback<Event>() {
+    override fun areItemsTheSame(oldItem: Event, newItem: Event): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: FeedItem, newItem: FeedItem): Boolean {
+    override fun areContentsTheSame(oldItem: Event, newItem: Event): Boolean {
         return oldItem == newItem
     }
 }

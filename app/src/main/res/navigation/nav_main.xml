@@ -109,6 +109,9 @@
         <action
             android:id="@+id/action_eventsFeedFragment_to_postAttachmentFragment"
             app:destination="@id/postAttachmentFragment" />
+        <action
+            android:id="@+id/action_eventsFeedFragment_to_newEventFragment"
+            app:destination="@id/newEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -138,4 +141,8 @@
         android:name="ru.netology.nmedia.ui.JobFragment"
         android:label="fragment_job"
         tools:layout="@layout/fragment_job" />
+    <fragment
+        android:id="@+id/newEventFragment"
+        android:name="ru.netology.nmedia.ui.NewEventFragment"
+        android:label="NewEventFragment" />
 </navigation>
