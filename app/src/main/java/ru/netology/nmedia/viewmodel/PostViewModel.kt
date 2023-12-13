@@ -16,8 +16,10 @@ import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.ErrorType
+import ru.netology.nmedia.dto.EventCash
 import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.dto.PostCash
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.PostRepository
@@ -95,6 +97,8 @@ class PostViewModel @Inject constructor(
 
     val currentPost: LiveData<Post>
         get() = _currentPost
+
+    var newPostCash: PostCash? = null
 
     private val _currentMediaType =
         MutableLiveData(AttachmentType.IMAGE)

@@ -39,7 +39,7 @@ object AndroidUtils {
 
     fun formatDateForDB(date: String, time: String = "T00:00:00", pattern: String = "yyyy-MM-dd'T'HH:mm:ss.000'Z'"): String {
         val dateStr = date.split(".").reversed().joinToString("-") + time
-        return LocalDateTime.parse(dateStr).format(DateTimeFormatter.ofPattern( pattern))
+        return LocalDateTime.parse(dateStr).format(DateTimeFormatter.ofPattern(pattern))
     }
 
     fun showCalendar(context: Context, cal: Calendar, view: View, hasFocus: Boolean, callback: DatePickerDialog.OnDateSetListener) {

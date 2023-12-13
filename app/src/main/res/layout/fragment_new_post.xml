@@ -22,9 +22,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/common_spacing"
+        android:layout_marginStart="@dimen/size_8dp"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginEnd="@dimen/common_spacing">
+        android:layout_marginEnd="@dimen/size_8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,18 +36,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_spacing">
-
-                <!--<EditText
-                    android:id="@+id/content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/post_edit_text"
-                    android:inputType="textMultiLine"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="@tools:sample/lorem[150]" /> -->
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/content"

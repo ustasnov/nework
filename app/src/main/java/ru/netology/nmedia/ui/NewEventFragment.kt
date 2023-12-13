@@ -4,9 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -16,7 +13,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
-import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -33,22 +29,16 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UsersAdapter
 import ru.netology.nmedia.databinding.FragmentNewEventBinding
-import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.dto.AttachmentType
-import ru.netology.nmedia.dto.Event
 import ru.netology.nmedia.dto.EventCash
 import ru.netology.nmedia.dto.EventType
-import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.utils.AndroidUtils
 import ru.netology.nmedia.utils.fileFromContentUri
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.EventViewModel
-import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
-import ru.netology.nmedia.viewmodel.WallViewModel
-import ru.netology.nmedia.viewmodel.emptyEvent
 import java.util.Calendar
 
 @AndroidEntryPoint
@@ -131,17 +121,16 @@ class NewEventFragment : Fragment() {
                 if (viewModel.newEventCash !== null) {
                     restoreFromCash(binding, viewModel.newEventCash!!)
                 } else {
-                    //binding.eventType.editText?.setText(getString(R.string.offline))
                     viewModel.clearMedia()
                     val text = viewModel.getNewEventCont().value ?: ""
                     binding.content.editText?.setText(text)
                     binding.speakersMaterialCardView.visibility = View.GONE
                 }
             } else {
-                //eventTypeAdapter
                 binding.eventType.editText?.setText(
                     if (it.type === EventType.ONLINE) getString(R.string.online)
-                    else getString(R.string.offline))
+                    else getString(R.string.offline)
+                )
                 binding.content.editText?.setText(it.content)
                 binding.link.editText?.setText(it.link ?: "")
                 val eventDateTime = AndroidUtils.formatDate(it.datetime, "dd.MM.yyyy HH:mm")
@@ -162,7 +151,7 @@ class NewEventFragment : Fragment() {
                             )
                         )
                     }
-                    adapter.submitList(speakersList.toList())
+                    userViewModel.setCheckList(speakersList.toList())
                     binding.speakersMaterialCardView.visibility =
                         if (speakersList.isEmpty()) View.GONE else View.VISIBLE
                 }
@@ -195,18 +184,22 @@ class NewEventFragment : Fragment() {
             }
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
          */
+
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.save -> {
                     if (authViewModel.isAuthorized) {
                         val text = binding.content.editText?.text.toString().trim()
                         val linkText = binding.link.editText?.text.toString()
-                        var eventDate = binding.eventDate.editText?.text.toString()
+                        val eventDate = binding.eventDate.editText?.text.toString()
                         val eventTime = binding.eventTime.editText?.text.toString()
                         val eventTypeText = binding.eventType.editText?.text.toString()
 
-                        val eventType: EventType = if (eventTypeText === getString(R.string.online))
-                            EventType.ONLINE else EventType.OFFLINE
+                        val eventType: EventType =
+                            if (eventTypeText == getString(R.string.online))
+                                EventType.ONLINE
+                            else
+                                EventType.OFFLINE
 
                         val speakersIds: MutableList<Long> = mutableListOf()
                         userViewModel.checkList.value?.forEach {
@@ -214,7 +207,7 @@ class NewEventFragment : Fragment() {
                         }
 
                         if (text.isNotBlank() && eventDate.isNotBlank()) {
-                            eventDate = AndroidUtils.formatDateForDB(
+                            val eventDbDate = AndroidUtils.formatDateForDB(
                                 eventDate, "T$eventTime"
                             )
 
@@ -222,7 +215,7 @@ class NewEventFragment : Fragment() {
                                 viewModel.edited.value!!.copy(
                                     type = eventType,
                                     content = text,
-                                    datetime = eventDate,
+                                    datetime = eventDbDate,
                                     link = if (linkText.isNullOrBlank()) null else linkText,
                                     speakerIds = speakersIds.toList()
                                 )
@@ -354,7 +347,8 @@ class NewEventFragment : Fragment() {
             saveToCash(binding)
             userViewModel.setForSelection(
                 getString(R.string.select_users_to_speakers),
-                true,"Users"
+                true,
+                "Users"
             )
             findNavController().navigate(R.id.usersFragment)
         }
@@ -384,7 +378,7 @@ class NewEventFragment : Fragment() {
         eventCash: EventCash
     ) {
         binding.content.editText?.setText(eventCash.content)
-        binding.link.editText?.setText(eventCash.link ?: "")
+        binding.link.editText?.setText(eventCash.link)
         binding.eventDate.editText?.setText(eventCash.eventDate)
         binding.eventTime.editText?.setText(eventCash.eventTime)
         binding.eventType.editText?.setText(eventCash.eventType)
@@ -408,10 +402,12 @@ class NewEventFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.hide()
         val eventTypeItems = listOf(getString(R.string.offline), getString(R.string.online))
-        val eventTypeAdapter = ArrayAdapter(requireContext(), R.layout.event_type_item, eventTypeItems)
-        autoCompleteTextView?.setAdapter(eventTypeAdapter)
+        val eventTypeAdapter =
+            ArrayAdapter(requireContext(), R.layout.event_type_item, eventTypeItems)
+        autoCompleteTextView.setAdapter(eventTypeAdapter)
     }
 
     override fun onStop() {

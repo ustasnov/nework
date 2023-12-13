@@ -151,11 +151,7 @@ class EventsFeedFragment : Fragment() {
             override fun onViewLikeOwners(event: Event) {
                 if (event.likeOwnerIds.size > 0) {
                     userViewModel.getEventLikeOwners(event.id)
-                    userViewModel.setForSelection(
-                        getString(R.string.like_title),
-                        false,
-                        "EventLikeOwners"
-                    )
+                    userViewModel.setForSelection(getString(R.string.like_title),false,"EventLikeOwners")
                     findNavController().navigate(
                         R.id.usersFragment
                     )
@@ -165,11 +161,7 @@ class EventsFeedFragment : Fragment() {
             override fun onViewParticipants(event: Event) {
                 if (event.participantsIds.size > 0) {
                     userViewModel.getParticipants(event.id)
-                    userViewModel.setForSelection(
-                        getString(R.string.participants),
-                        false,
-                        "Participants"
-                    )
+                    userViewModel.setForSelection(getString(R.string.participants),false,"Participants")
                     findNavController().navigate(
                         R.id.usersFragment
                     )
@@ -192,8 +184,7 @@ class EventsFeedFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                //viewModel.data.collectLatest(adapter::submitData)
-                viewModel.data.collect(adapter::submitData)
+                viewModel.data.collectLatest(adapter::submitData)
             }
         }
 

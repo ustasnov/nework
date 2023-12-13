@@ -44,10 +44,6 @@ class FeedFragment : Fragment() {
     private val authViewModel: AuthViewModel by activityViewModels()
     @Inject
     lateinit var appAuth: AppAuth
-    //private val observer = MediaLifecycleObserver()
-
-    //val binding = FragmentFeedBinding.inflate(inflater, container, false)
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -103,17 +99,10 @@ class FeedFragment : Fragment() {
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
                 if (post.attachment != null) {
-                    //if (post.attachment?.type === AttachmentType.IMAGE) {
-                        viewModel.setMedia(MediaModel(Uri.parse(post.attachment!!.url), null, post.attachment?.type))
-                    //}
+                    viewModel.setMedia(MediaModel(Uri.parse(post.attachment!!.url), null, post.attachment?.type))
                 }
                 findNavController().navigate(
                     R.id.action_feedFragment_to_newPostFragment
-                    /*,
-                    Bundle().apply {
-                        textArg = post.content
-                    }
-                     */
                 )
             }
 
@@ -139,7 +128,6 @@ class FeedFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_feedFragment_to_postAttachmentFragment,
                     Bundle().apply {
-                        //textArg = "${BuildConfig.BASE_URL}media/${post.attachment!!.url}"
                         urlArg = "${post.attachment!!.url}"
                         typeArg = when (post.attachment?.type) {
                             AttachmentType.IMAGE -> "image"

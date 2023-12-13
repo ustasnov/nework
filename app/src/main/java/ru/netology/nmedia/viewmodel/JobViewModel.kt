@@ -11,8 +11,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Job
-import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.JobModel
 import ru.netology.nmedia.repository.JobRepository
@@ -33,7 +31,6 @@ val emptyJob = Job(
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class JobViewModel @Inject constructor(
-    //private val jobDao: JobDao,
     private val repository: JobRepository,
 ) : ViewModel() {
 
@@ -64,7 +61,6 @@ class JobViewModel @Inject constructor(
     var isNewJob = false
 
     init {
-        //println("From JobViewModel.init.clearJobs()")
         clearJobs()
     }
 
@@ -90,8 +86,8 @@ class JobViewModel @Inject constructor(
 
     fun saveMyJob(job: Job) = viewModelScope.launch {
         try {
-           repository.saveMyJob(job)
-           edited.value = emptyJob
+            repository.saveMyJob(job)
+            edited.value = emptyJob
             _jobCreated.postValue(Unit)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
@@ -99,10 +95,8 @@ class JobViewModel @Inject constructor(
     }
 
     fun removeMyJob(job: Job) = viewModelScope.launch {
-        _currentJob.postValue(job)
         try {
-            repository.removeByIdMyJob(_currentJob.value!!.id)
-            _currentJob.postValue(emptyJob)
+            repository.removeByIdMyJob(job.id)
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
         }
@@ -110,11 +104,8 @@ class JobViewModel @Inject constructor(
 
     fun loadUserJobs(userId: Long) = viewModelScope.launch {
         _dataState.value = FeedModelState(loading = true)
-        //_currentUserId.postValue(userId)
-        //_currentUserId.value = userId
         try {
             println("From viewModel.loadUserJobs: ${userId}")
-            //repository.getAllUserJobs(_currentUserId.value!!)
             repository.getAllUserJobs(userId)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
@@ -124,11 +115,7 @@ class JobViewModel @Inject constructor(
 
     fun refreshUserJobs(userId: Long) = viewModelScope.launch {
         _dataState.value = FeedModelState(refreshing = true)
-        //_currentUserId.postValue(userId)
-        //_currentUserId.value = userId
         try {
-            println("From viewModel.refreshUserJobs: ${userId}")
-            //repository.getAllUserJobs(_currentUserId.value!!)
             repository.getAllUserJobs(userId)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
@@ -136,10 +123,8 @@ class JobViewModel @Inject constructor(
         }
     }
 
-    fun clearJobs()  = viewModelScope.launch {
-        //println("From clearJobs()")
+    fun clearJobs() = viewModelScope.launch {
         repository.clearJobs()
-        //repository.data.map(::JobModel).asLiveData(Dispatchers.Default)
     }
 
     fun setPostSource(authorId: Long, sourceType: SourceType) {
@@ -147,7 +132,6 @@ class JobViewModel @Inject constructor(
     }
 
     fun edit(job: Job) {
-        //toggleNewPost(false)
         edited.value = job
     }
 

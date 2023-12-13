@@ -1,138 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.JobFragment">
+    android:layout_height="match_parent" >
 
-    <TableLayout
-        android:layout_width="0dp"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/new_post_menu"
+            app:navigationIcon="@drawable/ic_back_24"
+            app:title="@string/new_job" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginTop="?attr/actionBarSize"
+        android:padding="@dimen/size_8dp"
+        tools:context=".ui.JobFragment">
 
-        <TableRow>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/company"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_8dp"
+            android:backgroundTint="@color/ic_field_transparent"
+            app:helperText="@string/required"
+            app:helperTextEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed">
 
-            <TextView
-                android:id="@+id/company_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.5"
-                android:labelFor="@+id/company"
-                android:text="@string/company"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/company"
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:hint="@string/name_of_company"
-                android:inputType="textMultiLine"
-                android:textSize="20sp" />
-        </TableRow>
+                android:fontFamily="sans-serif"
+                android:hint="@string/name_of_company" />
 
-        <TableRow>
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/position_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.5"
-                android:labelFor="@+id/position"
-                android:text="@string/position"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/position"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_8dp"
+            android:backgroundTint="@color/ic_field_transparent"
+            app:helperText="@string/required"
+            app:helperTextEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/company"
+            app:layout_constraintVertical_chainStyle="packed">
 
-            <EditText
-                android:id="@+id/position"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:hint="@string/name_of_position"
-                android:inputType="textMultiLine"
-                android:textSize="20sp" />
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:id="@+id/start_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.5"
-                android:labelFor="@+id/start_date"
-                android:text="@string/start_date"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/start_date"
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:cursorVisible="false"
-                android:hint="@string/enter_start_date"
-                android:textSize="20sp" />
+                android:fontFamily="sans-serif"
+                android:hint="@string/name_of_position" />
 
-        </TableRow>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TableRow>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/startDate"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_8dp"
+            android:layout_marginEnd="@dimen/size_4dp"
+            android:backgroundTint="@color/ic_field_transparent"
+            app:helperText="@string/required"
+            app:helperTextEnabled="true"
+            app:layout_constraintEnd_toStartOf="@id/finishDate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/position"
+            app:layout_constraintVertical_chainStyle="packed">
 
-            <TextView
-                android:id="@+id/finish_title"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.5"
-                android:gravity="bottom"
-                android:labelFor="@+id/enter_finish_date"
-                android:text="@string/end_date"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:fontFamily="sans-serif"
+                android:hint="@string/enter_start_date" />
 
-            <EditText
-                android:id="@+id/finish_date"
-                android:layout_width="wrap_content"
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/finishDate"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/size_4dp"
+            android:layout_marginTop="@dimen/size_8dp"
+            android:backgroundTint="@color/ic_field_transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/startDate"
+            app:layout_constraintTop_toBottomOf="@+id/position"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:hint="@string/enter_finish_date"
-                android:textSize="20sp" />
-        </TableRow>
+                android:fontFamily="sans-serif"
+                android:hint="@string/enter_finish_date" />
 
-        <TableRow>
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/link_title"
-                android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/link"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_8dp"
+            android:backgroundTint="@color/ic_field_transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/startDate"
+            app:layout_constraintVertical_chainStyle="packed">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.5"
-                android:gravity="bottom"
-                android:labelFor="@+id/link"
-                android:text="@string/site_caption"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:fontFamily="sans-serif"
+                android:hint="@string/enter_site_address" />
 
-            <EditText
-                android:id="@+id/link"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:ellipsize="end"
-                android:hint="@string/enter_site_address"
-                android:textSize="20sp" />
-        </TableRow>
-    </TableLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

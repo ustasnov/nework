@@ -20,7 +20,6 @@ import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.JobViewModel
 import ru.netology.nmedia.viewmodel.WallViewModel
-import ru.netology.nmedia.viewmodel.empty
 import ru.netology.nmedia.viewmodel.emptyJob
 import javax.inject.Inject
 
@@ -29,6 +28,7 @@ class JobsFeedFragment : Fragment() {
     val viewModel: JobViewModel by activityViewModels()
     val postViewModel: WallViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
+
     @Inject
     lateinit var appAuth: AppAuth
 
@@ -50,6 +50,7 @@ class JobsFeedFragment : Fragment() {
                     Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
                         .setAction(R.string.retry_loading) { viewModel.loadUserJobs(postViewModel.postSource.value!!.authorId!!) }
                         .show()
+
                 else -> Unit
             }
         }
@@ -88,25 +89,6 @@ class JobsFeedFragment : Fragment() {
             }
         }
 
-        /*
-        val adapter = JobsAdapter(object : OnJobsInteractionListener {
-            override fun onRemove(job: Job) {
-                viewModel.removeMyJob(job)
-            }
-
-            override fun onEdit(job: Job) {
-                viewModel.edit(job)
-                findNavController().navigate(R.id.action_profileFragment_to_jobFragment)
-            }
-        }, editEnabled)
-
-         */
-
-        //binding.list.adapter = adapter
-
-        //viewModel.data.observe(viewLifecycleOwner) { state ->
-        //    adapter.submitList(state.jobs)
-        //}
 
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true

@@ -28,8 +28,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UsersAdapter
+import ru.netology.nmedia.databinding.FragmentNewEventBinding
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.dto.AttachmentType
+import ru.netology.nmedia.dto.EventCash
+import ru.netology.nmedia.dto.PostCash
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.utils.AndroidUtils
@@ -75,6 +78,7 @@ class NewPostFragment : Fragment() {
         activity.supportActionBar?.hide()
 
         binding.topAppBar.setNavigationOnClickListener {
+            viewModel.newPostCash = null
             findNavController().navigateUp()
         }
 
@@ -102,13 +106,17 @@ class NewPostFragment : Fragment() {
             )
 
             if (isNewPost) {
-                viewModel.clearMedia()
-                //viewModel.toggleNewPost(true)
-                wallViewModel.clearMedia()
-                //wallViewModel.toggleNewPost(true)
-                val text = viewModel.getNewPostCont().value ?: ""
-                binding.content.editText?.setText(text)
-                binding.mentionsMaterialCardView.visibility = View.GONE
+                if (viewModel.newPostCash !== null) {
+                    restoreFromCash(binding, viewModel.newPostCash!!)
+                } else {
+                    viewModel.clearMedia()
+                    //viewModel.toggleNewPost(true)
+                    wallViewModel.clearMedia()
+                    //wallViewModel.toggleNewPost(true)
+                    val text = viewModel.getNewPostCont().value ?: ""
+                    binding.content.editText?.setText(text)
+                    binding.mentionsMaterialCardView.visibility = View.GONE
+                }
             } else {
                 binding.content.editText?.setText(it.content)
                 binding.link.editText?.setText(it.link ?: "")
@@ -126,7 +134,8 @@ class NewPostFragment : Fragment() {
                             )
                         )
                     }
-                    adapter.submitList(mentionsList.toList())
+                    userViewModel.setCheckList(mentionsList.toList())
+                    //adapter.submitList(mentionsList.toList())
                     binding.mentionsMaterialCardView.visibility =
                         if (mentionsList.isEmpty()) View.GONE else View.VISIBLE
                 }
@@ -136,6 +145,7 @@ class NewPostFragment : Fragment() {
                 object : OnBackPressedCallback(true) {
                     override fun handleOnBackPressed() {
                         if (isNewPost) {
+                            viewModel.newPostCash = null
                             viewModel.saveNewPostContent(binding.content.editText?.text.toString())
                         }
                         findNavController().navigateUp()
@@ -206,6 +216,7 @@ class NewPostFragment : Fragment() {
         //, viewLifecycleOwner)
 
         viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.newPostCash = null
             viewModel.loadPosts()
             findNavController().navigateUp()
         }
@@ -214,7 +225,8 @@ class NewPostFragment : Fragment() {
             if (userViewModel.checkList.value !== null) {
                 adapter.submitList(userViewModel.checkList.value!!.map { user ->
                     user.checked = false
-                    return@map user})
+                    return@map user
+                })
                 binding.mentionsMaterialCardView.visibility =
                     if (userViewModel.checkList.value!!.isEmpty()) View.GONE else View.VISIBLE
             }
@@ -225,6 +237,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.pickPhoto.setOnClickListener {
+            saveToCash(binding)
             viewModel.setMediaType(AttachmentType.IMAGE)
             ImagePicker.with(this)
                 .galleryOnly()
@@ -233,6 +246,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.takePhoto.setOnClickListener {
+            saveToCash(binding)
             viewModel.setMediaType(AttachmentType.IMAGE)
             ImagePicker.with(this)
                 .cameraOnly()
@@ -241,6 +255,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.pickAudio.setOnClickListener {
+            saveToCash(binding)
             viewModel.setMediaType(AttachmentType.AUDIO)
             val intent = Intent()
                 .setType("audio/*")
@@ -249,6 +264,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.pickVideo.setOnClickListener {
+            saveToCash(binding)
             viewModel.setMediaType(AttachmentType.VIDEO)
             val intent = Intent()
                 .setType("video/*")
@@ -257,6 +273,7 @@ class NewPostFragment : Fragment() {
         }
 
         binding.pickMentions.setOnClickListener {
+            saveToCash(binding)
             userViewModel.setForSelection(getString(R.string.select_users_to_mention), true, "Users")
             findNavController().navigate(R.id.usersFragment)
         }
@@ -279,6 +296,30 @@ class NewPostFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun restoreFromCash(
+        binding: FragmentNewPostBinding,
+        postCash: PostCash
+    ) {
+        binding.content.editText?.setText(postCash.content)
+        binding.link.editText?.setText(postCash.link)
+    }
+
+    private fun saveToCash(binding: FragmentNewPostBinding) {
+        val text = binding.content.editText?.text.toString().trim()
+        val linkText = binding.link.editText?.text.toString()
+
+        viewModel.newPostCash = PostCash(
+            content = text,
+            link = linkText
+        )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.hide()
     }
 
     override fun onStop() {
