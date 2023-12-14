@@ -4,72 +4,145 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/size_8dp"
     android:paddingStart="@dimen/size_0dp"
     android:paddingTop="@dimen/size_0dp"
     android:paddingEnd="@dimen/size_0dp"
     android:paddingBottom="@dimen/size_4dp">
 
+    <TableLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/jobMenu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/company_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/size_4dp"
+                android:layout_weight="0"
+                android:labelFor="@+id/company"
+                android:padding="@dimen/size_4dp"
+                android:text="@string/company"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/company"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:padding="@dimen/size_4dp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/position_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0"
+                android:labelFor="@+id/position"
+                android:padding="@dimen/size_4dp"
+                android:text="@string/position"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:padding="@dimen/size_4dp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/start_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0"
+                android:labelFor="@+id/start_date"
+                android:padding="@dimen/size_4dp"
+                android:text="@string/start_date"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/start_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:padding="@dimen/size_4dp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/finish_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0"
+                android:gravity="bottom"
+                android:labelFor="@+id/enter_finish_date"
+                android:padding="@dimen/size_4dp"
+                android:text="@string/end_date"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/finish_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:padding="@dimen/size_4dp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/link_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0"
+                android:gravity="bottom"
+                android:labelFor="@+id/link"
+                android:padding="@dimen/size_4dp"
+                android:text="@string/site_caption"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:autoLink="web"
+                android:ellipsize="end"
+                android:linksClickable="true"
+                android:padding="@dimen/size_4dp"
+                android:singleLine="true" />
+        </TableRow>
+    </TableLayout>
+
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/job_menu"
+        android:id="@+id/jobMenu"
         style="@style/Widget.AppTheme.MenuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_spacing"
         android:contentDescription="@string/description_post_menu"
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        android:paddingTop="@dimen/size_0dp"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/companyLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/company"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/positionLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/position"
-        app:layout_constraintEnd_toEndOf="@+id/companyLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/company" />
-
-    <TextView
-        android:id="@+id/startDateLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/start_date"
-        app:layout_constraintEnd_toEndOf="@+id/companyLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/position" />
-
-    <TextView
-        android:id="@+id/endDateLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/end_date"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startDate" />
-
-    <TextView
-        android:id="@+id/linkLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/site_caption"
-        app:layout_constraintEnd_toEndOf="@+id/companyLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/endDate" />
 
     <View
         android:id="@+id/divider"
@@ -80,70 +153,6 @@
         android:backgroundTintMode="src_over"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/link" />
-
-    <TextView
-        android:id="@+id/company"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="TextView"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/job_menu"
-        app:layout_constraintStart_toEndOf="@+id/companyLabel"
-        app:layout_constraintTop_toTopOf="@+id/companyLabel" />
-
-    <TextView
-        android:id="@+id/position"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/job_menu"
-        app:layout_constraintStart_toEndOf="@+id/positionLabel"
-        app:layout_constraintTop_toBottomOf="@+id/company" />
-
-    <TextView
-        android:id="@+id/startDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/startDateLabel"
-        app:layout_constraintTop_toBottomOf="@+id/position" />
-
-    <TextView
-        android:id="@+id/endDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/endDateLabel"
-        app:layout_constraintTop_toBottomOf="@+id/startDate" />
-
-    <TextView
-        android:id="@+id/link"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:autoLink="web"
-        android:ellipsize="end"
-        android:linksClickable="true"
-        android:singleLine="true"
-        android:text="TextView"
-        android:textColorLink="@color/ic_link"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/linkLabel"
-        app:layout_constraintTop_toBottomOf="@+id/endDate"
-        tools:text="www.netology.ru" />
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

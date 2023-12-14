@@ -31,28 +31,20 @@ class ProfileFragment : Fragment() {
     val profileViewModel: ProfileViewModel  by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
-    private val fragTitles = listOf(
-        "Места работы",
-        "Сообщения",
-    )
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        //val userId = requireArguments().idArg
-        //val type = requireArguments().type
 
         val binding = FragmentProfileBinding.inflate(inflater, container, false)
-        //val title = type == "MYWALL" ? getString(R.string.my_profile) : getString(R.string.user_profile)
 
+        val fragTitles = listOf(
+            getString(R.string.jobs),
+            getString(R.string.postsTitle)
+        )
 
-        val viewHolder = UserViewHolder(binding.userFr, object : OnUsersInteractionListener {
-            override fun onViewUser(user: User) {
-
-            }
-        })
+        val viewHolder = UserViewHolder(binding.userFr, object : OnUsersInteractionListener{})
 
         userViewModel.currentUser.observe(viewLifecycleOwner) {
             if (it != null && it.id != 0L) {
@@ -66,7 +58,6 @@ class ProfileFragment : Fragment() {
                     }
                 )
                 postViewModel.setPostSource(it.id, type!!)
-                //postViewModel.setData(it)
                 jobViewModel.setPostSource(it.id, type)
             }
         }
@@ -78,13 +69,9 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        //val jobsFeedFragment: JobsFeedFragment = JobsFeedFragment.newInstance()
         val jobsFeedFragment = JobsFeedFragment.newInstance()
         val wallFragment: WallFragment = WallFragment.newInstance()
-        val fragList = listOf(
-            jobsFeedFragment,
-            wallFragment
-        )
+        val fragList = listOf(jobsFeedFragment, wallFragment)
 
         val adapter = WallAdapter(requireActivity(), fragList)
         binding.viewPager.adapter = adapter
@@ -105,11 +92,5 @@ class ProfileFragment : Fragment() {
         )
 
         return binding.root
-    }
-
-    override fun onStop() {
-        super.onStop()
-        //jobViewModel.clearJobs()
-        //postViewModel.clearPosts()
     }
 }

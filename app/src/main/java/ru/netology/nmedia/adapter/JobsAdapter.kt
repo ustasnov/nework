@@ -46,15 +46,15 @@ class JobViewHolder(
             position.text = job.position
             startDate.text = formatDate(job.start, "dd MMM yyyy")
             if (job.finish.isNullOrBlank()) {
-                endDateLabel.visibility = View.GONE
-                endDate.visibility = View.GONE
+                finishTitle.visibility = View.GONE
+                finishDate.visibility = View.GONE
             } else {
-                endDate.text = formatDate(job.finish, "dd MMM yyyy")
-                endDateLabel.visibility = View.VISIBLE
-                endDate.visibility = View.VISIBLE
+                finishDate.text = formatDate(job.finish, "dd MMM yyyy")
+                finishTitle.visibility = View.VISIBLE
+                finishDate.visibility = View.VISIBLE
             }
             if (job.link.isNullOrBlank()) {
-                linkLabel.visibility = View.GONE
+                linkTitle.visibility = View.GONE
                 link.visibility = View.GONE
             } else {
                 link.text = job.link
