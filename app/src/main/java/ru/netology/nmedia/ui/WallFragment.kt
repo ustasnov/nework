@@ -26,7 +26,6 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.SourceType
 import ru.netology.nmedia.viewmodel.AuthViewModel
-import ru.netology.nmedia.viewmodel.MentionViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
 import ru.netology.nmedia.viewmodel.WallViewModel
@@ -39,6 +38,7 @@ class WallFragment : Fragment() {
     val postViewModel: PostViewModel by activityViewModels()
     val userViewModel: UserViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
+
     @Inject
     lateinit var appAuth: AppAuth
 
@@ -68,25 +68,21 @@ class WallFragment : Fragment() {
             override fun onRemove(post: Post) {
                 postViewModel.removeById(post.id)
                 viewModel.removeById(post.id)
-                //viewModel.refresh()
             }
 
             override fun onEdit(post: Post) {
                 postViewModel.edit(post)
                 if (post.attachment != null) {
-                    //if (post.attachment?.type === AttachmentType.IMAGE) {
-                    postViewModel.setMedia(MediaModel(Uri.parse(post.attachment!!.url), null, post.attachment?.type))
-                    //}
+                    postViewModel.setMedia(
+                        MediaModel(
+                            Uri.parse(post.attachment!!.url),
+                            null,
+                            post.attachment?.type
+                        )
+                    )
                 }
-                //userViewModel.setCheckList()
                 findNavController().navigate(
                     R.id.action_profileFragment_to_newPostFragment
-                    /*
-                    ,
-                    Bundle().apply {
-                        textArg = post.content
-                    }
-                     */
                 )
             }
 
@@ -120,7 +116,11 @@ class WallFragment : Fragment() {
             override fun onViewLikeOwners(post: Post) {
                 if (post.likeOwnerIds.size > 0) {
                     userViewModel.getLikeOwners(post.id)
-                    userViewModel.setForSelection(getString(R.string.like_title), false, "LikeOwners")
+                    userViewModel.setForSelection(
+                        getString(R.string.like_title),
+                        false,
+                        "LikeOwners"
+                    )
                     findNavController().navigate(
                         R.id.usersFragment
                     )
@@ -145,7 +145,6 @@ class WallFragment : Fragment() {
         viewModel.postSource.observe(viewLifecycleOwner) {
             viewModel.clearPosts()
             if (it.authorId != null && it.authorId != 0L) {
-                //viewModel.clearPosts()
                 if (it.sourceType === SourceType.MYWALL) {
                     viewModel.loadMyWallPosts()
                     binding.add.visibility = View.VISIBLE
@@ -173,6 +172,7 @@ class WallFragment : Fragment() {
                             }
                         }
                         .show()
+
                 else -> Unit
             }
         }
@@ -181,13 +181,6 @@ class WallFragment : Fragment() {
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
             viewModel.refresh()
-            /*
-            if (viewModel.postSource.value!!.sourceType == SourceType.MYWALL) {
-                viewModel.refreshMyWall()
-            } else {
-                viewModel.refreshWall(viewModel.postSource.value!!.authorId!!)
-            }
-             */
             swipeRefresh.isRefreshing = false
         }
 
@@ -195,7 +188,6 @@ class WallFragment : Fragment() {
         binding.add.setOnClickListener {
             if (authViewModel.isAuthorized) {
                 postViewModel.edit(empty)
-                //viewModel.edit(empty)
                 findNavController().navigate(R.id.action_profileFragment_to_newPostFragment)
             } else {
                 Snackbar.make(
@@ -211,11 +203,10 @@ class WallFragment : Fragment() {
         return binding.root
     }
 
-
     companion object {
         @JvmStatic
         fun newInstance() = WallFragment()
     }
-    
+
 
 }

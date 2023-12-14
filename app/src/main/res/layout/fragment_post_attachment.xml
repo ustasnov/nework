@@ -1,128 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/black">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/photo"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_back_24"
+            app:title="@string/picture" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/medium_spacing"
-        android:layout_marginBottom="@dimen/medium_spacing"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/image_description"
-        android:scaleType="fitCenter"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:src="@drawable/youtube" />
+        android:background="@color/black"
+        android:layout_marginTop="?attr/actionBarSize">
 
-    <VideoView
-        android:id="@+id/video"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/video_description"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:src="@drawable/youtube" />
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/medium_spacing"
+            android:layout_marginBottom="@dimen/medium_spacing"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/image_description"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/youtube" />
 
-    <ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
-        android:backgroundTint="@color/transparent"
-        android:contentDescription="@string/back"
-        android:src="@drawable/ic_back_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <VideoView
+            android:id="@+id/video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/video_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/youtube" />
 
-    <ImageButton
-        android:id="@+id/playAudio"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
-        android:layout_marginStart="@dimen/common_spacing"
-        android:contentDescription="@string/play_audio"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat="@drawable/ic_play_audio_24" />
+        <ImageButton
+            android:id="@+id/playAudio"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:contentDescription="@string/play_audio"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_play_audio_24" />
 
-    <com.google.android.material.slider.Slider
-        android:id="@+id/audioSlider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/common_spacing"
-        android:layout_marginStart="@dimen/medium_spacing"
-        android:contentDescription="@string/play_audio_progress"
-        android:value="0.0"
-        android:valueFrom="0.0"
-        android:valueTo="100.0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:thumbColor="@color/ext_gray"
-        app:tickColorInactive="@color/ext_gray"
-        app:trackColorActive="@color/ext_gray"
-        app:trackColorInactive="@color/ext_gray" />
+        <com.google.android.material.slider.Slider
+            android:id="@+id/audioSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:layout_marginEnd="@dimen/common_spacing"
+            android:contentDescription="@string/play_audio_progress"
+            android:value="0.0"
+            android:valueFrom="0.0"
+            android:valueTo="100.0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:thumbColor="@color/ext_gray"
+            app:tickColorInactive="@color/ext_gray"
+            app:trackColorActive="@color/ext_gray"
+            app:trackColorInactive="@color/ext_gray" />
 
-    <TextView
-        android:id="@+id/curTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/common_spacing"
-        android:layout_marginBottom="@dimen/avatar_size"
-        android:textColor="@color/ext_gray"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/audioSlider"
-        app:layout_constraintStart_toStartOf="@id/audioSlider"
-        app:layout_constraintTop_toTopOf="@id/audioSlider" />
+        <TextView
+            android:id="@+id/curTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:layout_marginBottom="@dimen/avatar_size"
+            android:textColor="@color/ext_gray"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/audioSlider"
+            app:layout_constraintStart_toStartOf="@id/audioSlider"
+            app:layout_constraintTop_toTopOf="@id/audioSlider" />
 
-    <TextView
-        android:id="@+id/duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/common_spacing"
-        android:layout_marginBottom="@dimen/avatar_size"
-        android:textColor="@color/ext_gray"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/audioSlider"
-        app:layout_constraintEnd_toEndOf="@id/audioSlider"
-        app:layout_constraintTop_toTopOf="@id/audioSlider" />
+        <TextView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/common_spacing"
+            android:layout_marginBottom="@dimen/avatar_size"
+            android:textColor="@color/ext_gray"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/audioSlider"
+            app:layout_constraintEnd_toEndOf="@id/audioSlider"
+            app:layout_constraintTop_toTopOf="@id/audioSlider" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/audioGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="playAudio,audioSlider,curTime,duration" />
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/audioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="playAudio,audioSlider,curTime,duration" />
 
-    <TextView
-        android:id="@+id/mediaPublishedBy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/common_spacing"
-        android:layout_marginTop="@dimen/size_8dp"
-        android:text=""
-        android:textColor="@color/ext_gray"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@id/backButton"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Published by jokerman" />
+        <TextView
+            android:id="@+id/mediaPublishedBy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:layout_marginTop="@dimen/size_8dp"
+            android:layout_marginEnd="@dimen/common_spacing"
+            android:text=""
+            android:textColor="@color/ext_gray"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Published by jokerman" />
 
-    <TextView
-        android:id="@+id/mediaPublishedWhen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/common_spacing"
-        android:text=""
-        android:textColor="@color/ext_gray"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@id/backButton"
-        app:layout_constraintTop_toBottomOf="@id/mediaPublishedBy"
-        tools:text="16.09.2023 21:21" />
+        <TextView
+            android:id="@+id/mediaPublishedWhen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/common_spacing"
+            android:layout_marginEnd="@dimen/common_spacing"
+            android:text=""
+            android:textColor="@color/ext_gray"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mediaPublishedBy"
+            tools:text="16.09.2023 21:21" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

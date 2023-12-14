@@ -23,12 +23,6 @@
         <action
             android:id="@+id/action_feedFragment_to_postAttachmentFragment"
             app:destination="@id/postAttachmentFragment" />
-        <action
-            android:id="@+id/action_feedFragment_to_mentionsFragment"
-            app:destination="@id/mentionsFragment" />
-        <action
-            android:id="@+id/action_feedFragment_to_likeOwnersFragment"
-            app:destination="@id/likeOwnersFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -77,35 +71,10 @@
             app:destination="@id/profileFragment" />
     </fragment>
     <fragment
-        android:id="@+id/mentionsFragment"
-        android:name="ru.netology.nmedia.ui.MentionsFragment"
-        android:label="MentionsFragment" />
-    <fragment
-        android:id="@+id/likeOwnersFragment"
-        android:name="ru.netology.nmedia.ui.LikeOwnersFragment"
-        android:label="LikeOwnersFragment" />
-    <fragment
-        android:id="@+id/participantsFragment"
-        android:name="ru.netology.nmedia.ui.ParticipantsFragment"
-        android:label="ParticipantsFragment" />
-    <fragment
-        android:id="@+id/speakersFragment"
-        android:name="ru.netology.nmedia.ui.SpeakersFragment"
-        android:label="SpeakersFragment" />
-    <fragment
         android:id="@+id/eventsFeedFragment"
         android:name="ru.netology.nmedia.ui.EventsFeedFragment"
         android:label="fragment_events_feed"
         tools:layout="@layout/fragment_events_feed" >
-        <action
-            android:id="@+id/action_eventsFeedFragment_to_participantsFragment"
-            app:destination="@id/participantsFragment" />
-        <action
-            android:id="@+id/action_eventsFeedFragment_to_speakersFragment"
-            app:destination="@id/speakersFragment" />
-        <action
-            android:id="@+id/action_eventsFeedFragment_to_likeOwnersFragment"
-            app:destination="@id/likeOwnersFragment" />
         <action
             android:id="@+id/action_eventsFeedFragment_to_postAttachmentFragment"
             app:destination="@id/postAttachmentFragment" />
@@ -126,12 +95,6 @@
         <action
             android:id="@+id/action_profileFragment_to_postAttachmentFragment"
             app:destination="@id/postAttachmentFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_mentionsFragment"
-            app:destination="@id/mentionsFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_likeOwnersFragment"
-            app:destination="@id/likeOwnersFragment" />
         <action
             android:id="@+id/action_profileFragment_to_jobFragment"
             app:destination="@id/jobFragment" />

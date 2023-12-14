@@ -129,7 +129,7 @@ class PostViewHolder(
             }
 
             favorite.setOnClickListener {
-                //onInteractionListener.onLike(post)
+                onInteractionListener.onLike(post)
             }
 
             likeCaption.setOnClickListener {

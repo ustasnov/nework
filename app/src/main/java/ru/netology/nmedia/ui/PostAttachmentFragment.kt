@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -25,12 +26,9 @@ import kotlin.concurrent.timerTask
 @AndroidEntryPoint
 class PostAttachmentFragment : Fragment() {
     private val observer = MediaLifecycleObserver()
-
     private var prepared = false
     private var timer: Timer? = null
     private var playMode = false
-    //private var mp: MediaPlayer? = null
-    //private var mediaController: MediaController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +36,13 @@ class PostAttachmentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentPostAttachmentBinding.inflate(inflater, container, false)
+
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.hide()
+
+        binding.topAppBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
         lifecycle.addObserver(observer)
 
@@ -61,10 +66,6 @@ class PostAttachmentFragment : Fragment() {
 
         binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
 
-        binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
         binding.playAudio.setOnClickListener {
             when (attachmentType) {
                 "audio" -> if (!playMode) {
@@ -85,23 +86,6 @@ class PostAttachmentFragment : Fragment() {
                     binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
                     observer.pause()
                 }
-                /*
-                "video" -> {
-                    if (playMode) {
-                        //mp?.pause()
-                        binding.video.pause()
-                        playMode = false
-                        binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
-                    } else {
-                        binding.photo.visibility = View.GONE
-                        binding.video.visibility = View.VISIBLE
-                        //mp?.start()
-                        binding.video.start()
-                        setVideoProgress(binding, binding.video)
-                        binding.playAudio.setImageResource(R.drawable.ic_pause_audio_24)
-                    }
-                }
-                 */
 
                 else -> Unit
             }
@@ -144,43 +128,8 @@ class PostAttachmentFragment : Fragment() {
         )
     }
 
-
-    /*
-    private fun setVideoProgress(
-        binding: FragmentPostAttachmentBinding,
-        videoView: VideoView
-    ) {
-        if (timer != null) {
-            timer?.cancel()
-            timer = null
-        }
-        timer = Timer()
-        timer?.scheduleAtFixedRate(
-            timerTask {
-                Handler(Looper.getMainLooper()).post {
-                    val isPlaying = videoView.isPlaying
-                    if (isPlaying) {
-                        playMode = true
-                        binding.audioSlider.valueTo = videoView.duration.toFloat()
-                        binding.audioSlider.value = videoView.currentPosition.toFloat()
-                        binding.curTime.text = convertToMMSS(videoView.currentPosition)
-                        binding.duration.text = convertToMMSS(videoView.duration)
-                    } else if (playMode) {
-                        playMode = false
-                        binding.audioSlider.value = 0f
-                        binding.curTime.text = getString(R.string.start_time)
-                        binding.playAudio.setImageResource(R.drawable.ic_play_audio_24)
-                        timer?.cancel()
-                        timer = null
-                    }
-                }
-            }, 1000, 1000
-        )
-    }
-     */
-
     private fun listenToAudio(binding: FragmentPostAttachmentBinding, url: String) {
-        requireActivity().title = getString(R.string.audio)
+        binding.topAppBar.title = getString(R.string.audio)
         binding.photo.visibility = View.VISIBLE
         binding.video.visibility = View.GONE
         binding.audioGroup.visibility = View.VISIBLE
@@ -189,7 +138,7 @@ class PostAttachmentFragment : Fragment() {
     }
 
     private fun watchVideo(binding: FragmentPostAttachmentBinding, url: String) {
-        requireActivity().title = getString(R.string.video)
+        binding.topAppBar.title = getString(R.string.video)
         binding.video.apply {
             visibility = View.VISIBLE
             val mediaController = MediaController(this.context)
@@ -207,7 +156,7 @@ class PostAttachmentFragment : Fragment() {
     }
 
     private fun seePicture(binding: FragmentPostAttachmentBinding, url: String) {
-        requireActivity().title = getString(R.string.picture)
+        binding.topAppBar.title = getString(R.string.picture)
         binding.photo.visibility = View.VISIBLE
         binding.audioGroup.visibility = View.GONE
         binding.video.visibility = View.GONE
@@ -226,6 +175,8 @@ class PostAttachmentFragment : Fragment() {
             timer?.cancel()
             timer = null
         }
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.show()
     }
 
     companion object {
