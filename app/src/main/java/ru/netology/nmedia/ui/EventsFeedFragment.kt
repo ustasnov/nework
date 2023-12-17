@@ -23,7 +23,6 @@ import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentEventsFeedBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Event
-import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
@@ -51,7 +50,7 @@ class EventsFeedFragment : Fragment() {
     ): View {
         val binding = FragmentEventsFeedBinding.inflate(inflater, container, false)
 
-        requireActivity().setTitle(getString(R.string.events))
+        requireActivity().title = getString(R.string.events)
 
         val adapter = EventsAdapter(object : OnInteractionEventListener {
             override fun onLike(event: Event) {
@@ -82,29 +81,6 @@ class EventsFeedFragment : Fragment() {
                 }
             }
 
-            /*
-            override fun onShare(post: Post) {
-                if (authViewModel.isAuthorized) {
-                    viewModel.shareById(post.id)
-                    val intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, post.content)
-                        type = "text/plain"
-                    }
-                    val shareIntent = Intent.createChooser(intent, getString(R.string.share_post))
-                    startActivity(shareIntent)
-                } else {
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.authorization_required),
-                        Snackbar.LENGTH_LONG
-                    )
-                        .setAction(R.string.login) { findNavController().navigate(R.id.authFragment) }
-                        .show()
-                }
-            }
-             */
-
             override fun onRemove(event: Event) {
                 viewModel.removeById(event.id)
             }
@@ -112,7 +88,13 @@ class EventsFeedFragment : Fragment() {
             override fun onEdit(event: Event) {
                 viewModel.edit(event)
                 if (event.attachment != null) {
-                    viewModel.setMedia(MediaModel(Uri.parse(event.attachment!!.url), null, event.attachment?.type))
+                    viewModel.setMedia(
+                        MediaModel(
+                            Uri.parse(event.attachment!!.url),
+                            null,
+                            event.attachment?.type
+                        )
+                    )
                 }
                 findNavController().navigate(
                     R.id.action_eventsFeedFragment_to_newEventFragment
@@ -123,35 +105,26 @@ class EventsFeedFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_eventsFeedFragment_to_postAttachmentFragment,
                     Bundle().apply {
-                        urlArg = "${event.attachment!!.url}"
+                        urlArg = event.attachment!!.url
                         typeArg = when (event.attachment?.type) {
                             AttachmentType.IMAGE -> "image"
                             AttachmentType.AUDIO -> "audio"
                             AttachmentType.VIDEO -> "video"
                             else -> ""
                         }
-                        autorArg = "${event.author}"
-                        publishedArg = "${event.published}"
+                        autorArg = event.author
+                        publishedArg = event.published
                     })
             }
 
-            /*
-            override fun onViewPost(event: Event) {
-                viewModel.viewById(event)
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_postFragment,
-                    Bundle().apply {
-                        idArg = event.id
-                    }
-                )
-            }
-
-             */
-
             override fun onViewLikeOwners(event: Event) {
-                if (event.likeOwnerIds.size > 0) {
+                if (event.likeOwnerIds.isNotEmpty()) {
                     userViewModel.getEventLikeOwners(event.id)
-                    userViewModel.setForSelection(getString(R.string.like_title),false,"EventLikeOwners")
+                    userViewModel.setForSelection(
+                        getString(R.string.like_title),
+                        false,
+                        "EventLikeOwners"
+                    )
                     findNavController().navigate(
                         R.id.usersFragment
                     )
@@ -159,9 +132,13 @@ class EventsFeedFragment : Fragment() {
             }
 
             override fun onViewParticipants(event: Event) {
-                if (event.participantsIds.size > 0) {
+                if (event.participantsIds.isNotEmpty()) {
                     userViewModel.getParticipants(event.id)
-                    userViewModel.setForSelection(getString(R.string.participants),false,"Participants")
+                    userViewModel.setForSelection(
+                        getString(R.string.participants),
+                        false,
+                        "Participants"
+                    )
                     findNavController().navigate(
                         R.id.usersFragment
                     )
@@ -169,7 +146,7 @@ class EventsFeedFragment : Fragment() {
             }
 
             override fun onViewSpeakers(event: Event) {
-                if (event.speakerIds.size > 0) {
+                if (event.speakerIds.isNotEmpty()) {
                     userViewModel.getSpeakers(event.id)
                     userViewModel.setForSelection(getString(R.string.speakers), false, "Speakers")
                     findNavController().navigate(
@@ -197,6 +174,19 @@ class EventsFeedFragment : Fragment() {
                                 state.append is LoadState.Loading
                 }
             }
+        }
+
+        viewModel.dataState.observe(viewLifecycleOwner) {
+            if (it.refreshing || it.loading) {
+                binding.swiperefresh.visibility = View.VISIBLE
+                binding.swiperefresh.isRefreshing = true
+            } else {
+                binding.swiperefresh.isRefreshing = false
+            }
+        }
+
+        viewModel.refreshList.observe(viewLifecycleOwner) {
+            viewModel.refresh()
         }
 
         binding.swiperefresh.setOnRefreshListener(adapter::refresh)

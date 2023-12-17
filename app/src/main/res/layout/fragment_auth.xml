@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginField"
@@ -61,28 +61,28 @@
         android:id="@+id/emptyField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/big_spacing"
         android:layout_marginVertical="@dimen/common_spacing"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordField"
+        android:paddingHorizontal="@dimen/big_spacing"
+        android:text="@string/fields_must_be_filled"
         android:textColor="@color/red"
         android:visibility="gone"
-        android:text="@string/fields_must_be_filled"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/passwordField" />
 
     <TextView
         android:id="@+id/incorrect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/big_spacing"
         android:layout_marginVertical="@dimen/common_spacing"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordField"
+        android:paddingHorizontal="@dimen/big_spacing"
+        android:text="@string/authorize_error"
         android:textColor="@color/red"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:text="@string/authorize_error"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/passwordField"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
@@ -107,11 +107,11 @@
         android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:layout_marginVertical="@dimen/common_spacing"
-        app:layout_constraintTop_toBottomOf="@id/authorize"/>
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/authorize"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

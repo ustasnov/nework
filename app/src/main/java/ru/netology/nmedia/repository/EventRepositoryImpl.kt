@@ -9,12 +9,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -23,13 +18,10 @@ import ru.netology.nmedia.dao.EventDao
 import ru.netology.nmedia.dao.EventRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Attachment
-import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Event
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.entity.EventWithLists
-import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.error.ApiError
-import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
 import ru.netology.nmedia.model.MediaModel
 import java.io.IOException
@@ -65,29 +57,20 @@ class EventRepositoryImpl @Inject constructor(
             it.map(EventWithLists::toDto)
         }
 
-    override fun getNewer(id: Long): Flow<Int> = flow {
-        while (true) {
-            delay(10_000)
-
-            val response = apiService.getNewerEvents(id)
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-            val events = response.body().orEmpty()
-            //eventDao.insert(events.toEntity())
-            eventDao.insertEventWithLists(events.map { EventWithLists.fromDto(it) })
-            emit(events.size)
-        }
-    }.catch { e -> throw AppError.from(e) }
-        .flowOn(Dispatchers.Default)
-
     override suspend fun getAll() {
-        val response = apiService.getAllEvents()
-        if (!response.isSuccessful) {
-            throw RuntimeException(response.message())
+        try {
+            val response = apiService.getAllEvents()
+            if (!response.isSuccessful) {
+                throw RuntimeException(response.message())
+            }
+            val events = response.body() ?: throw RuntimeException("body is null")
+            eventDao.clearWithLists()
+            eventDao.insertEventWithLists(events.map { EventWithLists.fromDto(it) })
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw ru.netology.nmedia.error.UnknownError
         }
-        val events = response.body() ?: throw RuntimeException("body is null")
-        eventDao.insertEventWithLists(events.map { EventWithLists.fromDto(it) })
     }
 
     override suspend fun likeById(id: Long) {
@@ -242,4 +225,5 @@ class EventRepositoryImpl @Inject constructor(
             throw ru.netology.nmedia.error.UnknownError
         }
     }
+
 }

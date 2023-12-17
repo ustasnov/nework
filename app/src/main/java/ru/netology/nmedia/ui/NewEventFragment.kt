@@ -74,7 +74,6 @@ class NewEventFragment : Fragment() {
 
         autoCompleteTextView = binding.autoCompleteTextView
 
-        //binding.topAppBar.title = getString(R.string.mentors)
         val cal = Calendar.getInstance()
 
         val timePicker =
@@ -94,25 +93,11 @@ class NewEventFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        val adapter = UsersAdapter(object : OnUsersInteractionListener {
-            override fun onViewUser(user: User) {
-                /*
-                if (enableSelection) {
-                    viewModel.setChecked(user.id, !user.checked)
-                } else {
-                    profileViewModel.setPostSource(PostsSource(user.id, SourceType.WALL))
-                    findNavController().navigate(
-                        R.id.action_usersFragment_to_profileFragment
-                    )
-                }
-                */
-            }
-        })
+        val adapter = UsersAdapter(object : OnUsersInteractionListener {})
 
         viewModel.edited.observe(viewLifecycleOwner) {
             val isNewEvent = it.id == 0L
 
-            //requireActivity().title = getString(R.string.post_title)
             binding.topAppBar.title = getString(
                 if (isNewEvent) R.string.new_event else R.string.edit_event
             )
@@ -139,7 +124,7 @@ class NewEventFragment : Fragment() {
 
                 if (userViewModel.checkList.value == null) {
                     val speakersList: MutableList<User> = mutableListOf()
-                    it.speakerIds.forEach() { id ->
+                    it.speakerIds.forEach { id ->
                         val speaker = it.users[id.toString()]
                         speakersList.add(
                             User(
@@ -176,15 +161,6 @@ class NewEventFragment : Fragment() {
 
         binding.content.requestFocus()
         binding.mentionsList.adapter = adapter
-
-        /*
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.new_post_menu, menu)
-            }
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
-         */
-
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.save -> {
@@ -245,7 +221,6 @@ class NewEventFragment : Fragment() {
                 else -> false
             }
         }
-        //, viewLifecycleOwner)
 
         viewModel.eventCreated.observe(viewLifecycleOwner) {
             viewModel.newEventCash = null
@@ -274,7 +249,7 @@ class NewEventFragment : Fragment() {
             )
         }
 
-        binding.eventDate.editText?.setOnClickListener() {
+        binding.eventDate.editText?.setOnClickListener {
             AndroidUtils.showCalendar(
                 requireContext(), cal, it,
                 true, AndroidUtils.getDatePickerDialogListener(it, cal)
@@ -287,7 +262,7 @@ class NewEventFragment : Fragment() {
             }
         }
 
-        binding.eventTime.editText?.setOnClickListener() {
+        binding.eventTime.editText?.setOnClickListener {
             timePicker.show(childFragmentManager, "tag")
         }
 
@@ -300,7 +275,8 @@ class NewEventFragment : Fragment() {
             if (timePicker.minute < 10) {
                 minuteStr = "0$minuteStr"
             }
-            binding.eventTime.editText?.setText("$hourStr:$minuteStr")
+            val hm = "$hourStr:$minuteStr"
+            binding.eventTime.editText?.setText(hm)
         }
 
         binding.clear.setOnClickListener {

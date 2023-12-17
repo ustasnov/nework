@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="nmedia">NeWork!</string>
+    <string name="nmedia">NeWork</string>
     <string name="description_post_author_avatar">Аватар Нетологии</string>
     <string name="description_post_menu">Меню поста</string>
     <string name="press_if_like">Нажми, если понравилось</string>
@@ -14,7 +14,7 @@
     <string name="cancel_post_text_changes">Отменить изменения</string>
     <string name="view_move_description">Просмотр видео</string>
     <string name="hello_blank_fragment">Пустой фрагмент</string>
-    <string name="authorName">Угаров Станислав</string>
+    <string name="authorName">Угаров Станислав Иванович</string>
     <string name="channel_remote_name">Уведомления с сервера</string>
     <string name="channel_remote_description">Уведомления с удалённого сервера</string>
     <string name="notification_user_liked">%1$s поставил лайк посту %2$s</string>
@@ -108,4 +108,13 @@
     <string name="event_type">Формат проведения</string>
     <string name="online">В сети</string>
     <string name="offline">Автономно</string>
+    <string name="about">О программе</string>
+    <string name="about_text">Дипломная работа\\\\nСтудента группы AN-37\\\\nУгарова Станислава</string>
+    <string name="ok">OK</string>
+    <string name="diplom_work">Дипломная работа</string>
+    <string name="student">студента группы AN-37</string>
+    <string name="university">Университета \"Нетология\"</string>
+    <string name="course">по курсу Android разработчик</string>
+    <string name="fio">Угарова Станислава Ивановича</string>
+    <string name="authorize_title">Авторизация</string>
 </resources>

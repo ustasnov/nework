@@ -61,7 +61,3 @@ data class WallEntity(
 }
 
 fun List<WallEntity>.toDto(): List<Post> = map(WallEntity::toDto)
-fun List<Post>.toWallEntity(): List<WallEntity> = map {
-    WallEntity.fromDto(it)
-}
-

@@ -15,7 +15,6 @@ import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.autorArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.publishedArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.typeArg
 import ru.netology.nmedia.ui.PostAttachmentFragment.Companion.urlArg
-import ru.netology.nmedia.ui.PostFragment.Companion.idArg
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.WallPostsAdapter
 import ru.netology.nmedia.auth.AppAuth
@@ -34,9 +33,9 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class WallFragment : Fragment() {
-    val viewModel: WallViewModel by activityViewModels()
-    val postViewModel: PostViewModel by activityViewModels()
-    val userViewModel: UserViewModel by activityViewModels()
+    private val viewModel: WallViewModel by activityViewModels()
+    private val postViewModel: PostViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
     @Inject
@@ -90,31 +89,20 @@ class WallFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_profileFragment_to_postAttachmentFragment,
                     Bundle().apply {
-                        //textArg = "${BuildConfig.BASE_URL}media/${post.attachment!!.url}"
-                        urlArg = "${post.attachment!!.url}"
+                        urlArg = post.attachment!!.url
                         typeArg = when (post.attachment?.type) {
                             AttachmentType.IMAGE -> "image"
                             AttachmentType.AUDIO -> "audio"
                             AttachmentType.VIDEO -> "video"
                             else -> ""
                         }
-                        autorArg = "${post.author}"
-                        publishedArg = "${post.published}"
+                        autorArg = post.author
+                        publishedArg = post.published
                     })
             }
 
-            override fun onViewPost(post: Post) {
-                postViewModel.viewById(post)
-                findNavController().navigate(
-                    R.id.action_profileFragment_to_postFragment,
-                    Bundle().apply {
-                        idArg = post.id
-                    }
-                )
-            }
-
             override fun onViewLikeOwners(post: Post) {
-                if (post.likeOwnerIds.size > 0) {
+                if (post.likeOwnerIds.isNotEmpty()) {
                     userViewModel.getLikeOwners(post.id)
                     userViewModel.setForSelection(
                         getString(R.string.like_title),
@@ -128,15 +116,13 @@ class WallFragment : Fragment() {
             }
 
             override fun onViewMentions(post: Post) {
-                if (post.mentionIds.size > 0) {
+                if (post.mentionIds.isNotEmpty()) {
                     userViewModel.getMentions(post.id)
                     userViewModel.setForSelection(getString(R.string.mentors), false, "Mentions")
                     findNavController().navigate(
                         R.id.usersFragment
                     )
                 }
-
-
             }
         }, authViewModel.isAuthorized)
 
@@ -207,6 +193,5 @@ class WallFragment : Fragment() {
         @JvmStatic
         fun newInstance() = WallFragment()
     }
-
 
 }

@@ -3,7 +3,7 @@ package ru.netology.nmedia.error
 import java.io.IOException
 import java.sql.SQLException
 
-sealed class AppError(val code: Int, info: String): RuntimeException(info) {
+sealed class AppError(val code: Int, info: String) : RuntimeException(info) {
     companion object {
         fun from(e: Throwable): AppError = when (e) {
             is AppError -> e
@@ -13,10 +13,11 @@ sealed class AppError(val code: Int, info: String): RuntimeException(info) {
         }
     }
 }
-class ApiError(code: Int, message: String): AppError(code, message)
 
-object NetworkError: AppError(-1, "Network")
+class ApiError(code: Int, message: String) : AppError(code, message)
 
-object UnknownError: AppError(-1, "Unknown")
+object NetworkError : AppError(-1, "Network")
 
-object DbError: AppError(-1, "DbError")
+object UnknownError : AppError(-1, "Unknown")
+
+object DbError : AppError(-1, "DbError")

@@ -18,7 +18,7 @@ import javax.inject.Singleton
 class ApiModule {
 
     companion object {
-        private const val BASE_URL = "${BuildConfig.BASE_URL}api/";
+        private const val BASE_URL = "${BuildConfig.BASE_URL}api/"
     }
 
     @Provides
@@ -62,4 +62,5 @@ class ApiModule {
     fun provideApiService(
         retrofit: Retrofit
     ): ApiService = retrofit.create()
+
 }

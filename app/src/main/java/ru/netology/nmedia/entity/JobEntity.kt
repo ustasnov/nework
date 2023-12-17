@@ -37,6 +37,4 @@ data class JobEntity(
 }
 
 fun List<JobEntity>.toDto(): List<Job> = map(JobEntity::toDto)
-fun List<Job>.toEntity(): List<JobEntity> = map {
-    JobEntity.fromDto(it)
-}
+

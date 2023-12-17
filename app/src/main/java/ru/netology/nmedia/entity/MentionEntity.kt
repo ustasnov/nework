@@ -1,7 +1,6 @@
 package ru.netology.nmedia.entity
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.UserItem
 
 @Entity(primaryKeys = ["id", "parentId"])
@@ -30,6 +29,3 @@ data class MentionEntity(
 }
 
 fun List<MentionEntity>.toDto(): List<UserItem> = map(MentionEntity::toDto)
-fun List<UserItem>.toMentionsEntity(): List<MentionEntity> = map {
-    MentionEntity.fromDto(it)
-}

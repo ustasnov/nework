@@ -15,9 +15,7 @@ import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UserViewHolder
 import ru.netology.nmedia.adapter.WallAdapter
 import ru.netology.nmedia.databinding.FragmentProfileBinding
-import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.repository.SourceType
-import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.JobViewModel
 import ru.netology.nmedia.viewmodel.ProfileViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
@@ -25,11 +23,10 @@ import ru.netology.nmedia.viewmodel.WallViewModel
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
-    val userViewModel: UserViewModel by activityViewModels()
-    val jobViewModel: JobViewModel by activityViewModels()
-    val postViewModel: WallViewModel by activityViewModels()
-    val profileViewModel: ProfileViewModel  by activityViewModels()
-    private val authViewModel: AuthViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
+    private val jobViewModel: JobViewModel by activityViewModels()
+    private val postViewModel: WallViewModel by activityViewModels()
+    private val profileViewModel: ProfileViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,19 +41,18 @@ class ProfileFragment : Fragment() {
             getString(R.string.postsTitle)
         )
 
-        val viewHolder = UserViewHolder(binding.userFr, object : OnUsersInteractionListener{})
+        val viewHolder = UserViewHolder(binding.userFr, object : OnUsersInteractionListener {})
 
         userViewModel.currentUser.observe(viewLifecycleOwner) {
             if (it != null && it.id != 0L) {
                 val type = profileViewModel.sourceType.value
                 viewHolder.bind(it)
-                requireActivity().setTitle(
+                requireActivity().title =
                     if (type == SourceType.MYWALL) {
                         getString(R.string.my_profile)
                     } else {
                         getString(R.string.user_profile)
                     }
-                )
                 postViewModel.setPostSource(it.id, type!!)
                 jobViewModel.setPostSource(it.id, type)
             }

@@ -81,11 +81,11 @@ interface WallDao {
         removeById(id)
     }
 
-     @Query("DELETE FROM LikeOwnerEntity WHERE parentId = :id")
-     suspend fun removeLikeOwnersByParentId(id: Long)
+    @Query("DELETE FROM LikeOwnerEntity WHERE parentId = :id")
+    suspend fun removeLikeOwnersByParentId(id: Long)
 
-     @Query("DELETE FROM MentionEntity WHERE parentId = :id")
-     suspend fun removeMentionsByParentId(id: Long)
+    @Query("DELETE FROM MentionEntity WHERE parentId = :id")
+    suspend fun removeMentionsByParentId(id: Long)
 
     @Query("DELETE FROM WallEntity")
     suspend fun clear()

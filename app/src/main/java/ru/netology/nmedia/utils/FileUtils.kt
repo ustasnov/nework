@@ -10,11 +10,8 @@ import java.io.InputStream
 import java.io.OutputStream
 
 fun fileFromContentUri(context: Context, contentUri: Uri): File {
-    // Preparing Temp file name
     val fileExtension = getFileExtension(context, contentUri)
     val fileName = "temp_file" + if (fileExtension != null) ".$fileExtension" else ""
-
-    // Creating Temp file
     val tempFile = File(context.cacheDir, fileName)
     tempFile.createNewFile()
 

@@ -1,23 +1,23 @@
 package ru.netology.nmedia.repository
 
-import android.app.Application
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 import ru.netology.nmedia.api.ApiService
-import ru.netology.nmedia.dao.UserDao
-import ru.netology.nmedia.db.AppDb
-import ru.netology.nmedia.dto.User
-import ru.netology.nmedia.entity.UserEntity
-import kotlinx.coroutines.flow.*
 import ru.netology.nmedia.dao.EventLikeOwnerDao
 import ru.netology.nmedia.dao.LikeOwnerDao
 import ru.netology.nmedia.dao.MentionDao
 import ru.netology.nmedia.dao.ParticipantDao
 import ru.netology.nmedia.dao.SpeakerDao
+import ru.netology.nmedia.dao.UserDao
+import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.dto.UserItem
 import ru.netology.nmedia.entity.EventLikeOwnerEntity
 import ru.netology.nmedia.entity.LikeOwnerEntity
 import ru.netology.nmedia.entity.MentionEntity
 import ru.netology.nmedia.entity.ParticipantEntity
 import ru.netology.nmedia.entity.SpeakerEntity
+import ru.netology.nmedia.entity.UserEntity
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -72,9 +72,7 @@ class UserRepositoryImpl @Inject constructor(
         if (!response.isSuccessful) {
             throw RuntimeException(response.message())
         }
-        val user = response.body() ?: throw RuntimeException("body is null")
-        //println("From UserRepositoryImpl.getUser(): ${user}")
-        return user
+        return response.body() ?: throw RuntimeException("body is null")
     }
 
     override suspend fun setChecked(id: Long, choice: Boolean) {

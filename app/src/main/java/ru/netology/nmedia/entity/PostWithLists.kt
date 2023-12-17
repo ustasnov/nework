@@ -20,27 +20,28 @@ data class PostWithLists(
     val mentions: List<MentionEntity>
 ) {
     fun toDto() = post.toDto().copy(
-        likeOwnerIds = likeOwners.map{ it.id },
-        mentionIds = mentions.map{ it.id },
+        likeOwnerIds = likeOwners.map { it.id },
+        mentionIds = mentions.map { it.id },
         users = getPostUsers()
     )
 
-    fun getPostUsers(): Map<String, UserPreview> {
+    private fun getPostUsers(): Map<String, UserPreview> {
         val result: MutableMap<String, UserPreview> = mutableMapOf()
         likeOwners.forEach {
             val key = it.id.toString()
-            result.put(key, UserPreview(it.name, it.avatar))
+            result[key] = UserPreview(it.name, it.avatar)
         }
         mentions.forEach {
             val key = it.id.toString()
             if (!result.containsKey(key)) {
-                result.put(key, UserPreview(it.name, it.avatar))
+                result[key] = UserPreview(it.name, it.avatar)
             }
         }
-        return  result.toMap()
+        return result.toMap()
     }
+
     companion object {
-        fun fillLikeOwnersList(post: Post): List<LikeOwnerEntity> {
+        private fun fillLikeOwnersList(post: Post): List<LikeOwnerEntity> {
             val result: MutableList<LikeOwnerEntity> = mutableListOf()
             post.likeOwnerIds.forEach {
                 val key = it.toString()
@@ -53,7 +54,7 @@ data class PostWithLists(
             return result.toList()
         }
 
-        fun fillMentionsList(post: Post): List<MentionEntity> {
+        private fun fillMentionsList(post: Post): List<MentionEntity> {
             val result: MutableList<MentionEntity> = mutableListOf()
             post.mentionIds.forEach {
                 val key = it.toString()
@@ -75,8 +76,6 @@ data class PostWithLists(
         }
     }
 }
-
-fun List<PostWithLists>.toDtoWithLists(): List<Post> = map(PostWithLists::toDto)
 
 fun List<Post>.toEntityWithLists(): List<PostWithLists> = map {
     PostWithLists.fromDto(it)

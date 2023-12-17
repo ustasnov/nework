@@ -1,15 +1,14 @@
 package ru.netology.nmedia.repository
 
-import ru.netology.nmedia.dto.User
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.dto.UserItem
 
 interface UserRepository {
     var data: Flow<List<User>>
     var mentionsData: Flow<List<UserItem>>
     var likeOwnersData: Flow<List<UserItem>>
-    var eventLikeOwnersData:  Flow<List<UserItem>>
+    var eventLikeOwnersData: Flow<List<UserItem>>
     var participantsData: Flow<List<UserItem>>
     var speakersData: Flow<List<UserItem>>
 

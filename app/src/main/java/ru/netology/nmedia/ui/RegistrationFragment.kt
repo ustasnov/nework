@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import dagger.hilt.android.AndroidEntryPoint
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentRegistrationBinding
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.utils.AndroidUtils
@@ -49,6 +50,8 @@ class RegistrationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+
+        requireActivity().title = getString(R.string.register)
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.loading.isVisible = state.loading

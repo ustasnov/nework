@@ -1,10 +1,12 @@
 package ru.netology.nmedia.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuProvider
@@ -21,7 +23,6 @@ import ru.netology.nmedia.viewmodel.EventViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import ru.netology.nmedia.viewmodel.ProfileViewModel
 import ru.netology.nmedia.viewmodel.UserViewModel
-import ru.netology.nmedia.viewmodel.WallViewModel
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,63 +30,21 @@ class AppActivity : AppCompatActivity() {
     @Inject
     lateinit var appAuth: AppAuth
 
-    /*
-    @Inject
-    lateinit var googleApiAvailability: GoogleApiAvailability
-
-    @Inject
-    lateinit var firebaseMessaging: FirebaseMessaging
-     */
-
     private val viewModel: AuthViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
-    private val wallViewModel: WallViewModel by viewModels()
     private val eventViewModel: EventViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
 
+    @SuppressLint("InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityAppBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_24);
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu_24)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        /*
-        intent?.let {
-            if (it.action != Intent.ACTION_SEND) {
-                return@let
-            }
-
-            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
-            if (text.isNullOrBlank()) {
-                Snackbar.make(
-                    binding.root,
-                    R.string.error_empty_content,
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(android.R.string.ok) {
-                        finish()
-                    }
-                    .show()
-                return@let
-            }
-            findNavController(R.id.navigation).navigate(
-                R.id.action_feedFragment_to_newPostFragment
-            )
-        }
-         */
-
-        /*
-        checkGoogleApiAvailability()
-
-        requestNotificationsPermission()
-         */
-
-        //val viewModel by viewModels<AuthViewModel>()
 
         var oldMenuProvider: MenuProvider? = null
         viewModel.data.observe(this) {
@@ -112,7 +71,6 @@ class AppActivity : AppCompatActivity() {
                         }
 
                         R.id.auth -> {
-                            //AppAuth.getInstance().setToken(Token(5L, "x-token"))
                             findNavController(R.id.navigation).navigate(R.id.authFragment)
                             true
                         }
@@ -124,8 +82,8 @@ class AppActivity : AppCompatActivity() {
 
                         R.id.logout -> {
                             appAuth.clearAuth()
-                            postViewModel.refresh()
-                            eventViewModel.refresh()
+                            postViewModel.refreshList()
+                            eventViewModel.refreshList()
                             findNavController(R.id.navigation).navigate(R.id.feedFragment)
                             true
                         }
@@ -142,39 +100,26 @@ class AppActivity : AppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.posts -> {
-                    //Toast.makeText(this@AppActivity, "Posts", Toast.LENGTH_SHORT).show()
-                    findNavController(R.id.navigation).navigate(
-                        R.id.feedFragment
-                        /*,
-                        Bundle().apply {
-                        idArg = 0
-                        typeArg = "POSTS"
-                    }
-                    */
-                    )
+                    findNavController(R.id.navigation).navigate(R.id.feedFragment)
                 }
 
                 R.id.users -> {
                     userViewModel.setForSelection(getString(R.string.users), false, "Users")
-                    findNavController(R.id.navigation).navigate(
-                        R.id.usersFragment
-                        /*,
-                        Bundle().apply {
-                            idArg = -1
-                            typeArg = "all"
-                        }
-                         */
-                        )
+                    findNavController(R.id.navigation).navigate(R.id.usersFragment)
                 }
 
                 R.id.events -> {
-                    //Toast.makeText(this@AppActivity, "Events", Toast.LENGTH_SHORT).show()
                     findNavController(R.id.navigation).navigate(R.id.eventsFeedFragment)
                 }
 
                 R.id.profile -> {
                     if (viewModel.isAuthorized) {
-                        profileViewModel.setPostSource(PostsSource(viewModel.data.value!!.id, SourceType.MYWALL))
+                        profileViewModel.setPostSource(
+                            PostsSource(
+                                viewModel.data.value!!.id,
+                                SourceType.MYWALL
+                            )
+                        )
                         findNavController(R.id.navigation).navigate(
                             R.id.profileFragment
                         )
@@ -193,58 +138,21 @@ class AppActivity : AppCompatActivity() {
                             .show()
                     }
                 }
+
+                R.id.about -> {
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                    builder
+                        .setPositiveButton(R.string.ok) { _, _ ->
+                        }
+                        .setView(layoutInflater.inflate(R.layout.about_dialog, null))
+                    val dialog: AlertDialog = builder.create()
+                    dialog.show()
+                }
             }
             binding.drawer.closeDrawer(GravityCompat.START)
             true
         }
-
     }
-
-    /*
-    override fun onCreateContextMenu(
-        menu: ContextMenu?,
-        v: View?,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        menuInflater.inflate(R.menu.posts_menu, menu)
-    }
-    */
-
-    /*
-    private fun requestNotificationsPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return
-        }
-
-        val permission = Manifest.permission.POST_NOTIFICATIONS
-
-        if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
-            return
-        }
-
-        requestPermissions(arrayOf(permission), 1)
-    }
-
-    private fun checkGoogleApiAvailability() {
-        with(googleApiAvailability) {
-            val code = isGooglePlayServicesAvailable(this@AppActivity)
-            if (code == ConnectionResult.SUCCESS) {
-                return@with
-            }
-            if (isUserResolvableError(code)) {
-                getErrorDialog(this@AppActivity, code, 9000)?.show()
-                return
-            }
-            Toast.makeText(this@AppActivity, R.string.google_play_unavailable, Toast.LENGTH_LONG)
-                .show()
-        }
-
-        firebaseMessaging.token.addOnSuccessListener {
-            println(it)
-        }
-    }
-     */
 
 }
 

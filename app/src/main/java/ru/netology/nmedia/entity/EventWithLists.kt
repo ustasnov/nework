@@ -31,29 +31,29 @@ data class EventWithLists(
         users = getEventUsers()
     )
 
-    fun getEventUsers(): Map<String, UserPreview> {
+    private fun getEventUsers(): Map<String, UserPreview> {
         val result: MutableMap<String, UserPreview> = mutableMapOf()
         likeOwners.forEach {
             val key = it.id.toString()
-            result.put(key, UserPreview(it.name, it.avatar))
+            result[key] = UserPreview(it.name, it.avatar)
         }
         participants.forEach {
             val key = it.id.toString()
             if (!result.containsKey(key)) {
-                result.put(key, UserPreview(it.name, it.avatar))
+                result[key] = UserPreview(it.name, it.avatar)
             }
         }
         speakers.forEach {
             val key = it.id.toString()
             if (!result.containsKey(key)) {
-                result.put(key, UserPreview(it.name, it.avatar))
+                result[key] = UserPreview(it.name, it.avatar)
             }
         }
         return result.toMap()
     }
 
     companion object {
-        fun fillLikeOwnersList(event: Event): List<EventLikeOwnerEntity> {
+        private fun fillLikeOwnersList(event: Event): List<EventLikeOwnerEntity> {
             val result: MutableList<EventLikeOwnerEntity> = mutableListOf()
             event.likeOwnerIds.forEach {
                 val key = it.toString()
@@ -66,7 +66,7 @@ data class EventWithLists(
             return result.toList()
         }
 
-        fun fillParticipantsList(event: Event): List<ParticipantEntity> {
+        private fun fillParticipantsList(event: Event): List<ParticipantEntity> {
             val result: MutableList<ParticipantEntity> = mutableListOf()
             event.participantsIds.forEach {
                 val key = it.toString()
@@ -79,7 +79,7 @@ data class EventWithLists(
             return result.toList()
         }
 
-        fun fillSpeakersList(event: Event): List<SpeakerEntity> {
+        private fun fillSpeakersList(event: Event): List<SpeakerEntity> {
             val result: MutableList<SpeakerEntity> = mutableListOf()
             event.speakerIds.forEach {
                 val key = it.toString()
@@ -103,8 +103,6 @@ data class EventWithLists(
 
     }
 }
-
-fun List<EventWithLists>.toDtoWithLists(): List<Event> = map(EventWithLists::toDto)
 
 fun List<Event>.toEntityWithLists(): List<EventWithLists> = map {
     EventWithLists.fromDto(it)

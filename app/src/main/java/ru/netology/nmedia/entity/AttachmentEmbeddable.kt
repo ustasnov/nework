@@ -14,4 +14,5 @@ data class AttachmentEmbeddable(
             AttachmentEmbeddable(it.url, it.type)
         }
     }
+
 }

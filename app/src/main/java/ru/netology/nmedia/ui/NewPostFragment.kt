@@ -4,18 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
-import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -28,10 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnUsersInteractionListener
 import ru.netology.nmedia.adapter.UsersAdapter
-import ru.netology.nmedia.databinding.FragmentNewEventBinding
 import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.dto.AttachmentType
-import ru.netology.nmedia.dto.EventCash
 import ru.netology.nmedia.dto.PostCash
 import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.MediaModel
@@ -72,8 +65,6 @@ class NewPostFragment : Fragment() {
     ): View {
         val binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
-        //binding.topAppBar.title = getString(R.string.mentors)
-
         val activity = requireActivity() as AppCompatActivity
         activity.supportActionBar?.hide()
 
@@ -82,25 +73,11 @@ class NewPostFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        val adapter = UsersAdapter(object : OnUsersInteractionListener {
-            override fun onViewUser(user: User) {
-                /*
-                if (enableSelection) {
-                    viewModel.setChecked(user.id, !user.checked)
-                } else {
-                    profileViewModel.setPostSource(PostsSource(user.id, SourceType.WALL))
-                    findNavController().navigate(
-                        R.id.action_usersFragment_to_profileFragment
-                    )
-                }
-                */
-            }
-        })
+        val adapter = UsersAdapter(object : OnUsersInteractionListener{})
 
         viewModel.edited.observe(viewLifecycleOwner) {
             val isNewPost = it.id == 0L
 
-            //requireActivity().title = getString(R.string.post_title)
             binding.topAppBar.title = getString(
                 if (isNewPost) R.string.new_post else R.string.edit_post
             )
@@ -110,9 +87,7 @@ class NewPostFragment : Fragment() {
                     restoreFromCash(binding, viewModel.newPostCash!!)
                 } else {
                     viewModel.clearMedia()
-                    //viewModel.toggleNewPost(true)
                     wallViewModel.clearMedia()
-                    //wallViewModel.toggleNewPost(true)
                     val text = viewModel.getNewPostCont().value ?: ""
                     binding.content.editText?.setText(text)
                     binding.mentionsMaterialCardView.visibility = View.GONE
@@ -135,7 +110,6 @@ class NewPostFragment : Fragment() {
                         )
                     }
                     userViewModel.setCheckList(mentionsList.toList())
-                    //adapter.submitList(mentionsList.toList())
                     binding.mentionsMaterialCardView.visibility =
                         if (mentionsList.isEmpty()) View.GONE else View.VISIBLE
                 }
@@ -160,14 +134,6 @@ class NewPostFragment : Fragment() {
 
         binding.content.requestFocus()
         binding.mentionsList.adapter = adapter
-
-        /*
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.new_post_menu, menu)
-            }
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
-         */
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.save -> {
@@ -213,7 +179,6 @@ class NewPostFragment : Fragment() {
                     else -> false
                 }
         }
-        //, viewLifecycleOwner)
 
         viewModel.postCreated.observe(viewLifecycleOwner) {
             viewModel.newPostCash = null

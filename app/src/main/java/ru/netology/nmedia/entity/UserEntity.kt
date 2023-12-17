@@ -1,7 +1,6 @@
 package ru.netology.nmedia.entity
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import ru.netology.nmedia.dto.User
 
@@ -35,6 +34,3 @@ data class UserEntity(
 }
 
 fun List<UserEntity>.toDto(): List<User> = map(UserEntity::toDto)
-fun List<User>.toEntity(): List<UserEntity> = map {
-    UserEntity.fromDto(it)
-}

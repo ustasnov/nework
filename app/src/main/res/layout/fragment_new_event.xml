@@ -47,16 +47,16 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed" >
+                    app:layout_constraintVertical_chainStyle="packed">
 
                     <AutoCompleteTextView
                         android:id="@+id/autoCompleteTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:hint="@string/event_type"
                         android:inputType="none"
-                        android:text="@string/offline"
-                        android:hint="@string/event_type" />
+                        android:text="@string/offline" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -198,6 +198,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/common_spacing"
                     android:adjustViewBounds="true"
+                    android:contentDescription="@string/preview"
                     tools:srcCompat="@tools:sample/avatars[3]" />
 
                 <Button
@@ -227,6 +228,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/pick_photo"
             android:padding="@dimen/common_spacing"
             app:srcCompat="@drawable/ic_add_pic_24" />
 
@@ -235,6 +237,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/take_photo"
             android:padding="@dimen/common_spacing"
             app:srcCompat="@drawable/ic_add_photo_24" />
 
@@ -243,6 +246,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/pic_audio"
             android:padding="@dimen/common_spacing"
             app:srcCompat="@drawable/ic_audio_24" />
 
@@ -251,6 +255,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/pick_video"
             android:padding="@dimen/common_spacing"
             app:srcCompat="@drawable/ic_video_24" />
 
@@ -259,6 +264,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/pick_speakers"
             android:padding="@dimen/common_spacing"
             app:srcCompat="@drawable/ic_speakers_24" />
     </LinearLayout>

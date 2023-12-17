@@ -25,8 +25,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class JobsFeedFragment : Fragment() {
-    val viewModel: JobViewModel by activityViewModels()
-    val postViewModel: WallViewModel by activityViewModels()
+    private val viewModel: JobViewModel by activityViewModels()
+    private val postViewModel: WallViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
     @Inject
@@ -56,8 +56,6 @@ class JobsFeedFragment : Fragment() {
         }
 
         editEnabled = viewModel.postSource.value!!.sourceType == SourceType.MYWALL
-        //val ownerId = requireArguments().idArg
-        //val type = requireArguments().type
         viewModel.postSource.observe(viewLifecycleOwner) {
             if (it.authorId != null && it.authorId != 0L) {
                 //viewModel.clearJobs()

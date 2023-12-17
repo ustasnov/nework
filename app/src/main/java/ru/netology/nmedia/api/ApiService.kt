@@ -63,10 +63,16 @@ interface ApiService {
     suspend fun getLatestEvents(@Query("count") count: Int): Response<List<Event>>
 
     @GET("events/{id}/before")
-    suspend fun getBeforeEvents(@Path("id") id: Int, @Query("count") count: Int): Response<List<Event>>
+    suspend fun getBeforeEvents(
+        @Path("id") id: Int,
+        @Query("count") count: Int
+    ): Response<List<Event>>
 
     @GET("events/{id}/after")
-    suspend fun getAfterEvents(@Path("id") id: Int, @Query("count") count: Int): Response<List<Event>>
+    suspend fun getAfterEvents(
+        @Path("id") id: Int,
+        @Query("count") count: Int
+    ): Response<List<Event>>
 
     @POST("events")
     suspend fun saveEvent(@Body event: Event): Response<Event>
@@ -86,42 +92,15 @@ interface ApiService {
     @DELETE("events/{id}/participants")
     suspend fun unParticipantById(@Path("id") id: Long): Response<Event>
 
-    @GET("events/{id}/newer")
-    suspend fun getNewerEvents(@Path("id") id: Long): Response<List<Event>>
-
     // wall
 
     @GET("{author_id}/wall/")
     suspend fun getAllWallPosts(@Path("author_id") authorId: Long): Response<List<Post>>
 
-    @GET("{author_id}/wall/latest")
-    suspend fun getLatestWallPosts(@Path("author_id") authorId: Long, @Query("count") count: Int): Response<List<Post>>
-
-    @GET("{author_id}/wall/{post_id}/before")
-    suspend fun getBeforeWallPosts(@Path("author_id") authorId: Long, @Path("post_id") postId: Int, @Query("count") count: Int): Response<List<Post>>
-
-    @GET("{author_id}/wall/{post_id}/after")
-    suspend fun getAfterWallPosts(@Path("author_id") authorId: Long, @Path("post_id") postId: Int, @Query("count") count: Int): Response<List<Post>>
-
-    @GET("{author_id}/wall/{post_id}/newer")
-    suspend fun getNewerWallPosts(@Path("author_id") authorId: Long, @Path("post_id") postId: Int, @Query("count") count: Int): Response<List<Post>>
-
     // my wall
 
     @GET("my/wall")
     suspend fun getAllMyWallPosts(): Response<List<Post>>
-
-    @GET("my/wall/latest")
-    suspend fun getLatestMyWallPosts(@Query("count") count: Int): Response<List<Post>>
-
-    @GET("my/wall/{post_id}/before")
-    suspend fun getBeforeMyWallPosts(@Path("post_id") postId: Int, @Query("count") count: Int): Response<List<Post>>
-
-    @GET("my/wall/{post_id}/after")
-    suspend fun getAfterMyWallPosts(@Path("post_id") postId: Int, @Query("count") count: Int): Response<List<Post>>
-
-    @GET("my/wall/{post_id}/newer")
-    suspend fun getNewerMyWallPosts(@Path("post_id") postId: Int): Response<List<Post>>
 
     // jobs
 

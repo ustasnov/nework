@@ -6,17 +6,11 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.TypeConverter
 import kotlinx.coroutines.flow.Flow
-import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.entity.EventEntity
 import ru.netology.nmedia.entity.EventLikeOwnerEntity
 import ru.netology.nmedia.entity.EventWithLists
-import ru.netology.nmedia.entity.LikeOwnerEntity
-import ru.netology.nmedia.entity.MentionEntity
 import ru.netology.nmedia.entity.ParticipantEntity
-import ru.netology.nmedia.entity.PostEntity
-import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.entity.SpeakerEntity
 
 @Dao
@@ -136,5 +130,5 @@ interface EventDao {
     }
 
     @Query("SELECT COUNT(*) FROM EventEntity")
-    suspend fun countPosts(): Int
+    suspend fun countEvents(): Int
 }

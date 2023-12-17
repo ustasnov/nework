@@ -10,15 +10,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentAuthBinding
 import ru.netology.nmedia.utils.AndroidUtils
 import ru.netology.nmedia.viewmodel.AuthSignViewModel
+import ru.netology.nmedia.viewmodel.EventViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 @AndroidEntryPoint
 class AuthFragment : Fragment() {
     private val viewModel: AuthSignViewModel by activityViewModels()
     private val postViewModel: PostViewModel by activityViewModels()
+    private val eventViewModel: EventViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,14 +30,17 @@ class AuthFragment : Fragment() {
     ): View {
         val binding = FragmentAuthBinding.inflate(inflater, container, false)
 
+        requireActivity().title = getString(R.string.authorize_title)
+
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.loading.isVisible = state.loading
             binding.authorize.isVisible = !state.loading
             binding.incorrect.isVisible = state.error
             if (state.success) {
-                postViewModel.refresh()
                 viewModel.clean()
-                findNavController().navigateUp()
+                postViewModel.refreshList()
+                eventViewModel.refreshList()
+                findNavController().navigate(R.id.feedFragment)
             }
         }
 

@@ -20,8 +20,6 @@ interface OnInteractionListener {
     fun onLike(post: Post) {}
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
-    fun onPlayVideo(post: Post) {}
-    fun onViewPost(post: Post) {}
     fun onViewAttachment(post: Post) {}
     fun onViewLikeOwners(post: Post) {}
     fun onViewMentions(post: Post) {}
@@ -71,7 +69,7 @@ class PostViewHolder(
                 siteGroup.visibility = View.VISIBLE
             }
 
-            if (post.mentionIds.size > 0) {
+            if (post.mentionIds.isNotEmpty()) {
                 if (post.mentionedMe) {
                     ment.setIconTintResource(R.color.red)
                 } else {
@@ -91,7 +89,6 @@ class PostViewHolder(
             avatar.isVisible = !post.authorAvatar.isNullOrBlank()
             if (avatar.isVisible) {
                 Glide.with(avatar)
-                    //.load("${BuildConfig.BASE_URL}avatars/${post.authorAvatar}")
                     .load("${post.authorAvatar}")
                     .circleCrop()
                     .placeholder(R.drawable.ic_loading_100dp)
@@ -110,7 +107,6 @@ class PostViewHolder(
                 attachment.visibility = View.VISIBLE
                 if (post.attachment?.type !== AttachmentType.AUDIO) {
                     Glide.with(attachment)
-                        //.load("${BuildConfig.BASE_URL}media/${post.attachment?.url}")
                         .load("${post.attachment?.url}")
                         .placeholder(R.drawable.ic_loading_100dp)
                         .error(R.drawable.ic_error_100dp)
@@ -160,10 +156,6 @@ class PostViewHolder(
                         }
                     }
                 }.show()
-            }
-
-            root.setOnClickListener {
-                onInteractionListener.onViewPost(post)
             }
         }
     }

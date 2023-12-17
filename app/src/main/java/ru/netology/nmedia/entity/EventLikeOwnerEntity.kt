@@ -29,6 +29,3 @@ data class EventLikeOwnerEntity(
 }
 
 fun List<EventLikeOwnerEntity>.toDto(): List<UserItem> = map(EventLikeOwnerEntity::toDto)
-fun List<UserItem>.toEventLikeOwnersEntity(): List<EventLikeOwnerEntity> = map {
-    EventLikeOwnerEntity.fromDto(it)
-}

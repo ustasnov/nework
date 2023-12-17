@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardJobBinding
 import ru.netology.nmedia.dto.Job
-import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.utils.AndroidUtils.formatDate
 
 interface OnJobsInteractionListener {

@@ -15,15 +15,12 @@ import ru.netology.nmedia.databinding.CardEventBinding
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Event
 import ru.netology.nmedia.dto.EventType
-import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.utils.AndroidUtils
 
 interface OnInteractionEventListener {
     fun onLike(event: Event) {}
     fun onEdit(event: Event) {}
     fun onRemove(event: Event) {}
-    fun onPlayVideo(event: Event) {}
-    //fun onViewPost(event: Event) {}
     fun onViewAttachment(event: Event) {}
     fun onViewLikeOwners(event: Event) {}
     fun onViewParticipants(event: Event) {}
@@ -82,9 +79,9 @@ class EventViewHolder(
             } else {
                 eventType.text = context.getString(R.string.type_offline)
             }
-            eventDatetime.text= AndroidUtils.formatDate(event.datetime)
+            eventDatetime.text = AndroidUtils.formatDate(event.datetime)
 
-            if (event.participantsIds.size > 0) {
+            if (event.participantsIds.isNotEmpty()) {
                 if (participantMe.isChecked) {
                     participants.setIconTintResource(R.color.red)
                 } else {
@@ -96,7 +93,7 @@ class EventViewHolder(
                 participants.text = ""
             }
 
-            if (event.speakerIds.size > 0) {
+            if (event.speakerIds.isNotEmpty()) {
                 speakers.setIconTintResource(R.color.teal_700)
                 speakers.text = formatValue(event.speakerIds.size.toDouble())
             } else {
@@ -189,17 +186,12 @@ class EventViewHolder(
                                 onInteractionEventListener.onEdit(event)
                                 true
                             }
+
                             else -> false
                         }
                     }
                 }.show()
             }
-
-            /*
-            root.setOnClickListener {
-                onInteractionEventListener.onViewPost(event)
-            }
-             */
         }
     }
 }

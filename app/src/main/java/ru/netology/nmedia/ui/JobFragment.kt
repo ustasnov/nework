@@ -1,18 +1,12 @@
 package ru.netology.nmedia.ui
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -26,9 +20,7 @@ import ru.netology.nmedia.utils.AndroidUtils.getDatePickerDialogListener
 import ru.netology.nmedia.utils.AndroidUtils.showCalendar
 import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.JobViewModel
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 @AndroidEntryPoint
 class JobFragment : Fragment() {
@@ -37,7 +29,7 @@ class JobFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentJobBinding.inflate(inflater, container, false)
 
         val activity = requireActivity() as AppCompatActivity
@@ -75,7 +67,7 @@ class JobFragment : Fragment() {
                 )
             }
 
-            startDate.editText?.setOnClickListener() {
+            startDate.editText?.setOnClickListener {
                 showCalendar(
                     requireContext(), cal, it,
                     true, getDatePickerDialogListener(it, cal)
@@ -89,7 +81,7 @@ class JobFragment : Fragment() {
                 )
             }
 
-            finishDate.editText?.setOnClickListener() {
+            finishDate.editText?.setOnClickListener {
                 showCalendar(
                     requireContext(), cal, it,
                     true, getDatePickerDialogListener(it, cal)
@@ -113,10 +105,10 @@ class JobFragment : Fragment() {
                         ) {
 
                             startDateText = formatDateForDB(startDateText)
-                            if (finishDateText.isNotBlank()) {
-                                finishDateText = formatDateForDB(finishDateText)
+                            finishDateText = if (finishDateText.isNotBlank()) {
+                                formatDateForDB(finishDateText)
                             } else {
-                                finishDateText = ""
+                                ""
                             }
 
                             val newPost = viewModel.edited.value!!.copy(

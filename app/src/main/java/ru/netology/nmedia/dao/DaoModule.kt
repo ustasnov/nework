@@ -45,7 +45,4 @@ object DaoModule {
     @Provides
     fun provideWallDao(db: AppDb): WallDao = db.wallDao()
 
-    @Provides
-    fun provideWallRemoteKeyDao(db: AppDb): WallRemoteKeyDao = db.wallRemoteKeyDao()
-
 }

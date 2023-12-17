@@ -8,7 +8,6 @@ import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.model.MediaModel
 
 interface WallRepository {
-    //var data: Flow<PagingData<FeedItem>>
     var data: Flow<List<Post>>
     fun getNewer(id: Long): Flow<Int>
     suspend fun getAllWallPosts(authorId: Long)

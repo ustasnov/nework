@@ -2,23 +2,20 @@ package ru.netology.nmedia.utils
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.text.TextUtils.split
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 object AndroidUtils {
     fun hideKeyboard(view: View) {
         view.postDelayed({
-            val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }, 200)
     }
@@ -37,12 +34,22 @@ object AndroidUtils {
         return nativeDate.format(formatter)
     }
 
-    fun formatDateForDB(date: String, time: String = "T00:00:00", pattern: String = "yyyy-MM-dd'T'HH:mm:ss.000'Z'"): String {
+    fun formatDateForDB(
+        date: String,
+        time: String = "T00:00:00",
+        pattern: String = "yyyy-MM-dd'T'HH:mm:ss.000'Z'"
+    ): String {
         val dateStr = date.split(".").reversed().joinToString("-") + time
         return LocalDateTime.parse(dateStr).format(DateTimeFormatter.ofPattern(pattern))
     }
 
-    fun showCalendar(context: Context, cal: Calendar, view: View, hasFocus: Boolean, callback: DatePickerDialog.OnDateSetListener) {
+    fun showCalendar(
+        context: Context,
+        cal: Calendar,
+        view: View,
+        hasFocus: Boolean,
+        callback: DatePickerDialog.OnDateSetListener
+    ) {
         if (hasFocus) {
             hideKeyboard(view)
             DatePickerDialog(
@@ -54,7 +61,10 @@ object AndroidUtils {
         }
     }
 
-    fun getDatePickerDialogListener(control: View, cal: Calendar): DatePickerDialog.OnDateSetListener {
+    fun getDatePickerDialogListener(
+        control: View,
+        cal: Calendar
+    ): DatePickerDialog.OnDateSetListener {
         return DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, monthOfYear)

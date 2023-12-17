@@ -14,8 +14,6 @@ import ru.netology.nmedia.dto.ErrorType
 import ru.netology.nmedia.dto.Event
 import ru.netology.nmedia.dto.EventCash
 import ru.netology.nmedia.dto.EventType
-import ru.netology.nmedia.dto.FeedItem
-import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.MediaModel
 import ru.netology.nmedia.repository.EventRepository
@@ -43,8 +41,6 @@ val emptyEvent = Event(
     ownedByMe = false,
     users = mutableMapOf(),
 )
-
-
 
 @HiltViewModel
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
@@ -81,16 +77,6 @@ class EventViewModel @Inject constructor(
     val eventCreated: LiveData<Unit>
         get() = _eventCreated
 
-    private val _currentEventId = MutableLiveData<Long>()
-    val currentEventId: LiveData<Long>
-        get() = _currentEventId
-
-    private val _currentEvent =
-        MutableLiveData(emptyEvent.copy())
-
-    val currentEvent: LiveData<Event>
-        get() = _currentEvent
-
     var newEventCash: EventCash? = null
 
     private val _currentMediaType =
@@ -99,13 +85,14 @@ class EventViewModel @Inject constructor(
     val currentMediaType: LiveData<AttachmentType>
         get() = _currentMediaType
 
-    init {
-        //loadEvents()
-    }
+    private val _refreshList = SingleLiveEvent<Unit>()
+    val refreshList: LiveData<Unit>
+        get() = _refreshList
 
     fun loadEvents() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
+            repository.getAll()
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
@@ -115,10 +102,15 @@ class EventViewModel @Inject constructor(
     fun refresh() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
+            repository.getAll()
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
         }
+    }
+
+    fun refreshList() {
+        _refreshList.postValue(Unit)
     }
 
     fun save() = viewModelScope.launch {
@@ -139,16 +131,7 @@ class EventViewModel @Inject constructor(
     }
 
     fun edit(event: Event) {
-        //toggleNewEvent(false)
         _edited.value = event
-    }
-
-    fun changeContent(content: String) {
-        val text = content.trim()
-        if (_edited.value?.content == text) {
-            return
-        }
-        _edited.value = edited.value?.copy(content = text)
     }
 
     fun likeById(event: Event) = viewModelScope.launch {
@@ -173,11 +156,6 @@ class EventViewModel @Inject constructor(
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LIKE)
         }
-    }
-
-    fun viewById(event: Event) {
-        //toggleNewEvent(false)
-        _currentEvent.setValue(event)
     }
 
     fun removeById(id: Long) = viewModelScope.launch {

@@ -3,11 +3,10 @@ package ru.netology.nmedia.dao
 import androidx.paging.PagingSource
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import ru.netology.nmedia.dto.AttachmentType
-import ru.netology.nmedia.entity.PostEntity
-import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.entity.LikeOwnerEntity
 import ru.netology.nmedia.entity.MentionEntity
+import ru.netology.nmedia.entity.PostEntity
+import ru.netology.nmedia.entity.PostWithLists
 
 @Dao
 interface PostDao {

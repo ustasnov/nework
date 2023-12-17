@@ -4,13 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.dto.Event
-import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.model.MediaModel
 
 interface EventRepository {
     val data: Flow<PagingData<Event>>
-    fun getNewer(id: Long): Flow<Int>
     suspend fun getAll()
     suspend fun likeById(id: Long)
     suspend fun unlikeById(id: Long)

@@ -16,10 +16,10 @@ interface ParticipantDao {
     fun getParticipants(id: Long): Flow<List<ParticipantEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(ParticipantEntity: ParticipantEntity)
+    suspend fun insert(participantEntity: ParticipantEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(ParticipantEntity: List<ParticipantEntity>)
+    suspend fun insert(participantEntity: List<ParticipantEntity>)
 
     @Query("DELETE FROM ParticipantEntity WHERE id = :id")
     suspend fun removeById(id: Long)

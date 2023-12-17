@@ -58,7 +58,6 @@ class UsersFragment : Fragment() {
         binding.list.adapter = adapter
 
         viewModel.forSelection.observe(viewLifecycleOwner) {
-            //requireActivity().title = it.title
             enableSelection = it.choice
 
             if (enableSelection) {
@@ -68,8 +67,8 @@ class UsersFragment : Fragment() {
                     binding.topAppBar.setOnMenuItemClickListener { menuItem ->
                         when (menuItem.itemId) {
                             R.id.save -> {
-                                viewModel.setCheckList(viewModel.data.value!!.users.filter {
-                                    user -> user.checked
+                                viewModel.setCheckList(viewModel.data.value!!.users.filter { user ->
+                                    user.checked
                                 })
                                 findNavController().navigateUp()
                                 true
@@ -94,9 +93,27 @@ class UsersFragment : Fragment() {
 
             when (it.type) {
                 "Mentions" -> setObserverForDataType(binding, adapter, viewModel.mentionsData, it)
-                "LikeOwners" -> setObserverForDataType(binding, adapter, viewModel.likeOwnersData, it)
-                "EventLikeOwners" -> setObserverForDataType(binding, adapter, viewModel.eventLikeOwnersData, it)
-                "Participants" -> setObserverForDataType(binding, adapter, viewModel.participantsData, it)
+                "LikeOwners" -> setObserverForDataType(
+                    binding,
+                    adapter,
+                    viewModel.likeOwnersData,
+                    it
+                )
+
+                "EventLikeOwners" -> setObserverForDataType(
+                    binding,
+                    adapter,
+                    viewModel.eventLikeOwnersData,
+                    it
+                )
+
+                "Participants" -> setObserverForDataType(
+                    binding,
+                    adapter,
+                    viewModel.participantsData,
+                    it
+                )
+
                 "Speakers" -> setObserverForDataType(binding, adapter, viewModel.speakersData, it)
                 else -> {
                     viewModel.data.observe(viewLifecycleOwner) { userModel ->
@@ -142,7 +159,11 @@ class UsersFragment : Fragment() {
         return binding.root
     }
 
-    private fun setAppTopBar(binding: FragmentUsersBinding, usersSelectModel: UsersSelectModel, hideSearchField: Boolean = false) {
+    private fun setAppTopBar(
+        binding: FragmentUsersBinding,
+        usersSelectModel: UsersSelectModel,
+        hideSearchField: Boolean = false
+    ) {
         binding.topAppBar.visibility = View.VISIBLE
         binding.topAppBar.title = usersSelectModel.title
         val activity = requireActivity() as AppCompatActivity
@@ -158,10 +179,12 @@ class UsersFragment : Fragment() {
         }
     }
 
-    private fun setObserverForDataType(binding: FragmentUsersBinding,
-                                       adapter: UsersAdapter,
-                                       viewModelData: LiveData<UserItemModel>,
-                                       usersSelectModel: UsersSelectModel) {
+    private fun setObserverForDataType(
+        binding: FragmentUsersBinding,
+        adapter: UsersAdapter,
+        viewModelData: LiveData<UserItemModel>,
+        usersSelectModel: UsersSelectModel
+    ) {
         setAppTopBar(binding, usersSelectModel, true)
         viewModelData.observe(viewLifecycleOwner) { userItemModel ->
             val usersList = userItemModel.users.map { userItem ->

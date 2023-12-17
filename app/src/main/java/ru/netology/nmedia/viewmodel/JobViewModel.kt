@@ -45,20 +45,11 @@ class JobViewModel @Inject constructor(
     val jobCreated: LiveData<Unit>
         get() = _jobCreated
 
-    private val _currentJob = MutableLiveData(emptyJob.copy())
-    val currentJob: LiveData<Job>
-        get() = _currentJob
-
-    private val _currentUserId = MutableLiveData<Long>()
-    val currentUserId: LiveData<Long>
-        get() = _currentUserId
-
     private val _postSource = MutableLiveData(emptyPostSource.copy())
     val postSource: LiveData<PostsSource>
         get() = _postSource
 
     val edited = MutableLiveData(emptyJob)
-    var isNewJob = false
 
     init {
         clearJobs()
@@ -105,7 +96,6 @@ class JobViewModel @Inject constructor(
     fun loadUserJobs(userId: Long) = viewModelScope.launch {
         _dataState.value = FeedModelState(loading = true)
         try {
-            println("From viewModel.loadUserJobs: ${userId}")
             repository.getAllUserJobs(userId)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {

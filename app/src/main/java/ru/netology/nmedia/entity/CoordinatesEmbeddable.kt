@@ -13,4 +13,5 @@ data class CoordinatesEmbeddable(
             CoordinatesEmbeddable(it.lat, it.long)
         }
     }
+
 }

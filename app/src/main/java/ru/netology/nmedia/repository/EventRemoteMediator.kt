@@ -29,25 +29,17 @@ class EventRemoteMediator(
     ): MediatorResult {
         try {
             val response = when (loadType) {
-                /*
-                LoadType.REFRESH -> {
-                    val id = postRemoteKeyDao.max()
-                    if (id != null && !postDao.isEmpty()) {
-                        apiService.getAfter(id, state.config.pageSize)
-                        //apiService.getBefore(id, state.config.pageSize)
-                    } else {
-                        apiService.getLatest(state.config.initialLoadSize)
-                    }
-                }*/
                 LoadType.REFRESH -> {
                     apiService.getLatestEvents(state.config.initialLoadSize)
                 }
+
                 LoadType.PREPEND -> {
                     val id = eventRemoteKeyDao.max() ?: return MediatorResult.Success(
                         endOfPaginationReached = true
                     )
                     apiService.getAfterEvents(id, state.config.pageSize)
                 }
+
                 LoadType.APPEND -> {
                     val id = eventRemoteKeyDao.min() ?: return MediatorResult.Success(
                         endOfPaginationReached = true
@@ -68,17 +60,6 @@ class EventRemoteMediator(
             appDb.withTransaction {
                 when (loadType) {
                     LoadType.REFRESH -> {
-                        /*
-                        //postRemoteKeyDao.clear()
-                        if (body.isNotEmpty()) {
-                            postRemoteKeyDao.insert(
-                                PostRemoteKeyEntity(
-                                    type = PostRemoteKeyEntity.KeyType.BEFORE,
-                                    key = body.last().id,
-                                )
-                            )
-                        }
-                        */
                         eventRemoteKeyDao.clear()
                         eventRemoteKeyDao.insert(
                             listOf(
@@ -92,8 +73,8 @@ class EventRemoteMediator(
                                 ),
                             )
                         )
-                        //eventDao.clearWithLists()
                     }
+
                     LoadType.PREPEND -> {
                         if (body.isNotEmpty()) {
                             eventRemoteKeyDao.insert(
@@ -104,6 +85,7 @@ class EventRemoteMediator(
                             )
                         }
                     }
+
                     LoadType.APPEND -> {
                         if (body.isNotEmpty()) {
                             eventRemoteKeyDao.insert(
@@ -114,7 +96,6 @@ class EventRemoteMediator(
                             )
                         }
                     }
-                    //else -> Unit
                 }
 
                 eventDao.insertEventWithLists(body.toEntityWithLists())
@@ -124,4 +105,5 @@ class EventRemoteMediator(
             return MediatorResult.Error(e)
         }
     }
+
 }

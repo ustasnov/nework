@@ -8,10 +8,10 @@ import ru.netology.nmedia.dto.Job
 import ru.netology.nmedia.entity.JobEntity
 import javax.inject.Inject
 
-class JobRepositoryImpl@Inject constructor(
+class JobRepositoryImpl @Inject constructor(
     private val jobDao: JobDao,
     private val apiService: ApiService,
-): JobRepository {
+) : JobRepository {
     override var data: Flow<List<Job>> =
         jobDao.getAll().map { it.map(JobEntity::toDto) }
 
@@ -31,8 +31,8 @@ class JobRepositoryImpl@Inject constructor(
         if (!response.isSuccessful) {
             throw RuntimeException(response.message())
         }
-        val job = response.body() ?: throw RuntimeException("body is null")
-        jobDao.insert(JobEntity.fromDto(job))
+        val myJob = response.body() ?: throw RuntimeException("body is null")
+        jobDao.insert(JobEntity.fromDto(myJob))
     }
 
     override suspend fun removeByIdMyJob(jobId: Long) {
@@ -57,4 +57,5 @@ class JobRepositoryImpl@Inject constructor(
     override suspend fun clearJobs() {
         jobDao.clear()
     }
+
 }

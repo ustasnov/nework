@@ -117,11 +117,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:button="@drawable/sl_favorite_24"
         android:contentDescription="@string/press_if_like"
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        android:button="@drawable/sl_favorite_24"
         app:buttonTint="@color/color_favorite"
         app:layout_constraintEnd_toStartOf="@id/participants"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
@@ -145,11 +145,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:button="@drawable/sl_participant_24"
         android:contentDescription="@string/press_if_like"
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-        android:button="@drawable/sl_participant_24"
         app:buttonTint="@color/ext_gray"
         app:layout_constraintEnd_toStartOf="@id/speakers"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
@@ -179,7 +179,7 @@
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
         android:paddingLeft="@dimen/size_12dp"
-
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier1" />
 
@@ -305,6 +305,5 @@
         app:layout_constraintStart_toEndOf="@+id/typeCaption"
         app:layout_constraintTop_toTopOf="@+id/typeCaption"
         tools:text="в сети" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

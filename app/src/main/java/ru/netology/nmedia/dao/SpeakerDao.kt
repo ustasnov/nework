@@ -28,5 +28,5 @@ interface SpeakerDao {
     suspend fun clear()
 
     @Query("SELECT COUNT(*) FROM SpeakerEntity")
-    suspend fun countMentions(): Int
+    suspend fun countSpeakers(): Int
 }

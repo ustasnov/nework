@@ -19,11 +19,6 @@ data class Post(
     val users: Map<String, UserPreview> = mutableMapOf(),
 ) : FeedItem
 
-data class Ad(
-    override val id: Long,
-    val image: String,
-) : FeedItem
-
 enum class ErrorType {
     LOADING,
     SAVE,

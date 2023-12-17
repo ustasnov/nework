@@ -61,7 +61,7 @@ class WallViewHolder(
                 siteGroup.visibility = View.VISIBLE
             }
 
-            if (post.mentionIds.size > 0) {
+            if (post.mentionIds.isNotEmpty()) {
                 if (post.mentionedMe) {
                     ment.setIconTintResource(R.color.red)
                 } else {
@@ -151,10 +151,6 @@ class WallViewHolder(
                         }
                     }
                 }.show()
-            }
-
-            root.setOnClickListener {
-                onInteractionListener.onViewPost(post)
             }
         }
     }

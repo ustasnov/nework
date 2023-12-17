@@ -140,7 +140,7 @@
         android:contentDescription="@string/description_post_menu"
         android:minWidth="@dimen/avatar_size"
         android:minHeight="@dimen/avatar_size"
-        android:paddingLeft="@dimen/size_12dp"
+        android:paddingStart="@dimen/size_12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

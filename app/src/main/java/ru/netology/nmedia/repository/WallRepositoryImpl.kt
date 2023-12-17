@@ -18,7 +18,6 @@ import ru.netology.nmedia.dao.LikeOwnerDao
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.WallDao
 import ru.netology.nmedia.dto.Attachment
-import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.User
@@ -39,8 +38,6 @@ class WallRepositoryImpl @Inject constructor(
     private val postDao: PostDao,
     private val likeOwnerDao: LikeOwnerDao,
     private val apiService: ApiService,
-    //private val postRemoteKeyDao: WallRemoteKeyDao,
-    //appDb: AppDb,
 ) : WallRepository {
     private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
     private val key = "newWallPostContent"
@@ -147,7 +144,6 @@ class WallRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            //postDao.insert(PostEntity.fromDto(body))
             wallDao.insertPostWithLists(WallWithLists.fromDto(body))
             postDao.insertPostWithLists(PostWithLists.fromDto(body))
         } catch (e: IOException) {
@@ -207,17 +203,22 @@ class WallRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertLikeOwner(postId: Long, user: User) {
-        likeOwnerDao.insert(LikeOwnerEntity.fromDto(UserItem(
-            id = user.id,
-            parentId = postId,
-            name = user.name,
-            avatar = user.avatar)
-        ))
+        likeOwnerDao.insert(
+            LikeOwnerEntity.fromDto(
+                UserItem(
+                    id = user.id,
+                    parentId = postId,
+                    name = user.name,
+                    avatar = user.avatar
+                )
+            )
+        )
     }
 
     override suspend fun removeLikeOwner(postId: Long, userId: Long) {
         likeOwnerDao.removeById(userId, postId)
     }
+
 }
 
 

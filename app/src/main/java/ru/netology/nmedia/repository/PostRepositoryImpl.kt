@@ -5,14 +5,10 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.ResponseBody
 import ru.netology.nmedia.api.ApiService
-import ru.netology.nmedia.dao.LikeOwnerDao
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.dao.WallDao
@@ -20,7 +16,6 @@ import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.*
 import ru.netology.nmedia.entity.PostWithLists
 import ru.netology.nmedia.error.ApiError
-import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
 import ru.netology.nmedia.model.MediaModel
 import java.io.IOException
@@ -30,7 +25,6 @@ class PostRepositoryImpl @Inject constructor(
     context: Application,
     private val postDao: PostDao,
     private val wallDao: WallDao,
-    private val likeOwnerDao: LikeOwnerDao,
     private val apiService: ApiService,
     postRemoteKeyDao: PostRemoteKeyDao,
     appDb: AppDb,
@@ -58,31 +52,20 @@ class PostRepositoryImpl @Inject constructor(
             it.map(PostWithLists::toDto)
         }
 
-    override fun getNewer(id: Long): Flow<Int> = flow {
-        while (true) {
-            delay(10_000)
-
-            val response = apiService.getNewer(id)
-            if (!response.isSuccessful) {
-                throw ApiError(response.code(), response.message())
-            }
-            val posts = response.body().orEmpty()
-            //postDao.insert(posts.toEntity())
-            postDao.insertPostsWithLists(posts.map { PostWithLists.fromDto(it) })
-            emit(posts.size)
-
-        }
-    }.catch { e -> throw AppError.from(e) }
-        .flowOn(Dispatchers.Default)
-
     override suspend fun getAll() {
-        val response = apiService.getAll()
-        if (!response.isSuccessful) {
-            throw RuntimeException(response.message())
+        try {
+            val response = apiService.getAll()
+            if (!response.isSuccessful) {
+                throw RuntimeException(response.message())
+            }
+            val posts = response.body() ?: throw RuntimeException("body is null")
+            postDao.clearWithLists()
+            postDao.insertPostsWithLists(posts.map { PostWithLists.fromDto(it) })
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw ru.netology.nmedia.error.UnknownError
         }
-        val posts = response.body() ?: throw RuntimeException("body is null")
-        //postDao.clearWithLists()
-        postDao.insertPostsWithLists(posts.map { PostWithLists.fromDto(it) })
     }
 
     override suspend fun likeById(id: Long) {
@@ -149,14 +132,6 @@ class PostRepositoryImpl @Inject constructor(
             ) else post
 
             val response = apiService.save(curPost)
-            /*
-            post.copy(
-                attachment = Attachment(
-                    media.url,
-                    mediaModel.attachmentType!!
-                )
-            )
-            */
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -215,6 +190,5 @@ class PostRepositoryImpl @Inject constructor(
             throw ru.netology.nmedia.error.UnknownError
         }
     }
+
 }
-
-

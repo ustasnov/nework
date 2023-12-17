@@ -9,15 +9,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.api.ApiService
 import ru.netology.nmedia.auth.AppAuth
-import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dao.PostRemoteKeyDao
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.ErrorType
-import ru.netology.nmedia.dto.EventCash
-import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.dto.PostCash
 import ru.netology.nmedia.model.FeedModelState
@@ -50,8 +46,6 @@ val empty = Post(
 class PostViewModel @Inject constructor(
     private val repository: PostRepository,
     appAuth: AppAuth,
-    private val postDao: PostDao,
-    private val apiService: ApiService,
     val postRemoteKeyDao: PostRemoteKeyDao,
     val appDb: AppDb,
 ) : ViewModel() {
@@ -82,21 +76,9 @@ class PostViewModel @Inject constructor(
     val edited: LiveData<Post>
         get() = _edited
 
-    //var isNewPost = false
-
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
-
-    private val _currentPostId = MutableLiveData<Long>()
-    val currentPostId: LiveData<Long>
-        get() = _currentPostId
-
-    private val _currentPost =
-        MutableLiveData(empty.copy())
-
-    val currentPost: LiveData<Post>
-        get() = _currentPost
 
     var newPostCash: PostCash? = null
 
@@ -106,16 +88,15 @@ class PostViewModel @Inject constructor(
     val currentMediaType: LiveData<AttachmentType>
         get() = _currentMediaType
 
+    private val _refreshList = SingleLiveEvent<Unit>()
+    val refreshList: LiveData<Unit>
+        get() = _refreshList
 
-    init {
-        //clearPosts()
-        //loadPosts()
-    }
 
     fun loadPosts() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
-            //repository.getAll()
+            repository.getAll()
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
@@ -125,11 +106,15 @@ class PostViewModel @Inject constructor(
     fun refresh() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
-            //repository.getAll()
+            repository.getAll()
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LOADING)
         }
+    }
+
+    fun refreshList() {
+        _refreshList.postValue(Unit)
     }
 
     fun save() = viewModelScope.launch {
@@ -150,24 +135,7 @@ class PostViewModel @Inject constructor(
     }
 
     fun edit(post: Post) {
-        //toggleNewPost(false)
         _edited.value = post
-    }
-
-    fun changeContent(content: String) {
-        val text = content.trim()
-        if (_edited.value?.content == text) {
-            return
-        }
-        _edited.value = edited.value?.copy(content = text)
-    }
-
-    fun changeLink(link: String) {
-        val text: String? = link.ifBlank { null }
-        if (text != null && _edited.value?.link == text) {
-            return
-        }
-        _edited.value = _edited.value?.copy(link = text)
     }
 
     fun likeById(post: Post) = viewModelScope.launch {
@@ -180,11 +148,6 @@ class PostViewModel @Inject constructor(
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = ErrorType.LIKE)
         }
-    }
-
-    fun viewById(post: Post) {
-        //toggleNewPost(false)
-        _currentPost.setValue(post)
     }
 
     fun removeById(id: Long) = viewModelScope.launch {
@@ -211,16 +174,9 @@ class PostViewModel @Inject constructor(
         _media.value = mediaModel
     }
 
-    fun clearPosts() = viewModelScope.launch {
-        repository.clearPosts()
-    }
-
-    fun clearMediaType() {
-        _currentMediaType.value = null
-    }
-
     fun setMediaType(mediaType: AttachmentType) {
         _currentMediaType.value = mediaType
     }
+
 }
 

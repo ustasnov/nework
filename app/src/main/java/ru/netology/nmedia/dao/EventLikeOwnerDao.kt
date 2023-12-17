@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.entity.EventLikeOwnerEntity
-import ru.netology.nmedia.entity.LikeOwnerEntity
 
 @Dao
 interface EventLikeOwnerDao {

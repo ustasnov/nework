@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">NeWork</string>
-    <string name="nmedia">NeWork!</string>
+    <string name="nmedia">NeWork</string>
     <string name="description_post_author_avatar">Netology avatar</string>
     <string name="description_post_menu">Post menu</string>
     <string name="press_if_like">Press if like</string>
@@ -20,7 +20,7 @@
     <string name="cancel_post_text_changes">Cancel post text changes</string>
     <string name="view_move_description">View move</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="authorName">Stanislav Ugarov</string>
+    <string name="authorName">Stanislav I Ugarov</string>
     <string name="channel_remote_name">Server notifications</string>
     <string name="channel_remote_description">Notifications from remote server</string>
     <string name="notification_user_liked">User %1$s liked %2$s\'s post</string>
@@ -108,11 +108,27 @@
     <string name="new_event">New event</string>
     <string name="edit_event">Edit event</string>
     <string name="event_text_hint">Event content</string>
-    <string name="event_date_hint">Event date and time</string>
+    <string name="event_date_hint">Event date</string>
     <string name="select_users_to_speakers">Select speakers</string>
     <string name="event_time_hint">Event time</string>
     <string name="select_event_time">Select event time</string>
     <string name="event_type">Event type</string>
     <string name="online">ONLINE</string>
     <string name="offline">OFFLINE</string>
+    <string name="about">About</string>
+    <string name="about_text">Diplom work\\\\nStudent og group AN-37\\\\nStanislav Ugarov</string>
+    <string name="ok">ОК</string>
+    <string name="diplom_work">Graduate work</string>
+    <string name="student">student of group AN-37</string>
+    <string name="university">University \"Netology\"</string>
+    <string name="course">on the course Android developer</string>
+    <string name="fio">Stanislav I Ugarov</string>
+    <string name="pic_audio" translatable="false">pic_audio</string>
+    <string name="pick_video" translatable="false">pick_video</string>
+    <string name="pick_speakers" translatable="false">pick_speakers</string>
+    <string name="pick_photo" translatable="false">pick_photo</string>
+    <string name="take_photo" translatable="false">take_photo</string>
+    <string name="preview" translatable="false">preview</string>
+    <string name="pick_mentions" translatable="false">pick_mentions</string>
+    <string name="authorize_title">Authorization</string>
 </resources>
