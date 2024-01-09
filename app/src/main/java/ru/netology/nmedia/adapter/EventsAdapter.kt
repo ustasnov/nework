@@ -40,7 +40,7 @@ class EventsAdapter(
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item!!)
+        holder.bind(item)
     }
 
 }
@@ -52,145 +52,168 @@ class EventViewHolder(
     private val isAuthorized: Boolean,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(event: Event) {
+    fun bind(event: Event?) {
         binding.apply {
-            author.text = event.author
-            published.text = AndroidUtils.formatDate(event.published)
-            postText.text = event.content
+            if (event != null) {
+                author.text = event.author
+                published.text = AndroidUtils.formatDate(event.published)
+                postText.text = event.content
 
-            if (isAuthorized) {
-                favorite.isEnabled = true
-                favorite.isChecked = event.likedByMe
+                if (isAuthorized) {
+                    favorite.isEnabled = true
+                    favorite.isChecked = event.likedByMe
 
-                participantMe.isEnabled = true
-                participantMe.isChecked = event.participatedByMe
-            } else {
-                favorite.isEnabled = false
-                favorite.isChecked = false
-
-                participantMe.isEnabled = false
-                participantMe.isChecked = false
-            }
-
-            likesCount.text = formatValue(event.likeOwnerIds.size.toDouble())
-
-            if (event.type === EventType.ONLINE) {
-                eventType.text = context.getString(R.string.type_online)
-            } else {
-                eventType.text = context.getString(R.string.type_offline)
-            }
-            eventDatetime.text = AndroidUtils.formatDate(event.datetime)
-
-            if (event.participantsIds.isNotEmpty()) {
-                if (participantMe.isChecked) {
-                    participants.setIconTintResource(R.color.red)
+                    participantMe.isEnabled = true
+                    participantMe.isChecked = event.participatedByMe
                 } else {
-                    participants.setIconTintResource(R.color.teal_700)
+                    favorite.isEnabled = false
+                    favorite.isChecked = false
+
+                    participantMe.isEnabled = false
+                    participantMe.isChecked = false
                 }
-                participants.text = formatValue(event.participantsIds.size.toDouble())
-            } else {
-                participants.setIconTintResource(R.color.ext_gray)
-                participants.text = ""
-            }
 
-            if (event.speakerIds.isNotEmpty()) {
-                speakers.setIconTintResource(R.color.teal_700)
-                speakers.text = formatValue(event.speakerIds.size.toDouble())
-            } else {
-                speakers.setIconTintResource(R.color.ext_gray)
-                speakers.text = ""
-            }
-            if (event.coords != null) {
-                geo.setIconTintResource(R.color.teal_700)
-            } else {
-                geo.setIconTintResource(R.color.ext_gray)
-            }
+                likesCount.text = formatValue(event.likeOwnerIds.size.toDouble())
 
-            if (event.link.isNullOrBlank()) {
-                siteGroup.visibility = View.GONE
-            } else {
-                siteGroup.visibility = View.VISIBLE
-                siteUrl.text = event.link
-            }
+                if (event.type === EventType.ONLINE) {
+                    eventType.text = context.getString(R.string.type_online)
+                } else {
+                    eventType.text = context.getString(R.string.type_offline)
+                }
+                eventDatetime.text = AndroidUtils.formatDate(event.datetime)
 
-            avatar.isVisible = !event.authorAvatar.isNullOrBlank()
-            if (avatar.isVisible) {
-                Glide.with(avatar)
-                    .load("${event.authorAvatar}")
-                    .circleCrop()
-                    .placeholder(R.drawable.ic_loading_100dp)
-                    .error(R.drawable.ic_error_100dp)
-                    .timeout(10_000)
-                    .into(avatar)
-            } else {
-                avatar.setImageResource(R.drawable.baseline_account_circle_24)
-                avatar.visibility = View.VISIBLE
-            }
+                if (event.participantsIds.isNotEmpty()) {
+                    if (participantMe.isChecked) {
+                        participants.setIconTintResource(R.color.red)
+                    } else {
+                        participants.setIconTintResource(R.color.teal_700)
+                    }
+                    participants.text = formatValue(event.participantsIds.size.toDouble())
+                } else {
+                    participants.setIconTintResource(R.color.ext_gray)
+                    participants.text = ""
+                }
 
-            playVideo.visibility = View.GONE
-            attachment.visibility = View.GONE
+                if (event.speakerIds.isNotEmpty()) {
+                    speakers.setIconTintResource(R.color.teal_700)
+                    speakers.text = formatValue(event.speakerIds.size.toDouble())
+                } else {
+                    speakers.setIconTintResource(R.color.ext_gray)
+                    speakers.text = ""
+                }
+                if (event.coords != null) {
+                    geo.setIconTintResource(R.color.teal_700)
+                } else {
+                    geo.setIconTintResource(R.color.ext_gray)
+                }
 
-            if (!event.attachment?.url.isNullOrBlank()) {
-                attachment.visibility = View.VISIBLE
-                if (event.attachment?.type !== AttachmentType.AUDIO) {
-                    Glide.with(attachment)
-                        .load("${event.attachment?.url}")
+                if (event.link.isNullOrBlank()) {
+                    siteGroup.visibility = View.GONE
+                } else {
+                    siteGroup.visibility = View.VISIBLE
+                    siteUrl.text = event.link
+                }
+
+                avatar.isVisible = !event.authorAvatar.isNullOrBlank()
+                if (avatar.isVisible) {
+                    Glide.with(avatar)
+                        .load("${event.authorAvatar}")
+                        .circleCrop()
                         .placeholder(R.drawable.ic_loading_100dp)
                         .error(R.drawable.ic_error_100dp)
                         .timeout(10_000)
-                        .into(attachment)
-                    if (event.attachment?.type === AttachmentType.VIDEO) {
-                        playVideo.visibility = View.VISIBLE
-                    }
+                        .into(avatar)
                 } else {
-                    attachment.setImageResource(R.drawable.audio)
+                    avatar.setImageResource(R.drawable.baseline_account_circle_24)
+                    avatar.visibility = View.VISIBLE
                 }
-            }
 
-            attachment.setOnClickListener {
-                onInteractionEventListener.onViewAttachment(event)
-            }
+                playVideo.visibility = View.GONE
+                attachment.visibility = View.GONE
 
-            favorite.setOnClickListener {
-                onInteractionEventListener.onLike(event)
-            }
-
-            likeCaption.setOnClickListener {
-                onInteractionEventListener.onViewLikeOwners(event)
-            }
-
-            participants.setOnClickListener {
-                onInteractionEventListener.onViewParticipants(event)
-            }
-
-            participantMe.setOnClickListener {
-                onInteractionEventListener.onParticipant(event)
-            }
-
-            speakers.setOnClickListener {
-                onInteractionEventListener.onViewSpeakers(event)
-            }
-
-            menu.isVisible = event.ownedByMe
-            menu.setOnClickListener {
-                PopupMenu(it.context, it).apply {
-                    inflate(R.menu.options_post)
-                    setOnMenuItemClickListener { item ->
-                        when (item.itemId) {
-                            R.id.remove -> {
-                                onInteractionEventListener.onRemove(event)
-                                true
-                            }
-
-                            R.id.edit -> {
-                                onInteractionEventListener.onEdit(event)
-                                true
-                            }
-
-                            else -> false
+                if (!event.attachment?.url.isNullOrBlank()) {
+                    attachment.visibility = View.VISIBLE
+                    if (event.attachment?.type !== AttachmentType.AUDIO) {
+                        Glide.with(attachment)
+                            .load("${event.attachment?.url}")
+                            .placeholder(R.drawable.ic_loading_100dp)
+                            .error(R.drawable.ic_error_100dp)
+                            .timeout(10_000)
+                            .into(attachment)
+                        if (event.attachment?.type === AttachmentType.VIDEO) {
+                            playVideo.visibility = View.VISIBLE
                         }
+                    } else {
+                        attachment.setImageResource(R.drawable.audio)
                     }
-                }.show()
+                }
+
+                attachment.setOnClickListener {
+                    onInteractionEventListener.onViewAttachment(event)
+                }
+
+                favorite.setOnClickListener {
+                    onInteractionEventListener.onLike(event)
+                }
+
+                likeCaption.setOnClickListener {
+                    onInteractionEventListener.onViewLikeOwners(event)
+                }
+
+                participants.setOnClickListener {
+                    onInteractionEventListener.onViewParticipants(event)
+                }
+
+                participantMe.setOnClickListener {
+                    onInteractionEventListener.onParticipant(event)
+                }
+
+                speakers.setOnClickListener {
+                    onInteractionEventListener.onViewSpeakers(event)
+                }
+
+                menu.isVisible = event.ownedByMe
+                menu.setOnClickListener {
+                    PopupMenu(it.context, it).apply {
+                        inflate(R.menu.options_post)
+                        setOnMenuItemClickListener { item ->
+                            when (item.itemId) {
+                                R.id.remove -> {
+                                    onInteractionEventListener.onRemove(event)
+                                    true
+                                }
+
+                                R.id.edit -> {
+                                    onInteractionEventListener.onEdit(event)
+                                    true
+                                }
+
+                                else -> false
+                            }
+                        }
+                    }.show()
+                }
+            } else { // placeholder
+                author.text = context.getString(R.string.placeholderString)
+                published.text = context.getString(R.string.placeholderString)
+                postText.text = context.getString(R.string.placeholderString)
+                favorite.isEnabled = false
+                favorite.isChecked = false
+                participantMe.isEnabled = false
+                participantMe.isChecked = false
+                likesCount.text = ""
+                eventType.text = context.getString(R.string.placeholderString)
+                eventDatetime.text = context.getString(R.string.placeholderString)
+                participants.setIconTintResource(R.color.ext_gray)
+                participants.text = ""
+                speakers.setIconTintResource(R.color.ext_gray)
+                speakers.text = ""
+                geo.setIconTintResource(R.color.ext_gray)
+                siteGroup.visibility = View.GONE
+                avatar.setImageResource(R.drawable.baseline_account_circle_24)
+                avatar.visibility = View.VISIBLE
+                playVideo.visibility = View.GONE
+                attachment.visibility = View.GONE
             }
         }
     }

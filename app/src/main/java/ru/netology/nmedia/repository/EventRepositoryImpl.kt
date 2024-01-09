@@ -41,9 +41,9 @@ class EventRepositoryImpl @Inject constructor(
     @OptIn(ExperimentalPagingApi::class)
     override val data: Flow<PagingData<Event>> = Pager(
         config = PagingConfig(
-            pageSize = 300,
+            pageSize = 10,
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
-            enablePlaceholders = false
+            enablePlaceholders = true
         ),
         pagingSourceFactory = { eventDao.getPagingSource() },
         remoteMediator = EventRemoteMediator(

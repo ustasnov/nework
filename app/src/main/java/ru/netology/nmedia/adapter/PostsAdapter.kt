@@ -1,5 +1,6 @@
 package ru.netology.nmedia.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,12 +28,13 @@ interface OnInteractionListener {
 
 class PostsAdapter(
     private val onInteractionListener: OnInteractionListener,
-    private val isAuthorized: Boolean
+    private val isAuthorized: Boolean,
+    private val context: Context
 ) : PagingDataAdapter<Post, PostViewHolder>(PostDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onInteractionListener, isAuthorized)
+        return PostViewHolder(binding, onInteractionListener, context, isAuthorized)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
@@ -44,6 +46,7 @@ class PostsAdapter(
 class PostViewHolder(
     private val binding: CardPostBinding,
     private val onInteractionListener: OnInteractionListener,
+    private val context: Context,
     private val isAuthorized: Boolean
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -159,9 +162,9 @@ class PostViewHolder(
                     }.show()
                 }
             } else { // placeholder
-                author.text = "*****"
-                published.text = "*****"
-                postText.text = "*****"
+                author.text = context.getString(R.string.placeholderString)
+                published.text = context.getString(R.string.placeholderString)
+                postText.text = context.getString(R.string.placeholderString)
                 favorite.isEnabled = false
                 favorite.isChecked = false
                 likesCount.text = ""

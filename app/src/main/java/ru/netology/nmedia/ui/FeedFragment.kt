@@ -127,7 +127,7 @@ class FeedFragment : Fragment() {
                 }
 
             }
-        }, authViewModel.isAuthorized)
+        }, authViewModel.isAuthorized, this.requireContext())
 
         binding.list.adapter = adapter
 

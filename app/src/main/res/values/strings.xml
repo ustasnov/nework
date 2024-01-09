@@ -131,4 +131,5 @@
     <string name="preview" translatable="false">preview</string>
     <string name="pick_mentions" translatable="false">pick_mentions</string>
     <string name="authorize_title">Authorization</string>
+    <string name="placeholderString" translatable="false">*****</string>
 </resources>
