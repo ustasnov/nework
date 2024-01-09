@@ -15,9 +15,6 @@ class AppAuth @Inject constructor(
     @ApplicationContext
     private val context: Context
 ) {
-    private val TOKEN_KEY = "TOKEN_KEY"
-    private val ID_KEY = "ID_KEY"
-
     private val prefs: SharedPreferences =
         context.getSharedPreferences("auth", Context.MODE_PRIVATE)
     private val _data = MutableStateFlow<Token?>(null)
@@ -51,6 +48,11 @@ class AppAuth @Inject constructor(
     fun clearAuth() {
         _data.value = null
         prefs.edit { clear() }
+    }
+
+    companion object {
+        private const val TOKEN_KEY = "TOKEN_KEY"
+        private const val ID_KEY = "ID_KEY"
     }
 
 }

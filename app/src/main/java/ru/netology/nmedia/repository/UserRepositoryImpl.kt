@@ -30,30 +30,30 @@ class UserRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
 ) : UserRepository {
 
-    override var data: Flow<List<User>> =
+    override val data: Flow<List<User>> =
         userDao.getAll().map { it.map(UserEntity::toDto) }
 
-    override var mentionsData: Flow<List<UserItem>> = emptyFlow()
+    override val mentionsData: Flow<List<UserItem>> = emptyFlow()
     override fun getMentions(id: Long): Flow<List<UserItem>> {
         return mentionDao.getMentions(id).map { it.map(MentionEntity::toDto) }
     }
 
-    override var likeOwnersData: Flow<List<UserItem>> = emptyFlow()
+    override val likeOwnersData: Flow<List<UserItem>> = emptyFlow()
     override fun getLikeOwners(id: Long): Flow<List<UserItem>> {
         return likeOwnerDao.getLikeOwners(id).map { it.map(LikeOwnerEntity::toDto) }
     }
 
-    override var eventLikeOwnersData: Flow<List<UserItem>> = emptyFlow()
+    override val eventLikeOwnersData: Flow<List<UserItem>> = emptyFlow()
     override fun getEventLikeOwners(id: Long): Flow<List<UserItem>> {
         return eventLikeOwnerDao.getLikeOwners(id).map { it.map(EventLikeOwnerEntity::toDto) }
     }
 
-    override var participantsData: Flow<List<UserItem>> = emptyFlow()
+    override val participantsData: Flow<List<UserItem>> = emptyFlow()
     override fun getParticipants(id: Long): Flow<List<UserItem>> {
         return participantDao.getParticipants(id).map { it.map(ParticipantEntity::toDto) }
     }
 
-    override var speakersData: Flow<List<UserItem>> = emptyFlow()
+    override val speakersData: Flow<List<UserItem>> = emptyFlow()
     override fun getSpeakers(id: Long): Flow<List<UserItem>> {
         return speakerDao.getSpeakers(id).map { it.map(SpeakerEntity::toDto) }
     }

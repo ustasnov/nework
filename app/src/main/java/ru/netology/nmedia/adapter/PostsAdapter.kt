@@ -37,7 +37,7 @@ class PostsAdapter(
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item!!)
+        holder.bind(item)
     }
 }
 
@@ -47,115 +47,132 @@ class PostViewHolder(
     private val isAuthorized: Boolean
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(post: Post) {
+    fun bind(post: Post?) {
         binding.apply {
-            author.text = post.author
-            published.text = formatDate(post.published)
-            postText.text = post.content
+            if (post != null) {
+                author.text = post.author
+                published.text = formatDate(post.published)
+                postText.text = post.content
 
-            if (isAuthorized) {
-                favorite.isEnabled = true
-                favorite.isChecked = post.likedByMe
-            } else {
-                favorite.isEnabled = false
-                favorite.isChecked = false
-            }
-
-            likesCount.text = formatValue(post.likeOwnerIds.size.toDouble())
-            siteUrl.text = post.link
-            if (post.link.isNullOrBlank()) {
-                siteGroup.visibility = View.GONE
-            } else {
-                siteGroup.visibility = View.VISIBLE
-            }
-
-            if (post.mentionIds.isNotEmpty()) {
-                if (post.mentionedMe) {
-                    ment.setIconTintResource(R.color.red)
+                if (isAuthorized) {
+                    favorite.isEnabled = true
+                    favorite.isChecked = post.likedByMe
                 } else {
-                    ment.setIconTintResource(R.color.teal_700)
+                    favorite.isEnabled = false
+                    favorite.isChecked = false
                 }
-                ment.text = formatValue(post.mentionIds.size.toDouble())
-            } else {
-                ment.setIconTintResource(R.color.ext_gray)
-                ment.text = ""
-            }
-            if (post.coords != null) {
-                geo.setIconTintResource(R.color.teal_700)
-            } else {
-                geo.setIconTintResource(R.color.ext_gray)
-            }
 
-            avatar.isVisible = !post.authorAvatar.isNullOrBlank()
-            if (avatar.isVisible) {
-                Glide.with(avatar)
-                    .load("${post.authorAvatar}")
-                    .circleCrop()
-                    .placeholder(R.drawable.ic_loading_100dp)
-                    .error(R.drawable.ic_error_100dp)
-                    .timeout(10_000)
-                    .into(avatar)
-            } else {
-                avatar.setImageResource(R.drawable.baseline_account_circle_24)
-                avatar.visibility = View.VISIBLE
-            }
+                likesCount.text = formatValue(post.likeOwnerIds.size.toDouble())
+                siteUrl.text = post.link
+                if (post.link.isNullOrBlank()) {
+                    siteGroup.visibility = View.GONE
+                } else {
+                    siteGroup.visibility = View.VISIBLE
+                }
 
-            playVideo.visibility = View.GONE
-            attachment.visibility = View.GONE
+                if (post.mentionIds.isNotEmpty()) {
+                    if (post.mentionedMe) {
+                        ment.setIconTintResource(R.color.red)
+                    } else {
+                        ment.setIconTintResource(R.color.teal_700)
+                    }
+                    ment.text = formatValue(post.mentionIds.size.toDouble())
+                } else {
+                    ment.setIconTintResource(R.color.ext_gray)
+                    ment.text = ""
+                }
+                if (post.coords != null) {
+                    geo.setIconTintResource(R.color.teal_700)
+                } else {
+                    geo.setIconTintResource(R.color.ext_gray)
+                }
 
-            if (!post.attachment?.url.isNullOrBlank()) {
-                attachment.visibility = View.VISIBLE
-                if (post.attachment?.type !== AttachmentType.AUDIO) {
-                    Glide.with(attachment)
-                        .load("${post.attachment?.url}")
+                avatar.isVisible = !post.authorAvatar.isNullOrBlank()
+                if (avatar.isVisible) {
+                    Glide.with(avatar)
+                        .load("${post.authorAvatar}")
+                        .circleCrop()
                         .placeholder(R.drawable.ic_loading_100dp)
                         .error(R.drawable.ic_error_100dp)
                         .timeout(10_000)
-                        .into(attachment)
-                    if (post.attachment?.type === AttachmentType.VIDEO) {
-                        playVideo.visibility = View.VISIBLE
-                    }
+                        .into(avatar)
                 } else {
-                    attachment.setImageResource(R.drawable.audio)
+                    avatar.setImageResource(R.drawable.baseline_account_circle_24)
+                    avatar.visibility = View.VISIBLE
                 }
-            }
 
-            attachment.setOnClickListener {
-                onInteractionListener.onViewAttachment(post)
-            }
+                playVideo.visibility = View.GONE
+                attachment.visibility = View.GONE
 
-            favorite.setOnClickListener {
-                onInteractionListener.onLike(post)
-            }
-
-            likeCaption.setOnClickListener {
-                onInteractionListener.onViewLikeOwners(post)
-            }
-
-            ment.setOnClickListener {
-                onInteractionListener.onViewMentions(post)
-            }
-
-            menu.isVisible = post.ownedByMe
-            menu.setOnClickListener {
-                PopupMenu(it.context, it).apply {
-                    inflate(R.menu.options_post)
-                    setOnMenuItemClickListener { item ->
-                        when (item.itemId) {
-                            R.id.remove -> {
-                                onInteractionListener.onRemove(post)
-                                true
-                            }
-
-                            R.id.edit -> {
-                                onInteractionListener.onEdit(post)
-                                true
-                            }
-
-                            else -> false
+                if (!post.attachment?.url.isNullOrBlank()) {
+                    attachment.visibility = View.VISIBLE
+                    if (post.attachment?.type !== AttachmentType.AUDIO) {
+                        Glide.with(attachment)
+                            .load("${post.attachment?.url}")
+                            .placeholder(R.drawable.ic_loading_100dp)
+                            .error(R.drawable.ic_error_100dp)
+                            .timeout(10_000)
+                            .into(attachment)
+                        if (post.attachment?.type === AttachmentType.VIDEO) {
+                            playVideo.visibility = View.VISIBLE
                         }
+                    } else {
+                        attachment.setImageResource(R.drawable.audio)
                     }
-                }.show()
+                }
+
+                attachment.setOnClickListener {
+                    onInteractionListener.onViewAttachment(post)
+                }
+
+                favorite.setOnClickListener {
+                    onInteractionListener.onLike(post)
+                }
+
+                likeCaption.setOnClickListener {
+                    onInteractionListener.onViewLikeOwners(post)
+                }
+
+                ment.setOnClickListener {
+                    onInteractionListener.onViewMentions(post)
+                }
+
+                menu.isVisible = post.ownedByMe
+                menu.setOnClickListener {
+                    PopupMenu(it.context, it).apply {
+                        inflate(R.menu.options_post)
+                        setOnMenuItemClickListener { item ->
+                            when (item.itemId) {
+                                R.id.remove -> {
+                                    onInteractionListener.onRemove(post)
+                                    true
+                                }
+
+                                R.id.edit -> {
+                                    onInteractionListener.onEdit(post)
+                                    true
+                                }
+
+                                else -> false
+                            }
+                        }
+                    }.show()
+                }
+            } else { // placeholder
+                author.text = "*****"
+                published.text = "*****"
+                postText.text = "*****"
+                favorite.isEnabled = false
+                favorite.isChecked = false
+                likesCount.text = ""
+                siteGroup.visibility = View.GONE
+                ment.setIconTintResource(R.color.ext_gray)
+                ment.text = ""
+                geo.setIconTintResource(R.color.ext_gray)
+                avatar.setImageResource(R.drawable.baseline_account_circle_24)
+                avatar.visibility = View.VISIBLE
+                playVideo.visibility = View.GONE
+                attachment.visibility = View.GONE
             }
         }
     }

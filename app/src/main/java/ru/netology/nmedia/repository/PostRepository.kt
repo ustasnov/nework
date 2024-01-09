@@ -8,7 +8,7 @@ import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.MediaModel
 
 interface PostRepository {
-    var data: Flow<PagingData<Post>>
+    val data: Flow<PagingData<Post>>
     suspend fun getAll()
     suspend fun likeById(id: Long)
     suspend fun unlikeById(id: Long)

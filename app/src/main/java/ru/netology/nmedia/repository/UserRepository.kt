@@ -5,12 +5,12 @@ import ru.netology.nmedia.dto.User
 import ru.netology.nmedia.dto.UserItem
 
 interface UserRepository {
-    var data: Flow<List<User>>
-    var mentionsData: Flow<List<UserItem>>
-    var likeOwnersData: Flow<List<UserItem>>
-    var eventLikeOwnersData: Flow<List<UserItem>>
-    var participantsData: Flow<List<UserItem>>
-    var speakersData: Flow<List<UserItem>>
+    val data: Flow<List<User>>
+    val mentionsData: Flow<List<UserItem>>
+    val likeOwnersData: Flow<List<UserItem>>
+    val eventLikeOwnersData: Flow<List<UserItem>>
+    val participantsData: Flow<List<UserItem>>
+    val speakersData: Flow<List<UserItem>>
 
     suspend fun getAll()
     suspend fun getUser(id: Long): User

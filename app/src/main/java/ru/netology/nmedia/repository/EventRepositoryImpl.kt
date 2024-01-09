@@ -36,7 +36,7 @@ class EventRepositoryImpl @Inject constructor(
 ) : EventRepository {
     private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
     private val key = "newEventContent"
-    private var newEventContentValue = MutableLiveData<String>()
+    private val newEventContentValue = MutableLiveData<String>()
 
     @OptIn(ExperimentalPagingApi::class)
     override val data: Flow<PagingData<Event>> = Pager(

@@ -31,14 +31,14 @@ class PostRepositoryImpl @Inject constructor(
 ) : PostRepository {
     private val prefs = context.getSharedPreferences("repo", Context.MODE_PRIVATE)
     private val key = "newPostContent"
-    private var newPostContentValue = MutableLiveData<String>()
+    private val newPostContentValue = MutableLiveData<String>()
 
     @OptIn(ExperimentalPagingApi::class)
-    override var data: Flow<PagingData<Post>> = Pager(
+    override val data: Flow<PagingData<Post>> = Pager(
         config = PagingConfig(
-            pageSize = 300,
+            pageSize = 10,
             //enablePlaceholders = false, initialLoadSize = 30, prefetchDistance = 10, maxSize = Int.MAX_VALUE, jumpThreshold = 1000),
-            enablePlaceholders = false
+            enablePlaceholders = true
         ),
         pagingSourceFactory = { postDao.getPagingSource() },
         remoteMediator = PostRemoteMediator(
@@ -184,7 +184,6 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun clearPosts() {
         try {
-            //postDao.clearWithLists()
             postDao.clear()
         } catch (e: Exception) {
             throw ru.netology.nmedia.error.UnknownError

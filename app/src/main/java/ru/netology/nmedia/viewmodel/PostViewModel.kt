@@ -45,14 +45,8 @@ val empty = Post(
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class PostViewModel @Inject constructor(
     private val repository: PostRepository,
-    appAuth: AppAuth,
-    val postRemoteKeyDao: PostRemoteKeyDao,
-    val appDb: AppDb,
+    appAuth: AppAuth
 ) : ViewModel() {
-    private val cached = repository
-        .data
-        .cachedIn(viewModelScope)
-
     val data: Flow<PagingData<Post>> = appAuth.data
         .flatMapLatest { token ->
             repository.data.map { posts ->
